@@ -132,9 +132,18 @@ export default class OAuthManager {
         {},
         { headers: headers }
       );
-      this.token = this.parseResponse(response.data);
+      const { oauth_token, oauth_token_secret } = this.parseResponse(
+        response.data
+      );
+      SecureKeyStore.saveKey(CustomKeyType.ACCESS_TOKEN, oauth_token);
+      SecureKeyStore.saveKey(
+        CustomKeyType.ACCESS_TOKEN_SECRET,
+        oauth_token_secret
+      );
+      return true;
     } catch (error) {
       this.parseError(error);
+      return false;
     }
   }
 
@@ -146,7 +155,12 @@ export default class OAuthManager {
     };
 
     try {
-      const headers = this.getHeaders(request_data, this.token);
+      const headers = this.getHeaders(request_data, {
+        oauth_token: SecureKeyStore.getKey(CustomKeyType.ACCESS_TOKEN),
+        oauth_token_secret: SecureKeyStore.getKey(
+          CustomKeyType.ACCESS_TOKEN_SECRET
+        ),
+      });
       const response = await axios.get(request_data.url, { headers: headers });
 
       console.log(response.data);

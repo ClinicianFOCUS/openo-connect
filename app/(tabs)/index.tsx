@@ -1,15 +1,23 @@
 // App.js
 
 import React, { useEffect } from "react";
-import { Button, Linking, Alert } from "react-native";
+import { View, Button, Linking, Alert, StyleSheet } from "react-native";
 import OAuthManager from "../../services/OAuthManager";
 import { openBrowserAsync } from "expo-web-browser";
 import { useAuthManager } from "@/store/useAuthManager";
+import { SecureKeyStore } from "@/services/SecureKeyStore";
+import { CustomKeyType } from "@/types/types";
 
 const App = () => {
-  const { manager, setManager } = useAuthManager();
+  const { manager, setManager, hasAccessToken, setHasAccessToken } =
+    useAuthManager();
 
   useEffect(() => {
+    if (
+      SecureKeyStore.getKey(CustomKeyType.ACCESS_TOKEN) &&
+      SecureKeyStore.getKey(CustomKeyType.ACCESS_TOKEN_SECRET)
+    )
+      setHasAccessToken(true);
     if (manager) return;
 
     let oauthManager: OAuthManager;
@@ -30,8 +38,11 @@ const App = () => {
         // Step 5: Exchange the request token for an access token
         oauthManager
           .getAccessToken(oauth_verifier)
-          .then(() => {
-            Alert.alert("Access Granted");
+          .then((success) => {
+            if (success) {
+              Alert.alert("Access Granted");
+              setHasAccessToken(true);
+            }
           })
           .catch((error) => {
             console.error("Error getting access token", error);
@@ -59,11 +70,22 @@ const App = () => {
   };
 
   return (
-    <>
-      <Button title="Login with OSCAR" onPress={initiateOAuthFlow} />
-      <Button title={"Call api"} onPress={callApi} />
-    </>
+    <View style={styles.container}>
+      {hasAccessToken ? (
+        <Button title={"Call api"} onPress={callApi} />
+      ) : (
+        <Button title="Login with OSCAR" onPress={initiateOAuthFlow} />
+      )}
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
 
 export default App;

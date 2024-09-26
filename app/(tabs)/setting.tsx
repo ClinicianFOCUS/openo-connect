@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 
 const SettingPage = () => {
-  const { setManager } = useAuthManager();
+  const { setManager, setHasAccessToken } = useAuthManager();
   const [clientKey, setClientKey] = useState(
     SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY) || ""
   );
@@ -22,6 +22,9 @@ const SettingPage = () => {
     SecureKeyStore.saveKey(CustomKeyType.CLIENT_SECRET, clientSecret);
     SecureKeyStore.saveKey(CustomKeyType.OSCAR_BASE_URL, oscarBaseUrl);
     setManager(new OAuthManager());
+    SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN);
+    SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN_SECRET);
+    setHasAccessToken(false);
   };
 
   return (
