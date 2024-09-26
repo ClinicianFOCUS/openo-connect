@@ -1,21 +1,25 @@
 // App.js
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Button, Linking, Alert } from "react-native";
 import OAuthManager from "../../services/OAuthManager";
 import { openBrowserAsync } from "expo-web-browser";
+import { useAuthManager } from "@/store/useAuthManager";
 
 const App = () => {
-  const [oauthManager, setOAuthManager] = useState<OAuthManager>();
+  const { manager, setManager } = useAuthManager();
 
   useEffect(() => {
-    let manager: OAuthManager;
+    if (manager) return;
+
+    let oauthManager: OAuthManager;
     try {
-      manager = new OAuthManager();
-      setOAuthManager(manager);
+      oauthManager = new OAuthManager();
+      setManager(oauthManager);
     } catch (error) {
       console.error("Error creating OAuthManager", error);
     }
+
     // Handle OAuth callback
     const handleUrl = (event: { url: string }) => {
       const url = event.url;
@@ -24,7 +28,7 @@ const App = () => {
         const oauth_verifier = params.get("oauth_verifier");
 
         // Step 5: Exchange the request token for an access token
-        manager
+        oauthManager
           .getAccessToken(oauth_verifier)
           .then(() => {
             Alert.alert("Access Granted");
@@ -39,18 +43,18 @@ const App = () => {
   }, []);
 
   const initiateOAuthFlow = async () => {
-    if (oauthManager) {
-      await oauthManager.getRequestToken();
+    if (manager) {
+      await manager.getRequestToken();
 
-      const authUrl = oauthManager.getAuthorizationUrl();
+      const authUrl = manager.getAuthorizationUrl();
 
       openBrowserAsync(authUrl);
     }
   };
 
   const callApi = () => {
-    if (oauthManager) {
-      oauthManager.makeAuthorizedRequest("providerService/providers_json");
+    if (manager) {
+      manager.makeAuthorizedRequest("providerService/providers_json");
     }
   };
 

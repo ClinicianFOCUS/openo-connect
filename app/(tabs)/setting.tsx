@@ -1,9 +1,12 @@
+import OAuthManager from "@/services/OAuthManager";
 import { SecureKeyStore } from "@/services/SecureKeyStore";
+import { useAuthManager } from "@/store/useAuthManager";
 import { CustomKeyType } from "@/types/types";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 
 const SettingPage = () => {
+  const { setManager } = useAuthManager();
   const [clientKey, setClientKey] = useState(
     SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY) || ""
   );
@@ -18,6 +21,7 @@ const SettingPage = () => {
     SecureKeyStore.saveKey(CustomKeyType.CLIENT_KEY, clientKey);
     SecureKeyStore.saveKey(CustomKeyType.CLIENT_SECRET, clientSecret);
     SecureKeyStore.saveKey(CustomKeyType.OSCAR_BASE_URL, oscarBaseUrl);
+    setManager(new OAuthManager());
   };
 
   return (
