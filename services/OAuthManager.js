@@ -4,17 +4,30 @@ import OAuth from "oauth-1.0a";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 import "react-native-url-polyfill/auto"; // Polyfill for URLSearchParams in React Native
-
-const OSCAR_API_BASE_URL = "http://192.168.2.83:8080/oscar/ws"; // Update this to your actual OSCAR base URL
-
-const CONSUMER_KEY = "qeqmd0k1im0odmqn"; // Provided by OSCAR
-const CONSUMER_SECRET = "dwmy1dqwqs52vahx"; // Provided by OSCAR
-const CALLBACK_URL = "exp://192.168.2.83:8081/"; // The callback URL registered in OSCAR
+import { SecureKeyStore } from "./SecureKeyStore";
+import { CustomKeyType } from "@/types/types";
 
 export default class OAuthManager {
   constructor() {
+    let client_key = SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY);
+    let client_secret = SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET);
+    let callback_url = "exp://192.168.2.83:8081/";
+    let oscar_api_base_url = "http://192.168.2.83:8080/oscar/ws";
+
+    if (!client_key || !client_secret) {
+      throw new Error("Client key or secret not found");
+    }
+
+    if (!callback_url) {
+      throw new Error("Callback URL not found");
+    }
+
+    if (!oscar_api_base_url) {
+      throw new Error("OSCAR API base URL not found");
+    }
+
     this.oauth = OAuth({
-      consumer: { key: CONSUMER_KEY, secret: CONSUMER_SECRET },
+      consumer: { key: client_key, secret: client_secret },
       signature_method: "HMAC-SHA1",
       hash_function(base_string, key) {
         return CryptoJS.HmacSHA1(base_string, key).toString(
@@ -23,6 +36,7 @@ export default class OAuthManager {
       },
     });
     this.token = null; // This will store your request and access tokens
+    this.callback_url = callback_url;
   }
 
   // Helper function to get the headers for the request
@@ -70,7 +84,7 @@ export default class OAuthManager {
       url: `${OSCAR_API_BASE_URL}/oauth/initiate`,
       method: "POST",
       data: {
-        oauth_callback: CALLBACK_URL,
+        oauth_callback: this.callback_url,
       },
     };
 

@@ -9,9 +9,13 @@ const App = () => {
   const [oauthManager, setOAuthManager] = useState<OAuthManager>();
 
   useEffect(() => {
-    const manager = new OAuthManager();
-    setOAuthManager(manager);
-
+    let manager: OAuthManager;
+    try {
+      manager = new OAuthManager();
+      setOAuthManager(manager);
+    } catch (error) {
+      console.error("Error creating OAuthManager", error);
+    }
     // Handle OAuth callback
     const handleUrl = (event: { url: string }) => {
       const url = event.url;
