@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Button, Linking, Alert } from "react-native";
-import OAuthManager from "../services/OAuthManager";
+import OAuthManager from "../../services/OAuthManager";
 import { openBrowserAsync } from "expo-web-browser";
 
 const App = () => {
