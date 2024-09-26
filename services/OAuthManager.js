@@ -11,8 +11,10 @@ export default class OAuthManager {
   constructor() {
     let client_key = SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY);
     let client_secret = SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET);
+    let oscar_api_base_url = `${SecureKeyStore.getKey(
+      CustomKeyType.OSCAR_BASE_URL
+    )}/ws`;
     let callback_url = "exp://192.168.2.83:8081/";
-    let oscar_api_base_url = "http://192.168.2.83:8080/oscar/ws";
 
     if (!client_key || !client_secret) {
       throw new Error("Client key or secret not found");
@@ -37,6 +39,7 @@ export default class OAuthManager {
     });
     this.token = null; // This will store your request and access tokens
     this.callback_url = callback_url;
+    this.oscar_api_base_url = oscar_api_base_url;
   }
 
   // Helper function to get the headers for the request
@@ -81,7 +84,7 @@ export default class OAuthManager {
   // Step 1: Get the Request Token from OSCAR
   async getRequestToken() {
     const request_data = {
-      url: `${OSCAR_API_BASE_URL}/oauth/initiate`,
+      url: `${this.oscar_api_base_url}/oauth/initiate`,
       method: "POST",
       data: {
         oauth_callback: this.callback_url,
@@ -108,13 +111,13 @@ export default class OAuthManager {
     if (!oauth_token) {
       throw new Error("Request token not found");
     }
-    return `${OSCAR_API_BASE_URL}/oauth/authorize?oauth_token=${oauth_token}`;
+    return `${this.oscar_api_base_url}/oauth/authorize?oauth_token=${oauth_token}`;
   }
 
   // Step 3: Exchange the request token for an access token
   async getAccessToken(oauth_verifier) {
     const request_data = {
-      url: `${OSCAR_API_BASE_URL}/oauth/token`,
+      url: `${this.oscar_api_base_url}/oauth/token`,
       method: "POST",
       data: {
         oauth_token: this.token.oauth_token,
@@ -138,7 +141,7 @@ export default class OAuthManager {
   // Make authorized API requests using the access token
   async makeAuthorizedRequest(endpoint) {
     const request_data = {
-      url: `${OSCAR_API_BASE_URL}/services/${endpoint}`,
+      url: `${this.oscar_api_base_url}/services/${endpoint}`,
       method: "GET",
     };
 

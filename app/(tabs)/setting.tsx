@@ -1,22 +1,23 @@
 import { SecureKeyStore } from "@/services/SecureKeyStore";
 import { CustomKeyType } from "@/types/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 
 const SettingPage = () => {
-  const [clientKey, setClientKey] = useState("");
-  const [clientSecret, setClientSecret] = useState("");
-
-  //   const maskKey = (key) => {
-  //     return key ? key.slice(0, 4) + "*".repeat(key.length - 4) : "";
-  //   };
+  const [clientKey, setClientKey] = useState(
+    SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY) || ""
+  );
+  const [clientSecret, setClientSecret] = useState(
+    SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET) || ""
+  );
+  const [oscarBaseUrl, setOscarBaseUrl] = useState(
+    SecureKeyStore.getKey(CustomKeyType.OSCAR_BASE_URL) || ""
+  );
 
   const handleSave = () => {
-    // Implement secure storage logic here
-    console.log("Public Key:", clientKey);
-    console.log("Private Key:", clientSecret);
     SecureKeyStore.saveKey(CustomKeyType.CLIENT_KEY, clientKey);
     SecureKeyStore.saveKey(CustomKeyType.CLIENT_SECRET, clientSecret);
+    SecureKeyStore.saveKey(CustomKeyType.OSCAR_BASE_URL, oscarBaseUrl);
   };
 
   return (
@@ -35,9 +36,14 @@ const SettingPage = () => {
         placeholder="Enter Private Key"
         style={styles.input}
       />
+      <Text style={styles.inputLabel}>Oscar Base URL:</Text>
+      <TextInput
+        value={oscarBaseUrl}
+        onChangeText={setOscarBaseUrl}
+        placeholder="Enter Base Url"
+        style={styles.input}
+      />
       <Button title="Save" onPress={handleSave} />
-      {/* <Text>Stored Public Key: {maskKey(publicKey)}</Text>
-      <Text>Stored Private Key: {maskKey(privateKey)}</Text> */}
     </View>
   );
 };
