@@ -50,7 +50,7 @@ export const useOAuth = () => {
     const { url } = event;
     if (url.startsWith(baseUrl)) {
       const params = new URLSearchParams(url.split("?")[1]);
-      const oauth_verifier = params.get("oauth_verifier");
+      const oauth_verifier = params.get("oauth_verifier") || "";
 
       // Step 5: Exchange the request token for an access token
       const res = await manager.getAccessToken(oauth_verifier);
@@ -72,7 +72,7 @@ export const useOAuth = () => {
         const authUrl = manager.getAuthorizationUrl();
         openBrowserAsync(authUrl);
       } else {
-        Alert.alert("Error", "Failed to get request token");
+        Alert.alert("Error", res.message);
       }
     }
   };
