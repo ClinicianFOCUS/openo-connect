@@ -91,7 +91,6 @@ const App = () => {
       ) : (
         <Button title="Login with OSCAR" onPress={initiateOAuthFlow} />
       )}
-      <Button title={"Call api"} onPress={callApi} />
     </View>
   );
 };
