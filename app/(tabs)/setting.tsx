@@ -1,12 +1,12 @@
 import OAuthManager from "@/services/OAuthManager";
 import { SecureKeyStore } from "@/services/SecureKeyStore";
-import { useAuthManager } from "@/store/useAuthManager";
+import { useAuthManagerStore } from "@/store/useAuthManagerStore";
 import { CustomKeyType } from "@/types/types";
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 
 const SettingPage = () => {
-  const { setManager, setHasAccessToken } = useAuthManager();
+  const { setManager, setHasAccessToken } = useAuthManagerStore();
   const [clientKey, setClientKey] = useState(
     SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY) || ""
   );
