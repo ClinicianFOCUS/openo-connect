@@ -139,10 +139,7 @@ export default class OAuthManager {
         response.data
       );
       SecureKeyStore.saveKey(CustomKeyType.ACCESS_TOKEN, oauth_token);
-      SecureKeyStore.saveKey(
-        CustomKeyType.ACCESS_TOKEN_SECRET,
-        oauth_token_secret
-      );
+      SecureKeyStore.saveKey(CustomKeyType.SECRET_KEY, oauth_token_secret);
       return true;
     } catch (error) {
       this.parseError(error);
@@ -160,9 +157,7 @@ export default class OAuthManager {
     try {
       const headers = this.getHeaders(request_data, {
         oauth_token: SecureKeyStore.getKey(CustomKeyType.ACCESS_TOKEN),
-        oauth_token_secret: SecureKeyStore.getKey(
-          CustomKeyType.ACCESS_TOKEN_SECRET
-        ),
+        oauth_token_secret: SecureKeyStore.getKey(CustomKeyType.SECRET_KEY),
       });
       const response = await axios.get(request_data.url, { headers: headers });
 

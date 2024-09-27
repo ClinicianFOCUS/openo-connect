@@ -15,7 +15,7 @@ export const useOAuth = () => {
   useEffect(() => {
     if (
       SecureKeyStore.getKey(CustomKeyType.ACCESS_TOKEN) &&
-      SecureKeyStore.getKey(CustomKeyType.ACCESS_TOKEN_SECRET)
+      SecureKeyStore.getKey(CustomKeyType.SECRET_KEY)
     ) {
       setHasAccessToken(true);
     }

@@ -23,7 +23,7 @@ const SettingPage = () => {
     SecureKeyStore.saveKey(CustomKeyType.OSCAR_BASE_URL, oscarBaseUrl);
     setManager(new OAuthManager());
     SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN);
-    SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN_SECRET);
+    SecureKeyStore.deleteKey(CustomKeyType.SECRET_KEY);
     setHasAccessToken(false);
   };
 
