@@ -3,7 +3,7 @@ import { SecureKeyStore } from "@/services/SecureKeyStore";
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
 import { CustomKeyType } from "@/types/types";
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 
 const SettingPage = () => {
   const { setManager, setHasAccessToken } = useAuthManagerStore();
@@ -25,6 +25,7 @@ const SettingPage = () => {
     SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN);
     SecureKeyStore.deleteKey(CustomKeyType.SECRET_KEY);
     setHasAccessToken(false);
+    Alert.alert("Settings saved successfully");
   };
 
   return (

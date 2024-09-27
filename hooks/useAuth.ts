@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Alert, EmitterSubscription, Linking } from "react-native";
 import OAuthManager from "@/services/OAuthManager";
 import { SecureKeyStore } from "@/services/SecureKeyStore";
-import { CustomKeyType } from "@/types/types";
+import { CustomKeyType, StatusType } from "@/types/types";
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
 import { openBrowserAsync } from "expo-web-browser";
 import Constants from "expo-constants";
@@ -45,7 +45,7 @@ export const useOAuth = () => {
   };
 
   // Handle OAuth callback
-  const handleUrl = (event: { url: string }, manager: OAuthManager) => {
+  const handleUrl = async (event: { url: string }, manager: OAuthManager) => {
     const baseUrl = Constants.experienceUrl;
     const { url } = event;
     if (url.startsWith(baseUrl)) {
@@ -53,27 +53,27 @@ export const useOAuth = () => {
       const oauth_verifier = params.get("oauth_verifier");
 
       // Step 5: Exchange the request token for an access token
-      manager
-        .getAccessToken(oauth_verifier)
-        .then((success) => {
-          if (success) {
-            Alert.alert("Access Granted");
-            setHasAccessToken(true);
-          }
-        })
-        .catch((error) => {
-          console.error("Error getting access token", error);
-        });
+      const res = await manager.getAccessToken(oauth_verifier);
+
+      if (res.status == StatusType.SUCCESS) {
+        setHasAccessToken(true);
+        Alert.alert("Access Granted");
+      } else {
+        Alert.alert("Error", "Failed to get access token");
+      }
     }
   };
 
   const initiateOAuthFlow = async () => {
     if (manager) {
-      await manager.getRequestToken();
+      const res = await manager.getRequestToken();
 
-      const authUrl = manager.getAuthorizationUrl();
-
-      openBrowserAsync(authUrl);
+      if (res.status == StatusType.SUCCESS) {
+        const authUrl = manager.getAuthorizationUrl();
+        openBrowserAsync(authUrl);
+      } else {
+        Alert.alert("Error", "Failed to get request token");
+      }
     }
   };
 

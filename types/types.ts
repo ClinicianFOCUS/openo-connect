@@ -5,3 +5,8 @@ export enum CustomKeyType {
   ACCESS_TOKEN = "access_token",
   SECRET_KEY = "secret_key",
 }
+
+export enum StatusType {
+  SUCCESS = "success",
+  ERROR = "error",
+}

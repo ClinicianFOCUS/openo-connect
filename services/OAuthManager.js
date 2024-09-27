@@ -5,7 +5,7 @@ import axios from "axios";
 import CryptoJS from "crypto-js";
 import "react-native-url-polyfill/auto"; // Polyfill for URLSearchParams in React Native
 import { SecureKeyStore } from "./SecureKeyStore";
-import { CustomKeyType } from "@/types/types";
+import { CustomKeyType, StatusType } from "@/types/types";
 import Constants from "expo-constants";
 
 export default class OAuthManager {
@@ -67,18 +67,20 @@ export default class OAuthManager {
 
   parseError(error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error("Error getting request token:", error.message);
-      console.error("Status:", error.response.status);
-      console.error("Data:", error.response.data);
+      return {
+        status: StatusType.ERROR,
+        message: error.response.data.message || "Unknown server error",
+      };
     } else if (error.request) {
-      // The request was made but no response was received
-      console.error("Error getting request token: No response received");
-      console.error("Request:", error.request);
+      return {
+        status: StatusType.ERROR,
+        message: "No response received from server",
+      };
     } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error("Error getting request token:", error.message);
+      return {
+        status: StatusType.ERROR,
+        message: error.message || "Unknown error occurred",
+      };
     }
   }
 
@@ -103,8 +105,9 @@ export default class OAuthManager {
       );
 
       this.token = this.parseResponse(response.data);
+      return { status: StatusType.SUCCESS, message: "Token Received" };
     } catch (error) {
-      this.parseError(error);
+      return this.parseError(error);
     }
   }
 
@@ -140,10 +143,9 @@ export default class OAuthManager {
       );
       SecureKeyStore.saveKey(CustomKeyType.ACCESS_TOKEN, oauth_token);
       SecureKeyStore.saveKey(CustomKeyType.SECRET_KEY, oauth_token_secret);
-      return true;
+      return { status: StatusType.SUCCESS, message: "Access Token Received" };
     } catch (error) {
-      this.parseError(error);
-      return false;
+      return this.parseError(error);
     }
   }
 
