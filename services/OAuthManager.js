@@ -6,6 +6,7 @@ import CryptoJS from "crypto-js";
 import "react-native-url-polyfill/auto"; // Polyfill for URLSearchParams in React Native
 import { SecureKeyStore } from "./SecureKeyStore";
 import { CustomKeyType } from "@/types/types";
+import Constants from "expo-constants";
 
 export default class OAuthManager {
   constructor() {
@@ -14,7 +15,7 @@ export default class OAuthManager {
     let oscar_api_base_url = `${SecureKeyStore.getKey(
       CustomKeyType.OSCAR_BASE_URL
     )}/ws`;
-    let callback_url = "exp://192.168.2.83:8081/";
+    let callback_url = Constants.experienceUrl;
 
     if (!client_key || !client_secret) {
       throw new Error("Client key or secret not found");
@@ -90,6 +91,8 @@ export default class OAuthManager {
         oauth_callback: this.callback_url,
       },
     };
+
+    console.log(request_data);
 
     try {
       const headers = this.getHeaders(request_data);

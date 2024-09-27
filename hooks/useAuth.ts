@@ -1,11 +1,12 @@
 // useOAuth.js
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Alert, EmitterSubscription, Linking } from "react-native";
 import OAuthManager from "@/services/OAuthManager";
 import { SecureKeyStore } from "@/services/SecureKeyStore";
 import { CustomKeyType } from "@/types/types";
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
 import { openBrowserAsync } from "expo-web-browser";
+import Constants from "expo-constants";
 
 export const useOAuth = () => {
   const { manager, setManager, hasAccessToken, setHasAccessToken } =
@@ -45,8 +46,9 @@ export const useOAuth = () => {
 
   // Handle OAuth callback
   const handleUrl = (event: { url: string }, manager: OAuthManager) => {
+    const baseUrl = Constants.experienceUrl;
     const { url } = event;
-    if (url.startsWith("exp://192.168.2.83:8081")) {
+    if (url.startsWith(baseUrl)) {
       const params = new URLSearchParams(url.split("?")[1]);
       const oauth_verifier = params.get("oauth_verifier");
 
