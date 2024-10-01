@@ -6,7 +6,7 @@ import { useOAuth } from "@/hooks/useAuth";
 import { useNavigation } from "expo-router";
 
 const App = () => {
-  const { hasAccessToken, initiateOAuthFlow, callApi } = useOAuth();
+  const { hasAccessToken, callApi } = useOAuth();
   const navigation = useNavigation();
 
   return (

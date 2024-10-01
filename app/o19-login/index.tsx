@@ -11,7 +11,6 @@ const OscarLogin = () => {
   1;
   useEffect(() => {
     initiateOAuthFlow().then((url) => {
-      console.log("Authorization URL: ", url);
       setEndpoint(url);
     });
   }, []);
@@ -22,9 +21,6 @@ const OscarLogin = () => {
       var script = document.createElement('script');
       script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js';
       script.type = 'text/javascript';
-      script.onload = function() {
-        console.log("jQuery Injected Successfully");
-      };
       document.head.appendChild(script);
     })();
     true; // returning true to indicate script has been injected

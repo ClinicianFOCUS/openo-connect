@@ -102,8 +102,6 @@ export default class OAuthManager {
       },
     };
 
-    console.log(request_data);
-
     try {
       const headers = this.getHeaders(request_data);
       const response = await axios.post(
@@ -171,7 +169,6 @@ export default class OAuthManager {
         headers: { ...headers },
       });
 
-      console.log(response.data);
       return response.data;
     } catch (error) {
       this.parseError(error as AxiosError);
