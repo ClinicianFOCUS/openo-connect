@@ -1,7 +1,7 @@
 // src/OAuthManager.js
 
 import OAuth from "oauth-1.0a";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse, Method } from "axios";
 import CryptoJS from "crypto-js";
 import "react-native-url-polyfill/auto"; // Polyfill for URLSearchParams in React Native
 import { SecureKeyStore } from "./SecureKeyStore";
@@ -153,10 +153,10 @@ export default class OAuthManager {
   }
 
   // Make authorized API requests using the access token
-  async makeAuthorizedRequest(endpoint: string) {
+  async makeAuthorizedRequest(method: Method, endpoint: string) {
     const request_data = {
       url: `${this.oscar_api_base_url}/services/${endpoint}`,
-      method: "GET",
+      method: method,
     };
 
     try {
@@ -165,7 +165,9 @@ export default class OAuthManager {
         oauth_token_secret:
           SecureKeyStore.getKey(CustomKeyType.SECRET_KEY) || "",
       });
-      const response = await axios.get(request_data.url, {
+
+      const response = await axios.request({
+        ...request_data,
         headers: { ...headers },
       });
 

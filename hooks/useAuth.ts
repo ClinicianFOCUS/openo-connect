@@ -7,6 +7,7 @@ import { CustomKeyType, StatusType } from "@/types/types";
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
 import Constants from "expo-constants";
 import { useNavigation } from "expo-router";
+import { Method } from "axios";
 
 export const useOAuth = () => {
   const { manager, setManager, hasAccessToken, setHasAccessToken } =
@@ -80,9 +81,9 @@ export const useOAuth = () => {
     }
   };
 
-  const callApi = () => {
+  const callApi = async (method: Method, url: string) => {
     if (manager) {
-      manager.makeAuthorizedRequest("providerService/providers_json");
+      return await manager.makeAuthorizedRequest(method, url);
     }
   };
 

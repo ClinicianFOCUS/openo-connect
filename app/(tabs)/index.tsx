@@ -4,15 +4,16 @@ import React from "react";
 import { View, Button, StyleSheet } from "react-native";
 import { useOAuth } from "@/hooks/useAuth";
 import { useNavigation } from "expo-router";
+import AppointmentList from "@/components/AppointmentList";
 
 const App = () => {
-  const { hasAccessToken, callApi } = useOAuth();
+  const { hasAccessToken } = useOAuth();
   const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
       {hasAccessToken ? (
-        <Button title={"Call api"} onPress={callApi} />
+        <AppointmentList />
       ) : (
         <Button
           title="Login with OSCAR"
