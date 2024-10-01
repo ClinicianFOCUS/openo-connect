@@ -70,7 +70,7 @@ export const useOAuth = () => {
 
       if (res.status == StatusType.SUCCESS) {
         const authUrl = manager.getAuthorizationUrl();
-        openBrowserAsync(authUrl);
+        return authUrl;
       } else {
         Alert.alert("Error", res.message);
       }
