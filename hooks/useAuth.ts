@@ -5,12 +5,13 @@ import OAuthManager from "@/services/OAuthManager";
 import { SecureKeyStore } from "@/services/SecureKeyStore";
 import { CustomKeyType, StatusType } from "@/types/types";
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import { openBrowserAsync } from "expo-web-browser";
 import Constants from "expo-constants";
+import { useNavigation } from "expo-router";
 
 export const useOAuth = () => {
   const { manager, setManager, hasAccessToken, setHasAccessToken } =
     useAuthManagerStore();
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (
@@ -72,7 +73,9 @@ export const useOAuth = () => {
         const authUrl = manager.getAuthorizationUrl();
         return authUrl;
       } else {
-        Alert.alert("Error", res.message);
+        Alert.alert("Error", res.message, [
+          { text: "Go Back", onPress: () => navigation.goBack() },
+        ]);
       }
     }
   };
