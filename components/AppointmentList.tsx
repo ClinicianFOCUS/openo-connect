@@ -1,4 +1,5 @@
 import { useOAuth } from "@/hooks/useAuth";
+import { Link } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Text,
@@ -65,7 +66,9 @@ const AppointmentList = () => {
             data={appointments}
             renderItem={({ item }) => (
               <View style={styles.header}>
-                <Text style={styles.itemText}>{item.name}</Text>
+                <Link style={styles.itemText} href={"/appointment-detail"}>
+                  {item.name}
+                </Link>
                 <Text style={styles.itemText}>{item.startTime}</Text>
                 <Text style={styles.itemText}>{item.duration}</Text>
               </View>

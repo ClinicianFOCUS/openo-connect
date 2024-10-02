@@ -8,6 +8,10 @@ export default function RootLayout() {
         name="o19-login/index"
         options={{ headerTitle: "Authorize" }}
       />
+      <Stack.Screen
+        name="appointment-detail/index"
+        options={{ headerTitle: "Appointment Detail" }}
+      />
     </Stack>
   );
 }
