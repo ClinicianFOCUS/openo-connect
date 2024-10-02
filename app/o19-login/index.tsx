@@ -1,19 +1,37 @@
-import { useOAuth } from "@/hooks/useAuth";
+import { useAuthManagerStore } from "@/store/useAuthManagerStore";
+import { StatusType } from "@/types/types";
+import { useNavigation } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ActivityIndicator, StyleSheet, Alert } from "react-native";
 import { WebView } from "react-native-webview";
 
 const OscarLogin = () => {
-  const { initiateOAuthFlow } = useOAuth();
+  const { manager } = useAuthManagerStore();
   const [endpoint, setEndpoint] = useState<string>();
   const [loading, setLoading] = useState(true);
   const webViewRef = useRef(null);
-  1;
+  const navigation = useNavigation();
+
   useEffect(() => {
     initiateOAuthFlow().then((url) => {
       setEndpoint(url);
     });
   }, []);
+
+  const initiateOAuthFlow = async () => {
+    if (manager) {
+      const res = await manager.getRequestToken();
+
+      if (res.status == StatusType.SUCCESS) {
+        const authUrl = manager.getAuthorizationUrl();
+        return authUrl;
+      } else {
+        Alert.alert("Error", res.message, [
+          { text: "Go Back", onPress: () => navigation.goBack() },
+        ]);
+      }
+    }
+  };
 
   // jQuery injection script
   const injectJQuery = `
