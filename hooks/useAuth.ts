@@ -65,26 +65,11 @@ export const useOAuth = () => {
     }
   };
 
-  const initiateOAuthFlow = async () => {
-    if (manager) {
-      const res = await manager.getRequestToken();
-
-      if (res.status == StatusType.SUCCESS) {
-        const authUrl = manager.getAuthorizationUrl();
-        return authUrl;
-      } else {
-        Alert.alert("Error", res.message, [
-          { text: "Go Back", onPress: () => navigation.goBack() },
-        ]);
-      }
-    }
-  };
-
   const callApi = () => {
     if (manager) {
       manager.makeAuthorizedRequest("providerService/providers_json");
     }
   };
 
-  return { hasAccessToken, initiateOAuthFlow, callApi };
+  return { hasAccessToken, callApi };
 };
