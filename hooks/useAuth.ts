@@ -1,20 +1,19 @@
 // useOAuth.js
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Alert, EmitterSubscription, Linking } from "react-native";
 import OAuthManager from "@/services/OAuthManager";
 import { SecureKeyStore } from "@/services/SecureKeyStore";
 import { CustomKeyType, StatusType } from "@/types/types";
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
 import Constants from "expo-constants";
-import { useNavigation } from "expo-router";
 import { Method } from "axios";
 
 export const useOAuth = () => {
-  const { manager, setManager, hasAccessToken, setHasAccessToken } =
-    useAuthManagerStore();
-  const navigation = useNavigation();
+  const { manager, setManager, setHasAccessToken } = useAuthManagerStore();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     if (
       SecureKeyStore.getKey(CustomKeyType.ACCESS_TOKEN) &&
       SecureKeyStore.getKey(CustomKeyType.SECRET_KEY)
@@ -32,6 +31,8 @@ export const useOAuth = () => {
         handleUrl(event, manager)
       );
     }
+
+    setLoading(false);
 
     return () => {
       callbackListener?.remove();
@@ -72,5 +73,5 @@ export const useOAuth = () => {
     }
   };
 
-  return { hasAccessToken, callApi };
+  return { callApi, loading };
 };

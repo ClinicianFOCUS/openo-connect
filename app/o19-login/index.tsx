@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { View, ActivityIndicator, StyleSheet, Alert } from "react-native";
 import { WebView } from "react-native-webview";
 
-const OscarLogin = () => {
+const O19Login = () => {
   const { manager } = useAuthManagerStore();
   const [endpoint, setEndpoint] = useState<string>();
   const [loading, setLoading] = useState(true);
@@ -83,4 +83,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OscarLogin;
+export default O19Login;
