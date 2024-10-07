@@ -5,7 +5,7 @@ import axios, { AxiosError, AxiosResponse, Method } from "axios";
 import CryptoJS from "crypto-js";
 import "react-native-url-polyfill/auto"; // Polyfill for URLSearchParams in React Native
 import { SecureKeyStore } from "./SecureKeyStore";
-import { CustomKeyType, StatusType } from "@/types/types";
+import { CustomKeyType, CustomResponse, StatusType } from "@/types/types";
 import Constants from "expo-constants";
 
 type Token = { oauth_token: string; oauth_token_secret: string };
@@ -70,7 +70,7 @@ export default class OAuthManager {
     };
   }
 
-  parseError(error: AxiosError) {
+  parseError(error: AxiosError): CustomResponse {
     if (error.response) {
       return {
         status: StatusType.ERROR,
@@ -93,7 +93,7 @@ export default class OAuthManager {
   }
 
   // Step 1: Get the Request Token from O19
-  async getRequestToken() {
+  async getRequestToken(): Promise<CustomResponse> {
     const request_data = {
       url: `${this.o19_api_base_url}/oauth/initiate`,
       method: "POST",
@@ -126,7 +126,7 @@ export default class OAuthManager {
   }
 
   // Step 3: Exchange the request token for an access token
-  async getAccessToken(oauth_verifier: string) {
+  async getAccessToken(oauth_verifier: string): Promise<CustomResponse> {
     const request_data = {
       url: `${this.o19_api_base_url}/oauth/token`,
       method: "POST",
@@ -153,7 +153,11 @@ export default class OAuthManager {
   }
 
   // Make authorized API requests using the access token
-  async makeAuthorizedRequest(method: Method, endpoint: string, data?: any) {
+  async makeAuthorizedRequest(
+    method: Method,
+    endpoint: string,
+    data?: any
+  ): Promise<CustomResponse> {
     const request_data = {
       url: `${this.o19_api_base_url}/services/${endpoint}`,
       method: method,
@@ -172,7 +176,11 @@ export default class OAuthManager {
         headers: { ...headers },
       });
 
-      return response.data;
+      return {
+        status: StatusType.SUCCESS,
+        message: "Request Succeded",
+        data: response.data,
+      };
     } catch (error) {
       return this.parseError(error as AxiosError);
     }

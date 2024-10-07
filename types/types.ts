@@ -10,3 +10,9 @@ export enum StatusType {
   SUCCESS = "success",
   ERROR = "error",
 }
+
+export type CustomResponse = {
+  status: StatusType;
+  message: string;
+  data?: any;
+};

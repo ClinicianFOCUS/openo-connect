@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { Alert, EmitterSubscription, Linking } from "react-native";
 import OAuthManager from "@/services/OAuthManager";
 import { SecureKeyStore } from "@/services/SecureKeyStore";
-import { CustomKeyType, StatusType } from "@/types/types";
+import { CustomKeyType, CustomResponse, StatusType } from "@/types/types";
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
 import Constants from "expo-constants";
 import { Method } from "axios";
 
 export const useOAuth = () => {
-  const { manager, setManager, setHasAccessToken } = useAuthManagerStore();
+  const { manager, setManager, setHasAccessToken, setProvider } =
+    useAuthManagerStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export const useOAuth = () => {
       SecureKeyStore.getKey(CustomKeyType.SECRET_KEY)
     ) {
       setHasAccessToken(true);
+      getProviderNo();
     }
 
     if (!manager) {
@@ -67,9 +69,23 @@ export const useOAuth = () => {
     }
   };
 
-  const callApi = async (method: Method, url: string) => {
+  const callApi = async (
+    method: Method,
+    url: string
+  ): Promise<CustomResponse> => {
     if (manager) {
       return await manager.makeAuthorizedRequest(method, url);
+    }
+    return {
+      status: StatusType.ERROR,
+      message: "OAuthManager not initialized",
+    };
+  };
+
+  const getProviderNo = async () => {
+    const res = await callApi("GET", "providerService/provider/me");
+    if (res && res.status === StatusType.SUCCESS) {
+      setProvider(res.data);
     }
   };
 

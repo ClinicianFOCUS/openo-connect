@@ -1,4 +1,5 @@
 import { useOAuth } from "@/hooks/useAuth";
+import { StatusType } from "@/types/types";
 import { Link } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -35,9 +36,11 @@ const AppointmentList = () => {
 
   const fetchAppointments = () => {
     setLoading(true);
-    callApi("GET", "schedule/day/today").then((appointmentList) => {
-      setAppointments(appointmentList);
-      setLoading(false);
+    callApi("GET", "schedule/day/today").then((res) => {
+      if (res.status === StatusType.SUCCESS) {
+        setAppointments(res.data);
+        setLoading(false);
+      }
     });
   };
 
