@@ -1,11 +1,13 @@
+import { useAuthManagerStore } from "@/store/useAuthManagerStore";
 import { CameraView, CameraProps, useCameraPermissions } from "expo-camera";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function App() {
   const cameraRef = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraProps["facing"]>("back");
   const [permission, requestPermission] = useCameraPermissions();
+  const { manager } = useAuthManagerStore();
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -24,9 +26,33 @@ export default function App() {
     );
   }
 
-  function toggleCameraFacing() {
+  const toggleCameraFacing = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
-  }
+  };
+
+  const takePicture = async () => {
+    const photo = await cameraRef.current?.takePictureAsync({ base64: true });
+    alert(`photo captured with dimensions: ${photo!.width} x ${photo!.height}`);
+
+    const data = {
+      type: "photo",
+      fileName: "image_test",
+      description: "image test",
+      contentType: "image/jpeg",
+      numberOfPages: 1,
+      providerNo: "999998",
+      demographicNo: 3,
+      fileContents: photo?.base64,
+    };
+
+    manager
+      ?.makeAuthorizedRequest(
+        "POST",
+        "document/saveDocumentToDemographic",
+        data
+      )
+      .then((res) => {});
+  };
 
   return (
     <View style={styles.container}>
@@ -44,18 +70,7 @@ export default function App() {
       </View>
 
       <View>
-        <Button
-          title="Take Picture"
-          onPress={async () => {
-            const photo = await cameraRef.current?.takePictureAsync();
-            alert(
-              `photo captured with dimensions: ${photo!.width} x ${
-                photo!.height
-              }`
-            );
-            console.log(JSON.stringify(photo));
-          }}
-        />
+        <Button title="Take Picture" onPress={takePicture} />
       </View>
     </View>
   );

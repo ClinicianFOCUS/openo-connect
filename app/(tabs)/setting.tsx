@@ -13,6 +13,7 @@ import {
   StyleSheet,
   Alert,
   TouchableOpacity,
+  Keyboard,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -37,6 +38,7 @@ const SettingPage = () => {
     SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN);
     SecureKeyStore.deleteKey(CustomKeyType.SECRET_KEY);
     setHasAccessToken(false);
+    Keyboard.dismiss();
     Alert.alert("Settings saved successfully");
   };
 

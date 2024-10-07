@@ -153,7 +153,7 @@ export default class OAuthManager {
   }
 
   // Make authorized API requests using the access token
-  async makeAuthorizedRequest(method: Method, endpoint: string) {
+  async makeAuthorizedRequest(method: Method, endpoint: string, data: any) {
     const request_data = {
       url: `${this.oscar_api_base_url}/services/${endpoint}`,
       method: method,
@@ -168,6 +168,7 @@ export default class OAuthManager {
 
       const response = await axios.request({
         ...request_data,
+        data,
         headers: { ...headers },
       });
 
