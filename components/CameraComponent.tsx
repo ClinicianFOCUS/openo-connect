@@ -13,6 +13,8 @@ export default function App({
   const cameraRef = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraProps["facing"]>("back");
   const [permission, requestPermission] = useCameraPermissions();
+  const [uploading, setUploading] = useState(false);
+  const [uploaded, setUploaded] = useState(false);
   const { manager } = useAuthManagerStore();
 
   if (!permission) {
@@ -38,7 +40,7 @@ export default function App({
 
   const takePicture = async () => {
     const photo = await cameraRef.current?.takePictureAsync({ base64: true });
-    alert(`photo captured with dimensions: ${photo!.width} x ${photo!.height}`);
+    setUploading(true);
 
     const data = {
       type: "photo",
@@ -57,7 +59,10 @@ export default function App({
         "document/saveDocumentToDemographic",
         data
       )
-      .then((res) => {});
+      .then((res) => {
+        setUploading(false);
+        setUploaded(true);
+      });
   };
 
   return (
@@ -78,6 +83,24 @@ export default function App({
       <View>
         <Button title="Take Picture" onPress={takePicture} />
       </View>
+
+      {uploading && (
+        <View style={styles.uploadingContainer}>
+          <Text style={styles.uploadingText}>Uploading...</Text>
+        </View>
+      )}
+
+      {uploaded && (
+        <View style={styles.uploadedContainer}>
+          <Text style={styles.uploadedText}>Image Uploaded Successfully!</Text>
+          <TouchableOpacity
+            style={styles.okButton}
+            onPress={() => setUploaded(false)}
+          >
+            <Text style={styles.okButtonText}>OK</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
@@ -105,5 +128,43 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "white",
+  },
+  uploadingContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
+  },
+  uploadingText: {
+    fontSize: 24,
+    color: "white",
+  },
+  uploadedContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
+  },
+  uploadedText: {
+    fontSize: 24,
+    color: "white",
+  },
+  okButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "blue",
+    borderRadius: 5,
+  },
+  okButtonText: {
+    color: "white",
+    fontSize: 18,
   },
 });

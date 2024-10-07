@@ -174,7 +174,7 @@ export default class OAuthManager {
 
       return response.data;
     } catch (error) {
-      this.parseError(error as AxiosError);
+      return this.parseError(error as AxiosError);
     }
   }
 }
