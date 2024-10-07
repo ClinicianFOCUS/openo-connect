@@ -22,7 +22,7 @@ const App = () => {
         <AppointmentList />
       ) : (
         <Button
-          title="Login with OSCAR"
+          title="Login with O19"
           onPress={() => navigation.navigate("o19-login/index")}
         />
       )}

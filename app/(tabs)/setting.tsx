@@ -25,15 +25,15 @@ const SettingPage = () => {
   const [clientSecret, setClientSecret] = useState(
     SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET) || ""
   );
-  const [oscarBaseUrl, setOscarBaseUrl] = useState(
-    SecureKeyStore.getKey(CustomKeyType.OSCAR_BASE_URL) || ""
+  const [o19BaseUrl, setO19BaseUrl] = useState(
+    SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL) || ""
   );
   const CALLBACK_URL = Constants.experienceUrl;
 
   const handleSave = () => {
     SecureKeyStore.saveKey(CustomKeyType.CLIENT_KEY, clientKey);
     SecureKeyStore.saveKey(CustomKeyType.CLIENT_SECRET, clientSecret);
-    SecureKeyStore.saveKey(CustomKeyType.OSCAR_BASE_URL, oscarBaseUrl);
+    SecureKeyStore.saveKey(CustomKeyType.O19_BASE_URL, o19BaseUrl);
     setManager(new OAuthManager());
     SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN);
     SecureKeyStore.deleteKey(CustomKeyType.SECRET_KEY);
@@ -63,10 +63,10 @@ const SettingPage = () => {
         placeholder="Enter Private Key"
         style={styles.input}
       />
-      <Text style={styles.inputLabel}>Oscar Base URL:</Text>
+      <Text style={styles.inputLabel}>O19 Base URL:</Text>
       <TextInput
-        value={oscarBaseUrl}
-        onChangeText={setOscarBaseUrl}
+        value={o19BaseUrl}
+        onChangeText={setO19BaseUrl}
         placeholder="Enter Base Url"
         style={styles.input}
       />

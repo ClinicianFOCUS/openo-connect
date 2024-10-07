@@ -14,12 +14,12 @@ export default class OAuthManager {
   private oauth: OAuth;
   private token: Token | undefined;
   private callback_url: string;
-  private oscar_api_base_url: string;
+  private o19_api_base_url: string;
   constructor() {
     let client_key = SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY);
     let client_secret = SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET);
-    let oscar_api_base_url = `${SecureKeyStore.getKey(
-      CustomKeyType.OSCAR_BASE_URL
+    let o19_api_base_url = `${SecureKeyStore.getKey(
+      CustomKeyType.O19_BASE_URL
     )}/ws`;
     let callback_url = Constants.experienceUrl;
 
@@ -31,8 +31,8 @@ export default class OAuthManager {
       throw new Error("Callback URL not found");
     }
 
-    if (!oscar_api_base_url) {
-      throw new Error("OSCAR API base URL not found");
+    if (!o19_api_base_url) {
+      throw new Error("O19 API base URL not found");
     }
 
     this.oauth = new OAuth({
@@ -45,7 +45,7 @@ export default class OAuthManager {
       },
     }); // This will store your request and access tokens
     this.callback_url = callback_url;
-    this.oscar_api_base_url = oscar_api_base_url;
+    this.o19_api_base_url = o19_api_base_url;
   }
 
   // Helper function to get the headers for the request
@@ -61,7 +61,7 @@ export default class OAuthManager {
     );
   }
 
-  // Helper function to parse the response from OSCAR
+  // Helper function to parse the response from O19
   parseResponse(response: AxiosResponse): Token {
     const params = new URLSearchParams(response.data);
     return {
@@ -92,10 +92,10 @@ export default class OAuthManager {
     }
   }
 
-  // Step 1: Get the Request Token from OSCAR
+  // Step 1: Get the Request Token from O19
   async getRequestToken() {
     const request_data = {
-      url: `${this.oscar_api_base_url}/oauth/initiate`,
+      url: `${this.o19_api_base_url}/oauth/initiate`,
       method: "POST",
       data: {
         oauth_callback: this.callback_url,
@@ -117,18 +117,18 @@ export default class OAuthManager {
     }
   }
 
-  // Step 2: Get the Authorization URL to redirect the user to OSCAR for authorization
+  // Step 2: Get the Authorization URL to redirect the user to O19 for authorization
   getAuthorizationUrl() {
     if (!this.token?.oauth_token) {
       throw new Error("Request token not found");
     }
-    return `${this.oscar_api_base_url}/oauth/authorize?oauth_token=${this.token?.oauth_token}`;
+    return `${this.o19_api_base_url}/oauth/authorize?oauth_token=${this.token?.oauth_token}`;
   }
 
   // Step 3: Exchange the request token for an access token
   async getAccessToken(oauth_verifier: string) {
     const request_data = {
-      url: `${this.oscar_api_base_url}/oauth/token`,
+      url: `${this.o19_api_base_url}/oauth/token`,
       method: "POST",
       data: {
         oauth_token: this.token?.oauth_token,
@@ -155,7 +155,7 @@ export default class OAuthManager {
   // Make authorized API requests using the access token
   async makeAuthorizedRequest(method: Method, endpoint: string, data: any) {
     const request_data = {
-      url: `${this.oscar_api_base_url}/services/${endpoint}`,
+      url: `${this.o19_api_base_url}/services/${endpoint}`,
       method: method,
     };
 
