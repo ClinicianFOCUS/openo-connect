@@ -41,6 +41,8 @@ export default function App({
     const photo = await cameraRef.current?.takePictureAsync({ base64: true });
     setUploading(true);
 
+    //base64 image data shouldn't be in an array (o19 docs are wrong)
+    //it breaks the API
     const data = {
       type: "photo",
       fileName: "image_test",
