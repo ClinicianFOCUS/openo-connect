@@ -66,7 +66,10 @@ const AppointmentList = () => {
             data={appointments}
             renderItem={({ item }) => (
               <View style={styles.header}>
-                <Link style={styles.itemText} href={"/appointment-detail"}>
+                <Link
+                  style={styles.itemText}
+                  href={`/appointment-detail/${item.demographicNo}`}
+                >
                   {item.name}
                 </Link>
                 <Text style={styles.itemText}>{item.startTime}</Text>

@@ -3,7 +3,13 @@ import { CameraView, CameraProps, useCameraPermissions } from "expo-camera";
 import { useState, useRef } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function App() {
+export default function App({
+  demographicNo,
+  providerNo,
+}: {
+  demographicNo: number;
+  providerNo: string;
+}) {
   const cameraRef = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraProps["facing"]>("back");
   const [permission, requestPermission] = useCameraPermissions();
@@ -40,8 +46,8 @@ export default function App() {
       description: "image test",
       contentType: "image/jpeg",
       numberOfPages: 1,
-      providerNo: "999998",
-      demographicNo: 3,
+      providerNo: providerNo,
+      demographicNo: demographicNo,
       fileContents: photo?.base64,
     };
 

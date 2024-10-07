@@ -153,7 +153,7 @@ export default class OAuthManager {
   }
 
   // Make authorized API requests using the access token
-  async makeAuthorizedRequest(method: Method, endpoint: string, data: any) {
+  async makeAuthorizedRequest(method: Method, endpoint: string, data?: any) {
     const request_data = {
       url: `${this.o19_api_base_url}/services/${endpoint}`,
       method: method,
