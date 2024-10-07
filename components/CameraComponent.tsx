@@ -5,7 +5,6 @@ import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function App({
   demographicNo,
-  providerNo,
 }: {
   demographicNo: number;
   providerNo: string;
@@ -15,7 +14,7 @@ export default function App({
   const [permission, requestPermission] = useCameraPermissions();
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
-  const { manager } = useAuthManagerStore();
+  const { manager, provider } = useAuthManagerStore();
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -48,7 +47,7 @@ export default function App({
       description: "image test",
       contentType: "image/jpeg",
       numberOfPages: 1,
-      providerNo: providerNo,
+      providerNo: provider.id,
       demographicNo: demographicNo,
       fileContents: photo?.base64,
     };
