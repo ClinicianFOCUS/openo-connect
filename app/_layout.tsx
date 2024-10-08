@@ -9,7 +9,7 @@ export default function RootLayout() {
         options={{ headerTitle: "Authorize" }}
       />
       <Stack.Screen
-        name="appointment-detail/[id]"
+        name="patient-detail/[id]"
         options={{ headerTitle: "Appointment Detail" }}
       />
     </Stack>

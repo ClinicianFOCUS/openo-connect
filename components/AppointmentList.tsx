@@ -71,7 +71,7 @@ const AppointmentList = () => {
               <View style={styles.header}>
                 <Link
                   style={styles.itemText}
-                  href={`/appointment-detail/${item.demographicNo}`}
+                  href={`/patient-detail/${item.demographicNo}`}
                 >
                   {item.name}
                 </Link>

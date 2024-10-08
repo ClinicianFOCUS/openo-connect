@@ -1,11 +1,22 @@
 import CameraComponent from "@/components/CameraComponent";
+import { useAuthManagerStore } from "@/store/useAuthManagerStore";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Text, View } from "react-native";
 
 const AppointmentDetail = () => {
   const [showCamera, setShowCamera] = useState(false);
+  const { manager } = useAuthManagerStore();
   const { id } = useLocalSearchParams();
+
+  useEffect(() => {
+    if (!manager) return;
+    manager
+      ?.makeAuthorizedRequest("GET", `demographics/basic/${id}`)
+      .then((res) => {
+        console.log(res);
+      });
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>
