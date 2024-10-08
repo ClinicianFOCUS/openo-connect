@@ -1,22 +1,18 @@
-import CameraComponent from "@/components/CameraComponent";
+/**
+ * Component to display patient details.
+ */
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
 import { StatusType } from "@/types/types";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Text,
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  FlatList,
-} from "react-native";
+import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
 
+/**
+ * AppointmentDetail component.
+ * @returns {JSX.Element} The rendered component.
+ */
 const AppointmentDetail = () => {
-  const [showCamera, setShowCamera] = useState(false);
   const [patientDetail, setPatientDetail] = useState(null);
-  const [appointmentHistory, setAppointmentHistory] = useState([]);
-  const [appointmentStatuses, setAppointmentStatuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const { manager } = useAuthManagerStore();
   const { id } = useLocalSearchParams();
@@ -34,6 +30,10 @@ const AppointmentDetail = () => {
       });
   }, [id, manager]);
 
+  /**
+   * Renders the patient detail.
+   * @returns {JSX.Element|null} The rendered patient detail.
+   */
   const ShowPatientDetail = () => {
     if (!patientDetail) return null;
     return (

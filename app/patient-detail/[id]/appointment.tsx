@@ -1,3 +1,6 @@
+/**
+ * Component to display appointment details for a patient.
+ */
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
 import { StatusType } from "@/types/types";
 import { useLocalSearchParams } from "expo-router";
@@ -10,6 +13,10 @@ import {
   ActivityIndicator,
 } from "react-native";
 
+/**
+ * Appointment component.
+ * @returns {JSX.Element} The rendered component.
+ */
 const Appointment = () => {
   const [appointmentHistory, setAppointmentHistory] = useState([]);
   const [appointmentStatuses, setAppointmentStatuses] = useState([]);
@@ -22,6 +29,9 @@ const Appointment = () => {
     fetchData();
   }, []);
 
+  /**
+   * Fetches appointment history and statuses.
+   */
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -54,6 +64,10 @@ const Appointment = () => {
     }
   };
 
+  /**
+   * Renders the appointment history.
+   * @returns {JSX.Element} The rendered appointment history.
+   */
   const ShowAppointmentHistory = () => {
     if (!appointmentHistory || appointmentHistory.length === 0)
       return (
@@ -65,6 +79,7 @@ const Appointment = () => {
     const pastAppointments = [];
     const upcomingAppointments = [];
 
+    // Split appointments into past and upcoming
     appointmentHistory.forEach((appointment) => {
       const appointmentDateTime = new Date(
         `${appointment.appointmentDate} ${appointment.startTime}`
@@ -126,12 +141,18 @@ const Appointment = () => {
     );
   };
 
+  /**
+   * Gets the status description from the status code.
+   * @param {string} status - The status code.
+   * @returns {string} The status description.
+   */
   const getStatusFromCode = (status: string): string => {
     const statusFound = appointmentStatuses.find(
       (item) => item.status === status
     );
     return statusFound ? statusFound.description : status;
   };
+
   return (
     <View style={styles.detailContainer}>
       {loading ? (
