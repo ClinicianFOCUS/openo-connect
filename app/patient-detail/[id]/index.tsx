@@ -2,7 +2,7 @@
  * Component to display patient details.
  */
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import { StatusType } from "@/types/types";
+import { PatientDetail, StatusType } from "@/types/types";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
@@ -12,7 +12,7 @@ import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
  * @returns {JSX.Element} The rendered component.
  */
 const AppointmentDetail = () => {
-  const [patientDetail, setPatientDetail] = useState(null);
+  const [patientDetail, setPatientDetail] = useState<PatientDetail>();
   const [loading, setLoading] = useState(true);
   const { manager } = useAuthManagerStore();
   const { id } = useLocalSearchParams();

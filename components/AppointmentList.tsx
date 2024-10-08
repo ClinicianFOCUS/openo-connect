@@ -1,33 +1,23 @@
 import { useOAuth } from "@/hooks/useAuth";
-import { StatusType } from "@/types/types";
+import { Appointment, StatusType } from "@/types/types";
+import { splitAppointments } from "@/utils/utils";
 import { Link } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
   StyleSheet,
-  FlatList,
   Button,
   ActivityIndicator,
-  RefreshControl,
 } from "react-native";
-
-type Appointment = {
-  demographicNo: number;
-  appointmentNo: number;
-  name: string;
-  status: string;
-  startTime: string;
-  reason: string;
-  duration: string;
-  type: string;
-  notes: string;
-  date: string;
-};
+import AppointmentTable from "./AppointmentTable";
 
 const AppointmentList = () => {
   const { callApi } = useOAuth();
-  const [appointments, setAppointments] = useState<Appointment[]>();
+  const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState<
+    Appointment[]
+  >([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,7 +28,11 @@ const AppointmentList = () => {
     setLoading(true);
     callApi("GET", "schedule/day/today").then((res) => {
       if (res.status === StatusType.SUCCESS) {
-        setAppointments(res.data);
+        const { pastAppointments, upcomingAppointments } = splitAppointments(
+          res.data
+        );
+        setPastAppointments(pastAppointments);
+        setUpcomingAppointments(upcomingAppointments);
         setLoading(false);
       }
     });
@@ -59,35 +53,30 @@ const AppointmentList = () => {
           <ActivityIndicator size={70} color="#0000ff" />
         </View>
       ) : (
-        <View>
-          <View style={styles.header}>
-            <Text style={styles.titleText}>Name</Text>
-            <Text style={styles.titleText}>Time</Text>
-            <Text style={styles.titleText}>Duration</Text>
-          </View>
-          <FlatList
-            data={appointments}
-            renderItem={({ item }) => (
-              <View style={styles.header}>
-                <Link
-                  style={styles.itemText}
-                  href={`/patient-detail/${item.demographicNo}`}
-                >
+        <AppointmentTable
+          columns={[
+            {
+              header: "Name",
+              accessor: "name",
+              render: (item) => (
+                <Link href={`/patient-detail/${item.demographicNo}`}>
                   {item.name}
                 </Link>
-                <Text style={styles.itemText}>{item.startTime}</Text>
-                <Text style={styles.itemText}>{item.duration}</Text>
-              </View>
-            )}
-            keyExtractor={(item) => item.appointmentNo.toString()}
-            refreshControl={
-              <RefreshControl
-                refreshing={loading}
-                onRefresh={() => fetchAppointments()}
-              />
-            }
-          />
-        </View>
+              ),
+            },
+            {
+              header: "Time",
+              accessor: "startTime",
+            },
+            {
+              header: "Duration",
+              accessor: "duration",
+            },
+          ]}
+          upcoming={upcomingAppointments}
+          past={pastAppointments}
+          keyExtractor={(item) => item.appointmentNo}
+        />
       )}
     </View>
   );

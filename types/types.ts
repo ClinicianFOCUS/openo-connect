@@ -16,3 +16,54 @@ export type CustomResponse = {
   message: string;
   data?: any;
 };
+
+export type Appointment = {
+  demographicNo: number;
+  appointmentNo: number;
+  name: string;
+  status: string;
+  startTime: string;
+  reason: string;
+  duration: string;
+  type: string;
+  notes: string;
+  date: string;
+  appointmentDate: string;
+};
+
+export type AppointmentStatus = {
+  id: number;
+  status: string;
+  description: string;
+  color: string;
+  icon: string;
+  active: number;
+  editable: number;
+  shortLetters: string;
+  shortLetterColour: string;
+};
+
+type Address = {
+  address: string;
+  city: string;
+  province: string;
+  postal: string;
+};
+
+type Age = {
+  years: number;
+};
+
+export type PatientDetail = {
+  firstName: string;
+  lastName: string;
+  sex: string;
+  dobYear: number;
+  dobMonth: number;
+  dobDay: number;
+  age: Age;
+  address: Address;
+  phone: string;
+  email: string;
+  hin: string;
+};

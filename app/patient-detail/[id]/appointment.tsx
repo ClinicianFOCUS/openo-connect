@@ -1,8 +1,10 @@
 /**
  * Component to display appointment details for a patient.
  */
+import AppointmentTable from "@/components/AppointmentTable";
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import { StatusType } from "@/types/types";
+import { Appointment, AppointmentStatus, StatusType } from "@/types/types";
+import { splitAppointments } from "@/utils/utils";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -18,10 +20,14 @@ import {
  * Appointment component.
  * @returns {JSX.Element} The rendered component.
  */
-const Appointment = () => {
-  const [appointmentStatuses, setAppointmentStatuses] = useState([]);
-  const [pastAppointments, setPastAppointments] = useState([]);
-  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+const PatientAppointment = () => {
+  const [appointmentStatuses, setAppointmentStatuses] = useState<
+    AppointmentStatus[]
+  >([]);
+  const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState<
+    Appointment[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const { manager } = useAuthManagerStore();
   const { id } = useLocalSearchParams();
@@ -51,7 +57,11 @@ const Appointment = () => {
         appointmentHistoryRes &&
         appointmentHistoryRes.status === StatusType.SUCCESS
       ) {
-        splitAppointments(appointmentHistoryRes.data.appointments);
+        const { pastAppointments, upcomingAppointments } = splitAppointments(
+          appointmentHistoryRes.data.appointments
+        );
+        setPastAppointments(pastAppointments);
+        setUpcomingAppointments(upcomingAppointments);
       }
 
       if (
@@ -64,46 +74,6 @@ const Appointment = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
-
-  /**
-   * Splits the appointment history into past and upcoming appointments.
-   *
-   * @param {Array} appointmentHistory - The list of appointments to be split.
-   * @returns {void}
-   *
-   * The function categorizes appointments based on their date and time.
-   * Past appointments are those with a date and time earlier than the current date and time.
-   * Upcoming appointments are those with a date and time later than the current date and time.
-   *
-   * The upcoming appointments are sorted in ascending order by date and time.
-   *
-   * The function updates the state with the categorized appointments using `setPastAppointments` and `setUpcomingAppointments`.
-   */
-  const splitAppointments = (appointmentHistory) => {
-    const pastAppointments = [];
-    const upcomingAppointments = [];
-
-    appointmentHistory.forEach((appointment) => {
-      const appointmentDateTime = new Date(
-        `${appointment.appointmentDate} ${appointment.startTime}`
-      );
-      if (appointmentDateTime < new Date()) {
-        pastAppointments.push(appointment);
-      } else {
-        upcomingAppointments.push(appointment);
-      }
-    });
-
-    // Sort upcoming appointments by date and time in descending order
-    upcomingAppointments.sort((a, b) => {
-      const dateA = new Date(`${a.appointmentDate} ${a.startTime}`);
-      const dateB = new Date(`${b.appointmentDate} ${b.startTime}`);
-      return dateA - dateB;
-    });
-
-    setPastAppointments(pastAppointments);
-    setUpcomingAppointments(upcomingAppointments);
   };
 
   /**
@@ -133,67 +103,26 @@ const Appointment = () => {
           <ActivityIndicator size={70} color="#0000ff" />
         </View>
       ) : (
-        <View>
-          {!upcomingAppointments || upcomingAppointments.length == 0 ? (
-            <View style={{ marginBottom: 16 }}>
-              <Text style={styles.title}>Upcoming Appointment</Text>
-              <Text style={{ fontSize: 16 }}>
-                No upcoming appointments found.
-              </Text>
-            </View>
-          ) : (
-            <View>
-              <Text style={styles.title}>Upcoming Appointment</Text>
-              <View style={styles.header}>
-                <Text style={styles.titleText}>Date</Text>
-                <Text style={styles.titleText}>Time</Text>
-                <Text style={styles.titleText}>Status</Text>
-              </View>
-              <FlatList
-                style={{ marginBottom: 16 }}
-                data={upcomingAppointments}
-                renderItem={({ item }) => (
-                  <View style={styles.header}>
-                    <Text style={styles.itemText}>{item.appointmentDate}</Text>
-                    <Text style={styles.itemText}>{item.startTime}</Text>
-                    <Text style={styles.itemText}>
-                      {getStatusFromCode(item.status)}
-                    </Text>
-                  </View>
-                )}
-                keyExtractor={(item) => item.id.toString()}
-              />
-            </View>
-          )}
-          {!pastAppointments || pastAppointments.length == 0 ? (
-            <View style={{ marginBottom: 16 }}>
-              <Text style={styles.title}>Past Appointment</Text>
-              <Text style={{ fontSize: 16 }}>No past appointments found.</Text>
-            </View>
-          ) : (
-            <View>
-              <Text style={styles.title}>Past Appointment</Text>
-              <View style={styles.header}>
-                <Text style={styles.titleText}>Date</Text>
-                <Text style={styles.titleText}>Time</Text>
-                <Text style={styles.titleText}>Status</Text>
-              </View>
-              <FlatList
-                data={pastAppointments}
-                renderItem={({ item }) => (
-                  <View style={styles.header}>
-                    <Text style={styles.itemText}>{item.appointmentDate}</Text>
-                    <Text style={styles.itemText}>{item.startTime}</Text>
-                    <Text style={styles.itemText}>
-                      {getStatusFromCode(item.status)}
-                    </Text>
-                  </View>
-                )}
-                keyExtractor={(item) => item.id.toString()}
-              />
-            </View>
-          )}
-        </View>
+        <AppointmentTable
+          columns={[
+            {
+              header: "Date",
+              accessor: "appointmentDate",
+            },
+            {
+              header: "Time",
+              accessor: "startTime",
+            },
+            {
+              header: "Status",
+              accessor: "status",
+              render: (item) => getStatusFromCode(item.status),
+            },
+          ]}
+          upcoming={upcomingAppointments}
+          past={pastAppointments}
+          keyExtractor={(item) => item.id}
+        />
       )}
     </View>
   );
@@ -235,4 +164,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Appointment;
+export default PatientAppointment;
