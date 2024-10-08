@@ -36,9 +36,18 @@ const AppointmentDetail = () => {
           {patientDetail ? (
             <>
               <Text>Patient Detail</Text>
-              <Text>Name: {patientDetail.firstName} {patientDetail.lastName}</Text>
-              <Text>Date of Birth: {patientDetail.dobYear}-{patientDetail.dobMonth}-{patientDetail.dobDay}</Text>
-              <Text>Address: {patientDetail.address.address}, {patientDetail.address.city}, {patientDetail.address.province} {patientDetail.address.postal}</Text>
+              <Text>
+                Name: {patientDetail.firstName} {patientDetail.lastName}
+              </Text>
+              <Text>
+                Date of Birth: {patientDetail.dobYear}-{patientDetail.dobMonth}-
+                {patientDetail.dobDay}
+              </Text>
+              <Text>
+                Address: {patientDetail.address.address},{" "}
+                {patientDetail.address.city}, {patientDetail.address.province}{" "}
+                {patientDetail.address.postal}
+              </Text>
               <Text>Phone: {patientDetail.phone}</Text>
               <Text>Email: {patientDetail.email}</Text>
             </>
