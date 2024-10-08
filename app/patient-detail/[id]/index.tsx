@@ -62,10 +62,13 @@ const AppointmentDetail = () => {
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.label}>Address:</Text>
-          <Text style={styles.value}>
-            {patientDetail.address.address}, {patientDetail.address.city},{" "}
-            {patientDetail.address.province} {patientDetail.address.postal}
-          </Text>
+          <View style={{ display: "flex", height: 50 }}>
+            <Text style={styles.value}>{patientDetail.address.address}</Text>
+            <Text style={styles.value}>
+              {patientDetail.address.city}, {patientDetail.address.province}{" "}
+              {patientDetail.address.postal}
+            </Text>
+          </View>
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.label}>Phone:</Text>
@@ -97,13 +100,9 @@ const AppointmentDetail = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   detailContainer: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
@@ -117,9 +116,11 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: "bold",
     marginRight: 8,
+    fontSize: 16,
   },
   value: {
     flex: 1,
+    fontSize: 16,
   },
   buttonContainer: {
     marginTop: 16,

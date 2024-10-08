@@ -11,6 +11,7 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
+  Button,
 } from "react-native";
 
 /**
@@ -18,8 +19,9 @@ import {
  * @returns {JSX.Element} The rendered component.
  */
 const Appointment = () => {
-  const [appointmentHistory, setAppointmentHistory] = useState([]);
   const [appointmentStatuses, setAppointmentStatuses] = useState([]);
+  const [pastAppointments, setPastAppointments] = useState([]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const { manager } = useAuthManagerStore();
   const { id } = useLocalSearchParams();
@@ -49,7 +51,7 @@ const Appointment = () => {
         appointmentHistoryRes &&
         appointmentHistoryRes.status === StatusType.SUCCESS
       ) {
-        setAppointmentHistory(appointmentHistoryRes.data.appointments);
+        splitAppointments(appointmentHistoryRes.data.appointments);
       }
 
       if (
@@ -65,21 +67,23 @@ const Appointment = () => {
   };
 
   /**
-   * Renders the appointment history.
-   * @returns {JSX.Element} The rendered appointment history.
+   * Splits the appointment history into past and upcoming appointments.
+   *
+   * @param {Array} appointmentHistory - The list of appointments to be split.
+   * @returns {void}
+   *
+   * The function categorizes appointments based on their date and time.
+   * Past appointments are those with a date and time earlier than the current date and time.
+   * Upcoming appointments are those with a date and time later than the current date and time.
+   *
+   * The upcoming appointments are sorted in ascending order by date and time.
+   *
+   * The function updates the state with the categorized appointments using `setPastAppointments` and `setUpcomingAppointments`.
    */
-  const ShowAppointmentHistory = () => {
-    if (!appointmentHistory || appointmentHistory.length === 0)
-      return (
-        <View>
-          <Text style={styles.title}>Appointment History</Text>
-          <Text style={{ fontSize: 16 }}>No appointment history found </Text>
-        </View>
-      );
+  const splitAppointments = (appointmentHistory) => {
     const pastAppointments = [];
     const upcomingAppointments = [];
 
-    // Split appointments into past and upcoming
     appointmentHistory.forEach((appointment) => {
       const appointmentDateTime = new Date(
         `${appointment.appointmentDate} ${appointment.startTime}`
@@ -97,48 +101,9 @@ const Appointment = () => {
       const dateB = new Date(`${b.appointmentDate} ${b.startTime}`);
       return dateA - dateB;
     });
-    return (
-      <View>
-        <Text style={styles.title}>Upcoming Appointment</Text>
-        <View style={styles.header}>
-          <Text style={styles.titleText}>Date</Text>
-          <Text style={styles.titleText}>Time</Text>
-          <Text style={styles.titleText}>Status</Text>
-        </View>
-        <FlatList
-          data={upcomingAppointments}
-          renderItem={({ item }) => (
-            <View style={styles.header}>
-              <Text style={styles.itemText}>{item.appointmentDate}</Text>
-              <Text style={styles.itemText}>{item.startTime}</Text>
-              <Text style={styles.itemText}>
-                {getStatusFromCode(item.status)}
-              </Text>
-            </View>
-          )}
-          keyExtractor={(item) => item.id.toString()}
-        />
-        <Text style={styles.title}>Past Appointment</Text>
-        <View style={styles.header}>
-          <Text style={styles.titleText}>Date</Text>
-          <Text style={styles.titleText}>Time</Text>
-          <Text style={styles.titleText}>Status</Text>
-        </View>
-        <FlatList
-          data={pastAppointments}
-          renderItem={({ item }) => (
-            <View style={styles.header}>
-              <Text style={styles.itemText}>{item.appointmentDate}</Text>
-              <Text style={styles.itemText}>{item.startTime}</Text>
-              <Text style={styles.itemText}>
-                {getStatusFromCode(item.status)}
-              </Text>
-            </View>
-          )}
-          keyExtractor={(item) => item.id.toString()}
-        />
-      </View>
-    );
+
+    setPastAppointments(pastAppointments);
+    setUpcomingAppointments(upcomingAppointments);
   };
 
   /**
@@ -155,12 +120,80 @@ const Appointment = () => {
 
   return (
     <View style={styles.detailContainer}>
+      <View style={styles.header}>
+        <Text style={{ fontSize: 25, fontWeight: "bold", marginBottom: 20 }}>
+          Appointment History
+        </Text>
+        <View>
+          <Button title="Refresh" onPress={fetchData} />
+        </View>
+      </View>
       {loading ? (
         <View style={styles.loading}>
           <ActivityIndicator size={70} color="#0000ff" />
         </View>
       ) : (
-        ShowAppointmentHistory()
+        <View>
+          {!upcomingAppointments || upcomingAppointments.length == 0 ? (
+            <View style={{ marginBottom: 16 }}>
+              <Text style={styles.title}>Upcoming Appointment</Text>
+              <Text style={{ fontSize: 16 }}>
+                No upcoming appointments found.
+              </Text>
+            </View>
+          ) : (
+            <View>
+              <Text style={styles.title}>Upcoming Appointment</Text>
+              <View style={styles.header}>
+                <Text style={styles.titleText}>Date</Text>
+                <Text style={styles.titleText}>Time</Text>
+                <Text style={styles.titleText}>Status</Text>
+              </View>
+              <FlatList
+                style={{ marginBottom: 16 }}
+                data={upcomingAppointments}
+                renderItem={({ item }) => (
+                  <View style={styles.header}>
+                    <Text style={styles.itemText}>{item.appointmentDate}</Text>
+                    <Text style={styles.itemText}>{item.startTime}</Text>
+                    <Text style={styles.itemText}>
+                      {getStatusFromCode(item.status)}
+                    </Text>
+                  </View>
+                )}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            </View>
+          )}
+          {!pastAppointments || pastAppointments.length == 0 ? (
+            <View style={{ marginBottom: 16 }}>
+              <Text style={styles.title}>Past Appointment</Text>
+              <Text style={{ fontSize: 16 }}>No past appointments found.</Text>
+            </View>
+          ) : (
+            <View>
+              <Text style={styles.title}>Past Appointment</Text>
+              <View style={styles.header}>
+                <Text style={styles.titleText}>Date</Text>
+                <Text style={styles.titleText}>Time</Text>
+                <Text style={styles.titleText}>Status</Text>
+              </View>
+              <FlatList
+                data={pastAppointments}
+                renderItem={({ item }) => (
+                  <View style={styles.header}>
+                    <Text style={styles.itemText}>{item.appointmentDate}</Text>
+                    <Text style={styles.itemText}>{item.startTime}</Text>
+                    <Text style={styles.itemText}>
+                      {getStatusFromCode(item.status)}
+                    </Text>
+                  </View>
+                )}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            </View>
+          )}
+        </View>
       )}
     </View>
   );
@@ -192,7 +225,6 @@ const styles = StyleSheet.create({
   detailContainer: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#fff",
   },
   loading: {
     position: "absolute",
