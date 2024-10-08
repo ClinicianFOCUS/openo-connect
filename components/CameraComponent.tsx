@@ -1,4 +1,5 @@
 import { useAuthManagerStore } from "@/store/useAuthManagerStore";
+import { StatusType } from "@/types/types";
 import { CameraView, CameraProps, useCameraPermissions } from "expo-camera";
 import { useState, useRef } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -14,6 +15,7 @@ export default function App({
   const [permission, requestPermission] = useCameraPermissions();
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState("");
   const { manager, provider } = useAuthManagerStore();
 
   if (!permission) {
@@ -45,8 +47,8 @@ export default function App({
     //it breaks the API
     const data = {
       type: "photo",
-      fileName: "image_test",
-      description: "image test",
+      fileName: "open-o-connect-image",
+      description: new Date().toLocaleString(),
       contentType: "image/jpeg",
       numberOfPages: 1,
       providerNo: provider.id,
@@ -63,6 +65,11 @@ export default function App({
       .then((res) => {
         setUploading(false);
         setUploaded(true);
+        if (res.status == StatusType.SUCCESS) {
+          setUploadMessage("Image Uploaded Successfully!");
+        } else {
+          setUploadMessage("Image Upload Failed!");
+        }
       });
   };
 
@@ -93,7 +100,7 @@ export default function App({
 
       {uploaded && (
         <View style={styles.uploadedContainer}>
-          <Text style={styles.uploadedText}>Image Uploaded Successfully!</Text>
+          <Text style={styles.uploadedText}>{uploadMessage}</Text>
           <TouchableOpacity
             style={styles.okButton}
             onPress={() => setUploaded(false)}
