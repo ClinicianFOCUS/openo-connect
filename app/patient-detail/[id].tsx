@@ -69,7 +69,6 @@ const AppointmentDetail = () => {
       <View style={styles.cameraContainer}>
         <CameraComponent
           demographicNo={parseInt(Array.isArray(id) ? id[0] : id)}
-          providerNo="999998"
         />
         <View style={styles.buttonContainer}>
           <Button title="Close Camera" onPress={() => setShowCamera(false)} />
@@ -135,16 +134,55 @@ const AppointmentDetail = () => {
           <Text style={{ fontSize: 16 }}>No appointment history found </Text>
         </View>
       );
+    const pastAppointments = [];
+    const upcomingAppointments = [];
+
+    appointmentHistory.forEach((appointment) => {
+      const appointmentDateTime = new Date(
+        `${appointment.appointmentDate} ${appointment.startTime}`
+      );
+      if (appointmentDateTime < new Date()) {
+        pastAppointments.push(appointment);
+      } else {
+        upcomingAppointments.push(appointment);
+      }
+    });
+
+    // Sort upcoming appointments by date and time in descending order
+    upcomingAppointments.sort((a, b) => {
+      const dateA = new Date(`${a.appointmentDate} ${a.startTime}`);
+      const dateB = new Date(`${b.appointmentDate} ${b.startTime}`);
+      return dateA - dateB;
+    });
     return (
       <View>
-        <Text style={styles.title}>Appointment History</Text>
+        <Text style={styles.title}>Upcoming Appointment</Text>
         <View style={styles.header}>
           <Text style={styles.titleText}>Date</Text>
           <Text style={styles.titleText}>Time</Text>
           <Text style={styles.titleText}>Status</Text>
         </View>
         <FlatList
-          data={appointmentHistory}
+          data={upcomingAppointments}
+          renderItem={({ item }) => (
+            <View style={styles.header}>
+              <Text style={styles.itemText}>{item.appointmentDate}</Text>
+              <Text style={styles.itemText}>{item.startTime}</Text>
+              <Text style={styles.itemText}>
+                {getStatusFromCode(item.status)}
+              </Text>
+            </View>
+          )}
+          keyExtractor={(item) => item.id.toString()}
+        />
+        <Text style={styles.title}>Past Appointment</Text>
+        <View style={styles.header}>
+          <Text style={styles.titleText}>Date</Text>
+          <Text style={styles.titleText}>Time</Text>
+          <Text style={styles.titleText}>Status</Text>
+        </View>
+        <FlatList
+          data={pastAppointments}
           renderItem={({ item }) => (
             <View style={styles.header}>
               <Text style={styles.itemText}>{item.appointmentDate}</Text>
