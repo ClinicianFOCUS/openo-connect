@@ -18,7 +18,9 @@ const AppointmentDetail = () => {
   const { id } = useLocalSearchParams();
 
   useEffect(() => {
-    if (!manager) return;
+    if (!manager) {
+      return;
+    }
     setLoading(true);
     manager
       ?.makeAuthorizedRequest("GET", `demographics/basic/${id}`)
@@ -35,7 +37,9 @@ const AppointmentDetail = () => {
    * @returns {JSX.Element|null} The rendered patient detail.
    */
   const ShowPatientDetail = () => {
-    if (!patientDetail) return null;
+    if (!patientDetail) {
+      return null;
+    }
     return (
       <View>
         <Text style={styles.title}>Patient Detail</Text>

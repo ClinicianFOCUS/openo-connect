@@ -33,7 +33,9 @@ const PatientAppointment = () => {
   const { id } = useLocalSearchParams();
 
   useEffect(() => {
-    if (!manager) return;
+    if (!manager) {
+      return;
+    }
     fetchData();
   }, []);
 
