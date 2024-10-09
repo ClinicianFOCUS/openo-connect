@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { Alert, EmitterSubscription, Linking } from "react-native";
-import OAuthManager from "@/services/OAuthManager";
-import { SecureKeyStore } from "@/services/SecureKeyStore";
-import { CustomKeyType, CustomResponse, StatusType } from "@/types/types";
-import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import Constants from "expo-constants";
-import { Method } from "axios";
+import { useEffect, useState } from 'react';
+import { Alert, EmitterSubscription, Linking } from 'react-native';
+import OAuthManager from '@/services/OAuthManager';
+import { SecureKeyStore } from '@/services/SecureKeyStore';
+import { CustomKeyType, CustomResponse, StatusType } from '@/types/types';
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import Constants from 'expo-constants';
+import { Method } from 'axios';
 
 /**
  * Custom hook to manage OAuth authentication.
@@ -48,7 +48,7 @@ export const useOAuth = () => {
     // Add an event listener for OAuth callback URLs to get the access token
     let callbackListener: EmitterSubscription;
     if (manager) {
-      callbackListener = Linking.addEventListener("url", (event) =>
+      callbackListener = Linking.addEventListener('url', (event) =>
         handleUrl(event, manager)
       );
     }
@@ -73,7 +73,7 @@ export const useOAuth = () => {
     try {
       setManager(new OAuthManager());
     } catch (error) {
-      console.error("Error creating OAuthManager", error);
+      console.error('Error creating OAuthManager', error);
     }
   };
 
@@ -92,17 +92,17 @@ export const useOAuth = () => {
     const baseUrl = Constants.experienceUrl;
     const { url } = event;
     if (url.startsWith(baseUrl)) {
-      const params = new URLSearchParams(url.split("?")[1]);
-      const oauth_verifier = params.get("oauth_verifier") || "";
+      const params = new URLSearchParams(url.split('?')[1]);
+      const oauth_verifier = params.get('oauth_verifier') || '';
 
       // Step 5: Exchange the request token for an access token
       const res = await manager.getAccessToken(oauth_verifier);
 
       if (res.status == StatusType.SUCCESS) {
         setHasAccessToken(true);
-        Alert.alert("Access Granted");
+        Alert.alert('Access Granted');
       } else {
-        Alert.alert("Error", "Failed to get access token");
+        Alert.alert('Error', 'Failed to get access token');
       }
     }
   };
@@ -124,7 +124,7 @@ export const useOAuth = () => {
     }
     return {
       status: StatusType.ERROR,
-      message: "OAuthManager not initialized",
+      message: 'OAuthManager not initialized',
     };
   };
 
@@ -142,7 +142,7 @@ export const useOAuth = () => {
    * @returns {Promise<void>}
    */
   const getProviderNo = async () => {
-    const res = await callApi("GET", "providerService/provider/me");
+    const res = await callApi('GET', 'providerService/provider/me');
     if (res && res.status === StatusType.SUCCESS) {
       setProvider(res.data);
     }

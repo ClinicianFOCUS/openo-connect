@@ -1,12 +1,12 @@
 /**
  * Component to display the camera for a patient.
  */
-import CameraComponent from "@/components/CameraComponent";
-import { useImageUpload } from "@/hooks/useImageUpload";
-import { useCameraPermissions } from "expo-camera";
-import { useLocalSearchParams } from "expo-router";
-import React from "react";
-import { Button, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import CameraComponent from '@/components/CameraComponent';
+import { useImageUpload } from '@/hooks/useImageUpload';
+import { useCameraPermissions } from 'expo-camera';
+import { useLocalSearchParams } from 'expo-router';
+import React from 'react';
+import { Button, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 /**
  * Camera component that handles camera permissions and image uploading.
@@ -43,7 +43,7 @@ const Camera = () => {
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={{ textAlign: "center" }}>
+        <Text style={{ textAlign: 'center' }}>
           We need your permission to show the camera
         </Text>
         <Button onPress={requestPermission} title="grant permission" />
@@ -78,44 +78,44 @@ const Camera = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   uploadingContainer: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "black",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
   },
   uploadingText: {
     fontSize: 24,
-    color: "white",
+    color: 'white',
   },
   uploadedContainer: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "black",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
   },
   uploadedText: {
     fontSize: 24,
-    color: "white",
+    color: 'white',
   },
   okButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: "blue",
+    backgroundColor: 'blue',
     borderRadius: 5,
   },
   okButtonText: {
-    color: "white",
+    color: 'white',
     fontSize: 18,
   },
 });

@@ -1,6 +1,6 @@
-import { CameraView, CameraProps } from "expo-camera";
-import { useState, useRef } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { CameraView, CameraProps } from 'expo-camera';
+import { useState, useRef } from 'react';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface CameraComponentProps {
   onCapture: (base64: string) => void;
@@ -21,10 +21,10 @@ interface CameraComponentProps {
  */
 export default function CameraComponent({ onCapture }: CameraComponentProps) {
   const cameraRef = useRef<CameraView>(null);
-  const [facing, setFacing] = useState<CameraProps["facing"]>("back");
+  const [facing, setFacing] = useState<CameraProps['facing']>('back');
 
   const toggleCameraFacing = () => {
-    setFacing((current) => (current === "back" ? "front" : "back"));
+    setFacing((current) => (current === 'back' ? 'front' : 'back'));
   };
 
   const takePicture = async () => {
@@ -54,18 +54,18 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    flexDirection: "row",
-    backgroundColor: "transparent",
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
     margin: 64,
   },
   button: {
     flex: 1,
-    alignSelf: "flex-end",
-    alignItems: "center",
+    alignSelf: 'flex-end',
+    alignItems: 'center',
   },
   text: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
+    fontWeight: 'bold',
+    color: 'white',
   },
 });

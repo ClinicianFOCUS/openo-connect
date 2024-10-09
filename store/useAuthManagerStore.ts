@@ -1,5 +1,5 @@
-import OAuthManager from "@/services/OAuthManager";
-import { create } from "zustand";
+import OAuthManager from '@/services/OAuthManager';
+import { create } from 'zustand';
 
 type AuthManagerStore = {
   manager: OAuthManager | null;

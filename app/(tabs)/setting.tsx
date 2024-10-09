@@ -1,10 +1,10 @@
-import OAuthManager from "@/services/OAuthManager";
-import { SecureKeyStore } from "@/services/SecureKeyStore";
-import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import { CustomKeyType } from "@/types/types";
-import * as Clipboard from "expo-clipboard";
-import Constants from "expo-constants";
-import React, { useState } from "react";
+import OAuthManager from '@/services/OAuthManager';
+import { SecureKeyStore } from '@/services/SecureKeyStore';
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import { CustomKeyType } from '@/types/types';
+import * as Clipboard from 'expo-clipboard';
+import Constants from 'expo-constants';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -14,19 +14,19 @@ import {
   Alert,
   TouchableOpacity,
   Keyboard,
-} from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+} from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const SettingPage = () => {
   const { setManager, setHasAccessToken } = useAuthManagerStore();
   const [clientKey, setClientKey] = useState(
-    SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY) || ""
+    SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY) || ''
   );
   const [clientSecret, setClientSecret] = useState(
-    SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET) || ""
+    SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET) || ''
   );
   const [o19BaseUrl, setO19BaseUrl] = useState(
-    SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL) || ""
+    SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL) || ''
   );
   const CALLBACK_URL = Constants.experienceUrl;
 
@@ -50,7 +50,7 @@ const SettingPage = () => {
     SecureKeyStore.deleteKey(CustomKeyType.SECRET_KEY);
     setHasAccessToken(false);
     Keyboard.dismiss();
-    Alert.alert("Settings saved successfully");
+    Alert.alert('Settings saved successfully');
   };
 
   /**
@@ -62,7 +62,7 @@ const SettingPage = () => {
    */
   const handleCopyCallbackUrl = async () => {
     await Clipboard.setStringAsync(CALLBACK_URL);
-    Alert.alert("Callback URL copied to clipboard");
+    Alert.alert('Callback URL copied to clipboard');
   };
 
   return (
@@ -105,24 +105,24 @@ const SettingPage = () => {
 const styles = StyleSheet.create({
   input: {
     height: 40,
-    borderColor: "gray",
+    borderColor: 'gray',
     borderWidth: 1,
     paddingHorizontal: 10,
     fontSize: 16,
   },
   inputLabel: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   container: {
     padding: 20,
-    display: "flex",
+    display: 'flex',
     gap: 10,
   },
   callbackUrlContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: "gray",
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: 'gray',
     borderWidth: 1,
     paddingHorizontal: 10,
     paddingVertical: 5,

@@ -1,6 +1,6 @@
-import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import { StatusType } from "@/types/types";
-import { useState } from "react";
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import { StatusType } from '@/types/types';
+import { useState } from 'react';
 
 /**
  * Custom hook for uploading an image to a demographic profile.
@@ -17,7 +17,7 @@ export const useImageUpload = (demographicNo: number) => {
   const { manager, provider } = useAuthManagerStore();
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
-  const [uploadMessage, setUploadMessage] = useState("");
+  const [uploadMessage, setUploadMessage] = useState('');
 
   /**
    * Uploads an image to the server.
@@ -36,10 +36,10 @@ export const useImageUpload = (demographicNo: number) => {
     //base64 image data shouldn't be in an array (o19 docs are wrong)
     //it breaks the API
     const data = {
-      type: "photo",
-      fileName: "open-o-connect-image",
+      type: 'photo',
+      fileName: 'open-o-connect-image',
       description: new Date().toLocaleString(),
-      contentType: "image/jpeg",
+      contentType: 'image/jpeg',
       numberOfPages: 1,
       providerNo: provider.id,
       demographicNo: demographicNo,
@@ -48,17 +48,17 @@ export const useImageUpload = (demographicNo: number) => {
 
     manager
       ?.makeAuthorizedRequest(
-        "POST",
-        "document/saveDocumentToDemographic",
+        'POST',
+        'document/saveDocumentToDemographic',
         data
       )
       .then((res) => {
         setUploading(false);
         setUploaded(true);
         if (res.status == StatusType.SUCCESS) {
-          setUploadMessage("Image Uploaded Successfully!");
+          setUploadMessage('Image Uploaded Successfully!');
         } else {
-          setUploadMessage("Image Upload Failed!");
+          setUploadMessage('Image Upload Failed!');
         }
       });
   };

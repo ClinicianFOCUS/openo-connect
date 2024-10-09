@@ -1,5 +1,5 @@
-import * as SecureStore from "expo-secure-store";
-import { CustomKeyType } from "../types/types";
+import * as SecureStore from 'expo-secure-store';
+import { CustomKeyType } from '../types/types';
 
 /**
  * SecureKeyStore class provides methods to save, retrieve, and delete keys securely.

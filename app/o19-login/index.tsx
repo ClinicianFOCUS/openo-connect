@@ -1,9 +1,9 @@
-import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import { StatusType } from "@/types/types";
-import { useNavigation } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
-import { View, ActivityIndicator, StyleSheet, Alert } from "react-native";
-import { WebView } from "react-native-webview";
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import { StatusType } from '@/types/types';
+import { useNavigation } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, ActivityIndicator, StyleSheet, Alert } from 'react-native';
+import { WebView } from 'react-native-webview';
 
 /**
  * O19Login component handles the OAuth login flow using a WebView.
@@ -40,8 +40,8 @@ const O19Login = () => {
         const authUrl = manager.getAuthorizationUrl();
         return authUrl;
       } else {
-        Alert.alert("Error", res.message, [
-          { text: "Go Back", onPress: () => navigation.goBack() },
+        Alert.alert('Error', res.message, [
+          { text: 'Go Back', onPress: () => navigation.goBack() },
         ]);
       }
     }
@@ -86,9 +86,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   loading: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }],
     zIndex: 1,
   },

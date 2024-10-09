@@ -1,11 +1,11 @@
 // App.js
 
-import React from "react";
-import { View, Button, StyleSheet, ActivityIndicator } from "react-native";
-import { useOAuth } from "@/hooks/useAuth";
-import { useNavigation } from "expo-router";
-import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import AppointmentList from "@/components/AppointmentList";
+import React from 'react';
+import { View, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import { useOAuth } from '@/hooks/useAuth';
+import { useNavigation } from 'expo-router';
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import AppointmentList from '@/components/AppointmentList';
 
 const App = () => {
   const { loading } = useOAuth();
@@ -23,7 +23,7 @@ const App = () => {
       ) : (
         <Button
           title="Login with O19"
-          onPress={() => navigation.navigate("o19-login/index")}
+          onPress={() => navigation.navigate('o19-login/index')}
         />
       )}
     </View>
@@ -33,13 +33,13 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   loading: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }],
     zIndex: 1,
   },

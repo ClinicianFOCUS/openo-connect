@@ -1,4 +1,4 @@
-import { Appointment } from "@/types/types";
+import { Appointment } from '@/types/types';
 
 /**
  * Splits the appointment history into past and upcoming appointments.

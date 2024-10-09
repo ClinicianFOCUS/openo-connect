@@ -1,12 +1,12 @@
 /**
  * Component to display appointment details for a patient.
  */
-import AppointmentTable from "@/components/AppointmentTable";
-import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import { Appointment, AppointmentStatus, StatusType } from "@/types/types";
-import { splitAppointments } from "@/utils/utils";
-import { useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import AppointmentTable from '@/components/AppointmentTable';
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import { Appointment, AppointmentStatus, StatusType } from '@/types/types';
+import { splitAppointments } from '@/utils/utils';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   FlatList,
@@ -14,7 +14,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Button,
-} from "react-native";
+} from 'react-native';
 
 /**
  * Appointment component.
@@ -49,10 +49,10 @@ const PatientAppointment = () => {
       const [appointmentHistoryRes, appointmentStatusesRes] = await Promise.all(
         [
           manager?.makeAuthorizedRequest(
-            "POST",
+            'POST',
             `schedule/${id}/appointmentHistory`
           ),
-          manager?.makeAuthorizedRequest("GET", `schedule/statuses`),
+          manager?.makeAuthorizedRequest('GET', `schedule/statuses`),
         ]
       );
 
@@ -75,7 +75,7 @@ const PatientAppointment = () => {
       }
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -94,7 +94,7 @@ const PatientAppointment = () => {
   return (
     <View style={styles.detailContainer}>
       <View style={styles.header}>
-        <Text style={{ fontSize: 25, fontWeight: "bold", marginBottom: 20 }}>
+        <Text style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 20 }}>
           Appointment History
         </Text>
         <View>
@@ -109,16 +109,16 @@ const PatientAppointment = () => {
         <AppointmentTable
           columns={[
             {
-              header: "Date",
-              accessor: "appointmentDate",
+              header: 'Date',
+              accessor: 'appointmentDate',
             },
             {
-              header: "Time",
-              accessor: "startTime",
+              header: 'Time',
+              accessor: 'startTime',
             },
             {
-              header: "Status",
-              accessor: "status",
+              header: 'Status',
+              accessor: 'status',
               render: (item) => getStatusFromCode(item.status),
             },
           ]}
@@ -133,23 +133,23 @@ const PatientAppointment = () => {
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 16,
   },
   titleText: {
-    textAlign: "center",
+    textAlign: 'center',
     flex: 1,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     borderWidth: 1,
   },
   itemText: {
-    textAlign: "center",
+    textAlign: 'center',
     flex: 1,
     fontSize: 16,
     borderWidth: 1,
@@ -159,9 +159,9 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   loading: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }],
     zIndex: 1,
   },

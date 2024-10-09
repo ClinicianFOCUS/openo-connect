@@ -1,11 +1,11 @@
 /**
  * Component to display patient details.
  */
-import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import { PatientDetail, StatusType } from "@/types/types";
-import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
-import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import { PatientDetail, StatusType } from '@/types/types';
+import { useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 
 /**
  * AppointmentDetail component.
@@ -23,7 +23,7 @@ const AppointmentDetail = () => {
     }
     setLoading(true);
     manager
-      ?.makeAuthorizedRequest("GET", `demographics/basic/${id}`)
+      ?.makeAuthorizedRequest('GET', `demographics/basic/${id}`)
       .then((res) => {
         if (res.status === StatusType.SUCCESS) {
           setPatientDetail(res.data);
@@ -66,10 +66,10 @@ const AppointmentDetail = () => {
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.label}>Address:</Text>
-          <View style={{ display: "flex", height: 50 }}>
+          <View style={{ display: 'flex', height: 50 }}>
             <Text style={styles.value}>{patientDetail.address.address}</Text>
             <Text style={styles.value}>
-              {patientDetail.address.city}, {patientDetail.address.province}{" "}
+              {patientDetail.address.city}, {patientDetail.address.province}{' '}
               {patientDetail.address.postal}
             </Text>
           </View>
@@ -110,15 +110,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 16,
   },
   infoContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 8,
   },
   label: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginRight: 8,
     fontSize: 16,
   },
@@ -130,9 +130,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   loading: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }],
     zIndex: 1,
   },

@@ -1,12 +1,12 @@
 // src/OAuthManager.js
 
-import OAuth from "oauth-1.0a";
-import axios, { AxiosError, AxiosResponse, Method } from "axios";
-import CryptoJS from "crypto-js";
-import "react-native-url-polyfill/auto"; // Polyfill for URLSearchParams in React Native
-import { SecureKeyStore } from "./SecureKeyStore";
-import { CustomKeyType, CustomResponse, StatusType } from "@/types/types";
-import Constants from "expo-constants";
+import OAuth from 'oauth-1.0a';
+import axios, { AxiosError, AxiosResponse, Method } from 'axios';
+import CryptoJS from 'crypto-js';
+import 'react-native-url-polyfill/auto'; // Polyfill for URLSearchParams in React Native
+import { SecureKeyStore } from './SecureKeyStore';
+import { CustomKeyType, CustomResponse, StatusType } from '@/types/types';
+import Constants from 'expo-constants';
 
 type Token = { oauth_token: string; oauth_token_secret: string };
 
@@ -32,20 +32,20 @@ export default class OAuthManager {
     let callback_url = Constants.experienceUrl;
 
     if (!client_key || !client_secret) {
-      throw new Error("Client key or secret not found");
+      throw new Error('Client key or secret not found');
     }
 
     if (!callback_url) {
-      throw new Error("Callback URL not found");
+      throw new Error('Callback URL not found');
     }
 
     if (!o19_api_base_url) {
-      throw new Error("O19 API base URL not found");
+      throw new Error('O19 API base URL not found');
     }
 
     this.oauth = new OAuth({
       consumer: { key: client_key, secret: client_secret },
-      signature_method: "HMAC-SHA1",
+      signature_method: 'HMAC-SHA1',
       hash_function(base_string, key) {
         return CryptoJS.HmacSHA1(base_string, key).toString(
           CryptoJS.enc.Base64
@@ -82,8 +82,8 @@ export default class OAuthManager {
   parseResponse(response: AxiosResponse): Token {
     const params = new URLSearchParams(response.data);
     return {
-      oauth_token: params.get("oauth_token") || "",
-      oauth_token_secret: params.get("oauth_token_secret") || "",
+      oauth_token: params.get('oauth_token') || '',
+      oauth_token_secret: params.get('oauth_token_secret') || '',
     };
   }
 
@@ -104,12 +104,12 @@ export default class OAuthManager {
     } else if (error.request) {
       return {
         status: StatusType.ERROR,
-        message: "No response received from server",
+        message: 'No response received from server',
       };
     } else {
       return {
         status: StatusType.ERROR,
-        message: error.message || "Unknown error occurred",
+        message: error.message || 'Unknown error occurred',
       };
     }
   }
@@ -121,7 +121,7 @@ export default class OAuthManager {
   async getRequestToken(): Promise<CustomResponse> {
     const request_data = {
       url: `${this.o19_api_base_url}/oauth/initiate`,
-      method: "POST",
+      method: 'POST',
       data: {
         oauth_callback: this.callback_url,
       },
@@ -136,7 +136,7 @@ export default class OAuthManager {
       );
 
       this.token = this.parseResponse(response);
-      return { status: StatusType.SUCCESS, message: "Token Received" };
+      return { status: StatusType.SUCCESS, message: 'Token Received' };
     } catch (error) {
       return this.parseError(error as AxiosError);
     }
@@ -149,7 +149,7 @@ export default class OAuthManager {
    */
   getAuthorizationUrl(): string {
     if (!this.token?.oauth_token) {
-      throw new Error("Request token not found");
+      throw new Error('Request token not found');
     }
     return `${this.o19_api_base_url}/oauth/authorize?oauth_token=${this.token?.oauth_token}`;
   }
@@ -162,7 +162,7 @@ export default class OAuthManager {
   async getAccessToken(oauth_verifier: string): Promise<CustomResponse> {
     const request_data = {
       url: `${this.o19_api_base_url}/oauth/token`,
-      method: "POST",
+      method: 'POST',
       data: {
         oauth_token: this.token?.oauth_token,
         oauth_verifier,
@@ -179,7 +179,7 @@ export default class OAuthManager {
       const { oauth_token, oauth_token_secret } = this.parseResponse(response);
       SecureKeyStore.saveKey(CustomKeyType.ACCESS_TOKEN, oauth_token);
       SecureKeyStore.saveKey(CustomKeyType.SECRET_KEY, oauth_token_secret);
-      return { status: StatusType.SUCCESS, message: "Access Token Received" };
+      return { status: StatusType.SUCCESS, message: 'Access Token Received' };
     } catch (error) {
       return this.parseError(error as AxiosError);
     }
@@ -204,9 +204,9 @@ export default class OAuthManager {
 
     try {
       const headers = this.getHeaders(request_data, {
-        oauth_token: SecureKeyStore.getKey(CustomKeyType.ACCESS_TOKEN) || "",
+        oauth_token: SecureKeyStore.getKey(CustomKeyType.ACCESS_TOKEN) || '',
         oauth_token_secret:
-          SecureKeyStore.getKey(CustomKeyType.SECRET_KEY) || "",
+          SecureKeyStore.getKey(CustomKeyType.SECRET_KEY) || '',
       });
 
       const response = await axios.request({
@@ -217,7 +217,7 @@ export default class OAuthManager {
 
       return {
         status: StatusType.SUCCESS,
-        message: "Request Succeeded",
+        message: 'Request Succeeded',
         data: response.data,
       };
     } catch (error) {

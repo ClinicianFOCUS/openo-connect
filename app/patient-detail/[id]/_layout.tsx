@@ -1,6 +1,6 @@
-import { Tabs, useLocalSearchParams } from "expo-router";
-import React from "react";
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import { Tabs, useLocalSearchParams } from 'expo-router';
+import React from 'react';
+import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 
 /**
  * TabLayout component renders a tab navigation layout with three tabs: Detail, Camera, and Appointments.
@@ -21,10 +21,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Detail",
+          title: 'Detail',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "reader" : "reader-outline"}
+              name={focused ? 'reader' : 'reader-outline'}
               color={color}
             />
           ),
@@ -35,10 +35,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="camera"
         options={{
-          title: "Camera",
+          title: 'Camera',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "camera" : "camera-outline"}
+              name={focused ? 'camera' : 'camera-outline'}
               color={color}
             />
           ),
@@ -48,10 +48,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="appointment"
         options={{
-          title: "Appointments",
+          title: 'Appointments',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "calendar" : "calendar-outline"}
+              name={focused ? 'calendar' : 'calendar-outline'}
               color={color}
             />
           ),

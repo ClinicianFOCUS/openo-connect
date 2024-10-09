@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import React from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 
 /**
  * Column configuration type.
@@ -118,33 +118,33 @@ const AppointmentTable: React.FC<TableProps> = ({
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     padding: 10,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: '#f0f0f0',
     borderBottomWidth: 1,
-    borderBottomColor: "black",
+    borderBottomColor: 'black',
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "black",
+    borderBottomColor: 'black',
   },
   titleText: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 15,
-    textAlign: "center",
+    textAlign: 'center',
   },
   itemText: {
     flex: 1,
     fontSize: 15,
-    textAlign: "center",
+    textAlign: 'center',
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 16,
   },
 });

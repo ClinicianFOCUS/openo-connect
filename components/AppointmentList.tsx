@@ -1,16 +1,16 @@
-import { useOAuth } from "@/hooks/useAuth";
-import { Appointment, StatusType } from "@/types/types";
-import { splitAppointments } from "@/utils/utils";
-import { Link } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useOAuth } from '@/hooks/useAuth';
+import { Appointment, StatusType } from '@/types/types';
+import { splitAppointments } from '@/utils/utils';
+import { Link } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
   StyleSheet,
   Button,
   ActivityIndicator,
-} from "react-native";
-import AppointmentTable from "./AppointmentTable";
+} from 'react-native';
+import AppointmentTable from './AppointmentTable';
 
 /**
  * AppointmentList component displays a list of today's appointments.
@@ -35,7 +35,7 @@ const AppointmentList = () => {
    */
   const fetchAppointments = () => {
     setLoading(true);
-    callApi("GET", "schedule/day/today").then((res) => {
+    callApi('GET', 'schedule/day/today').then((res) => {
       if (res.status === StatusType.SUCCESS) {
         const { pastAppointments, upcomingAppointments } = splitAppointments(
           res.data
@@ -50,7 +50,7 @@ const AppointmentList = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={{ fontSize: 25, fontWeight: "bold", marginBottom: 20 }}>
+        <Text style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 20 }}>
           Today's Appointments
         </Text>
         <View>
@@ -65,8 +65,8 @@ const AppointmentList = () => {
         <AppointmentTable
           columns={[
             {
-              header: "Name",
-              accessor: "name",
+              header: 'Name',
+              accessor: 'name',
               render: (item) => (
                 <Link href={`/patient-detail/${item.demographicNo}`}>
                   {item.name}
@@ -74,12 +74,12 @@ const AppointmentList = () => {
               ),
             },
             {
-              header: "Time",
-              accessor: "startTime",
+              header: 'Time',
+              accessor: 'startTime',
             },
             {
-              header: "Duration",
-              accessor: "duration",
+              header: 'Duration',
+              accessor: 'duration',
             },
           ]}
           upcoming={upcomingAppointments}
@@ -94,29 +94,29 @@ const AppointmentList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
+    width: '100%',
     padding: 20,
   },
   loading: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }],
     zIndex: 1,
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   titleText: {
-    textAlign: "center",
+    textAlign: 'center',
     flex: 1,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     borderWidth: 1,
   },
   itemText: {
-    textAlign: "center",
+    textAlign: 'center',
     flex: 1,
     fontSize: 16,
     borderWidth: 1,

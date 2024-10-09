@@ -1,6 +1,6 @@
-import { Tabs } from "expo-router";
-import React from "react";
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import { Tabs } from 'expo-router';
+import React from 'react';
+import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 
 /**
  * TabLayout component renders the tab navigation for the application.
@@ -19,10 +19,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home", // Title for the Home tab
+          title: 'Home', // Title for the Home tab
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "home" : "home-outline"} // Icon changes based on focus state
+              name={focused ? 'home' : 'home-outline'} // Icon changes based on focus state
               color={color} // Color of the icon
             />
           ),
@@ -32,10 +32,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="setting"
         options={{
-          title: "Setting", // Title for the Setting tab
+          title: 'Setting', // Title for the Setting tab
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "settings" : "settings-outline"} // Icon changes based on focus state
+              name={focused ? 'settings' : 'settings-outline'} // Icon changes based on focus state
               color={color} // Color of the icon
             />
           ),
