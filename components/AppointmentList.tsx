@@ -12,6 +12,11 @@ import {
 } from "react-native";
 import AppointmentTable from "./AppointmentTable";
 
+/**
+ * AppointmentList component displays a list of today's appointments.
+ * It fetches the appointments from an API and splits them into past and upcoming appointments.
+ * It also provides a refresh button to re-fetch the appointments.
+ */
 const AppointmentList = () => {
   const { callApi } = useOAuth();
   const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
@@ -20,10 +25,14 @@ const AppointmentList = () => {
   >([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch appointments when the component mounts
   useEffect(() => {
     fetchAppointments();
   }, []);
 
+  /**
+   * Fetches today's appointments from the API and updates the state.
+   */
   const fetchAppointments = () => {
     setLoading(true);
     callApi("GET", "schedule/day/today").then((res) => {
@@ -42,7 +51,7 @@ const AppointmentList = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={{ fontSize: 25, fontWeight: "bold", marginBottom: 20 }}>
-          Appointments
+          Today's Appointments
         </Text>
         <View>
           <Button title="Refresh" onPress={fetchAppointments} />

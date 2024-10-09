@@ -1,4 +1,4 @@
-import { CameraView, CameraProps, useCameraPermissions } from "expo-camera";
+import { CameraView, CameraProps } from "expo-camera";
 import { useState, useRef } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -6,6 +6,19 @@ interface CameraComponentProps {
   onCapture: (base64: string) => void;
 }
 
+/**
+ * CameraComponent is a React functional component that provides a camera interface.
+ * It allows users to toggle between the front and back camera and take pictures.
+ *
+ * @component
+ * @param {Object} props - The properties object.
+ * @param {function} props.onCapture - Callback function to handle the captured photo's base64 string.
+ *
+ * @returns {JSX.Element} The rendered camera component.
+ *
+ * @example
+ * <CameraComponent onCapture={(base64) => console.log(base64)} />
+ */
 export default function CameraComponent({ onCapture }: CameraComponentProps) {
   const cameraRef = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraProps["facing"]>("back");

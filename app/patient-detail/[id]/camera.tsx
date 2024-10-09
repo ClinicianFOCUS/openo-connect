@@ -9,8 +9,24 @@ import React from "react";
 import { Button, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 /**
- * Camera component.
- * @returns {JSX.Element} The rendered component.
+ * Camera component that handles camera permissions and image uploading.
+ *
+ * This component requests camera permissions from the user and displays the camera
+ * if permissions are granted. It also handles the image upload process and displays
+ * appropriate messages during and after the upload.
+ *
+ * @returns {JSX.Element} The rendered Camera component.
+ *
+ * @remarks
+ * - If the camera permission is not granted, a message and a button to request permission are displayed.
+ * - If the camera permission is granted, the camera component is displayed along with upload status messages.
+ *
+ * @component
+ *
+ * @example
+ * ```tsx
+ * <Camera />
+ * ```
  */
 const Camera = () => {
   const { id } = useLocalSearchParams();
@@ -18,10 +34,12 @@ const Camera = () => {
   const { uploading, uploaded, uploadMessage, uploadImage, setUploaded } =
     useImageUpload(parseInt(Array.isArray(id) ? id[0] : id));
 
+  // If permission object is not available, return an empty view
   if (!permission) {
     return <View />;
   }
 
+  // If camera permission is not granted, show a message and a button to request permission
   if (!permission.granted) {
     return (
       <View style={styles.container}>
@@ -32,6 +50,8 @@ const Camera = () => {
       </View>
     );
   }
+
+  // If permission is granted, display the camera component and handle upload status
   return (
     <View style={styles.container}>
       <CameraComponent onCapture={uploadImage} />

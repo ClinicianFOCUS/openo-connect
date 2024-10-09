@@ -30,6 +30,17 @@ const SettingPage = () => {
   );
   const CALLBACK_URL = Constants.experienceUrl;
 
+  /**
+   * Handles the save action for the settings.
+   *
+   * This function performs the following actions:
+   * 1. Saves the client key, client secret, and base URL to the secure key store.
+   * 2. Initializes a new OAuth manager.
+   * 3. Deletes the access token and secret key from the secure key store.
+   * 4. Updates the state to indicate that there is no access token.
+   * 5. Dismisses the keyboard.
+   * 6. Displays an alert indicating that the settings were saved successfully.
+   */
   const handleSave = () => {
     SecureKeyStore.saveKey(CustomKeyType.CLIENT_KEY, clientKey);
     SecureKeyStore.saveKey(CustomKeyType.CLIENT_SECRET, clientSecret);
@@ -42,6 +53,13 @@ const SettingPage = () => {
     Alert.alert("Settings saved successfully");
   };
 
+  /**
+   * Copies the CALLBACK_URL to the clipboard and displays an alert.
+   *
+   * @async
+   * @function handleCopyCallbackUrl
+   * @returns {Promise<void>} A promise that resolves when the URL has been copied and the alert has been shown.
+   */
   const handleCopyCallbackUrl = async () => {
     await Clipboard.setStringAsync(CALLBACK_URL);
     Alert.alert("Callback URL copied to clipboard");

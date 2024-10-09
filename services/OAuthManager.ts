@@ -10,11 +10,19 @@ import Constants from "expo-constants";
 
 type Token = { oauth_token: string; oauth_token_secret: string };
 
+/**
+ * OAuthManager class to handle OAuth 1.0a authentication and API requests.
+ */
 export default class OAuthManager {
   private oauth: OAuth;
   private token: Token | undefined;
   private callback_url: string;
   private o19_api_base_url: string;
+
+  /**
+   * Constructor to initialize the OAuthManager.
+   * @throws Will throw an error if client key, client secret, callback URL, or O19 API base URL is not found.
+   */
   constructor() {
     let client_key = SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY);
     let client_secret = SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET);
@@ -48,8 +56,13 @@ export default class OAuthManager {
     this.o19_api_base_url = o19_api_base_url;
   }
 
-  // Helper function to get the headers for the request
-  getHeaders(request_data: OAuth.RequestOptions, token?: Token) {
+  /**
+   * Helper function to get the headers for the request.
+   * @param {OAuth.RequestOptions} request_data - The request data.
+   * @param {Token} [token] - The token.
+   * @returns {OAuth.Header} The headers for the request.
+   */
+  getHeaders(request_data: OAuth.RequestOptions, token?: Token): OAuth.Header {
     if (!token) {
       return this.oauth.toHeader(this.oauth.authorize(request_data));
     }
@@ -61,7 +74,11 @@ export default class OAuthManager {
     );
   }
 
-  // Helper function to parse the response from O19
+  /**
+   * Helper function to parse the response from O19.
+   * @param {AxiosResponse} response - The response from O19.
+   * @returns {Token} The parsed token.
+   */
   parseResponse(response: AxiosResponse): Token {
     const params = new URLSearchParams(response.data);
     return {
@@ -70,6 +87,11 @@ export default class OAuthManager {
     };
   }
 
+  /**
+   * Helper function to parse the error from Axios.
+   * @param {AxiosError} error - The error from Axios.
+   * @returns {CustomResponse} The parsed error response.
+   */
   parseError(error: AxiosError): CustomResponse {
     if (error.response) {
       return {
@@ -92,7 +114,10 @@ export default class OAuthManager {
     }
   }
 
-  // Step 1: Get the Request Token from O19
+  /**
+   * Step 1: Get the Request Token from O19.
+   * @returns {Promise<CustomResponse>} The response containing the status and message.
+   */
   async getRequestToken(): Promise<CustomResponse> {
     const request_data = {
       url: `${this.o19_api_base_url}/oauth/initiate`,
@@ -117,15 +142,23 @@ export default class OAuthManager {
     }
   }
 
-  // Step 2: Get the Authorization URL to redirect the user to O19 for authorization
-  getAuthorizationUrl() {
+  /**
+   * Step 2: Get the Authorization URL to redirect the user to O19 for authorization.
+   * @returns {string} The authorization URL.
+   * @throws Will throw an error if request token is not found.
+   */
+  getAuthorizationUrl(): string {
     if (!this.token?.oauth_token) {
       throw new Error("Request token not found");
     }
     return `${this.o19_api_base_url}/oauth/authorize?oauth_token=${this.token?.oauth_token}`;
   }
 
-  // Step 3: Exchange the request token for an access token
+  /**
+   * Step 3: Exchange the request token for an access token.
+   * @param {string} oauth_verifier - The OAuth verifier.
+   * @returns {Promise<CustomResponse>} The response containing the status and message.
+   */
   async getAccessToken(oauth_verifier: string): Promise<CustomResponse> {
     const request_data = {
       url: `${this.o19_api_base_url}/oauth/token`,
@@ -152,7 +185,13 @@ export default class OAuthManager {
     }
   }
 
-  // Make authorized API requests using the access token
+  /**
+   * Make authorized API requests using the access token.
+   * @param {Method} method - The HTTP method.
+   * @param {string} endpoint - The API endpoint.
+   * @param {any} [data] - The request data.
+   * @returns {Promise<CustomResponse>} The response containing the status, message, and data.
+   */
   async makeAuthorizedRequest(
     method: Method,
     endpoint: string,
@@ -178,7 +217,7 @@ export default class OAuthManager {
 
       return {
         status: StatusType.SUCCESS,
-        message: "Request Succeded",
+        message: "Request Succeeded",
         data: response.data,
       };
     } catch (error) {

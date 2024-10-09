@@ -19,6 +19,17 @@ export const useImageUpload = (demographicNo: number) => {
   const [uploaded, setUploaded] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
 
+  /**
+   * Uploads an image to the server.
+   *
+   * This function takes a base64 encoded image string and uploads it to the server
+   * by making an authorized POST request to the "document/saveDocumentToDemographic" endpoint.
+   * It sets the uploading state to true while the upload is in progress and updates the state
+   * based on the response from the server.
+   *
+   * @param {string} base64Image - The base64 encoded image string to be uploaded.
+   * @returns {Promise<void>} A promise that resolves when the upload is complete.
+   */
   const uploadImage = async (base64Image: string) => {
     setUploading(true);
 

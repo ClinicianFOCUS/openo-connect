@@ -45,6 +45,7 @@ const PatientAppointment = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
+      //Fetch both history and statuses concurrently
       const [appointmentHistoryRes, appointmentStatusesRes] = await Promise.all(
         [
           manager?.makeAuthorizedRequest(

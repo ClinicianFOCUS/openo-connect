@@ -1,12 +1,27 @@
 import React from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 
+/**
+ * Column configuration type.
+ * @typedef {Object} ColumnConfig
+ * @property {string} header - The header text for the column.
+ * @property {string} accessor - The key to access the data in the item.
+ * @property {(item: any) => React.ReactNode} [render] - Optional render function for custom rendering.
+ */
 type ColumnConfig = {
   header: string;
   accessor: string;
   render?: (item: any) => React.ReactNode;
 };
 
+/**
+ * Props for the AppointmentTable component.
+ * @typedef {Object} TableProps
+ * @property {ColumnConfig[]} columns - Array of column configurations.
+ * @property {any[]} upcoming - Array of upcoming appointments.
+ * @property {any[]} past - Array of past appointments.
+ * @property {(item: any) => string} keyExtractor - Function to extract a unique key for each item.
+ */
 type TableProps = {
   columns: ColumnConfig[];
   upcoming: any[];
@@ -14,6 +29,11 @@ type TableProps = {
   keyExtractor: (item: any) => string;
 };
 
+/**
+ * AppointmentTable component to display upcoming and past appointments.
+ * @param {TableProps} props - The props for the component.
+ * @returns {JSX.Element} The rendered component.
+ */
 const AppointmentTable: React.FC<TableProps> = ({
   columns,
   upcoming,
@@ -22,6 +42,7 @@ const AppointmentTable: React.FC<TableProps> = ({
 }) => {
   return (
     <View>
+      {/* Render upcoming appointments section */}
       {!upcoming || upcoming.length == 0 ? (
         <View style={{ marginBottom: 16 }}>
           <Text style={styles.title}>Upcoming Appointment</Text>
@@ -56,6 +77,7 @@ const AppointmentTable: React.FC<TableProps> = ({
           </View>
         </View>
       )}
+      {/* Render past appointments section */}
       {!past || past.length == 0 ? (
         <View style={{ marginTop: 16 }}>
           <Text style={styles.title}>Past Appointment</Text>
