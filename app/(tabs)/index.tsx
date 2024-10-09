@@ -3,15 +3,14 @@
 import React from 'react';
 import { View, Button, StyleSheet, ActivityIndicator } from 'react-native';
 import { useOAuth } from '@/hooks/useAuth';
-import { useNavigation } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import AppointmentList from '@/components/AppointmentList';
 
 const App = () => {
   const { loading } = useOAuth();
   const { hasAccessToken } = useAuthManagerStore();
-  const navigation = useNavigation();
-
+  const router = useRouter();
   return (
     <View style={styles.container}>
       {loading ? (
@@ -23,7 +22,7 @@ const App = () => {
       ) : (
         <Button
           title="Login with O19"
-          onPress={() => navigation.navigate('o19-login/index')}
+          onPress={() => router.push('/o19-login')}
         />
       )}
     </View>

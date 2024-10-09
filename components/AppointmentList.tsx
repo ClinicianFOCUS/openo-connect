@@ -1,7 +1,7 @@
 import { useOAuth } from '@/hooks/useAuth';
 import { Appointment, StatusType } from '@/types/types';
 import { splitAppointments } from '@/utils/utils';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   Text,
@@ -24,6 +24,7 @@ const AppointmentList = () => {
     Appointment[]
   >([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   // Fetch appointments when the component mounts
   useEffect(() => {
@@ -67,11 +68,6 @@ const AppointmentList = () => {
             {
               header: 'Name',
               accessor: 'name',
-              render: (item) => (
-                <Link href={`/patient-detail/${item.demographicNo}`}>
-                  {item.name}
-                </Link>
-              ),
             },
             {
               header: 'Time',
@@ -85,6 +81,9 @@ const AppointmentList = () => {
           upcoming={upcomingAppointments}
           past={pastAppointments}
           keyExtractor={(item) => item.appointmentNo}
+          onPress={(item) =>
+            router.push(`/patient-detail/${item.demographicNo}`)
+          }
         />
       )}
     </View>
