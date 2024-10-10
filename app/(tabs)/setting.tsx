@@ -1,10 +1,10 @@
-import OAuthManager from "@/services/OAuthManager";
-import { SecureKeyStore } from "@/services/SecureKeyStore";
-import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import { CustomKeyType } from "@/types/types";
-import * as Clipboard from "expo-clipboard";
-import Constants from "expo-constants";
-import React, { useState } from "react";
+import OAuthManager from '@/services/OAuthManager';
+import { SecureKeyStore } from '@/services/SecureKeyStore';
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import { CustomKeyType } from '@/types/types';
+import * as Clipboard from 'expo-clipboard';
+import Constants from 'expo-constants';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -13,36 +13,56 @@ import {
   StyleSheet,
   Alert,
   TouchableOpacity,
-} from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+  Keyboard,
+} from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const SettingPage = () => {
   const { setManager, setHasAccessToken } = useAuthManagerStore();
   const [clientKey, setClientKey] = useState(
-    SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY) || ""
+    SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY) || ''
   );
   const [clientSecret, setClientSecret] = useState(
-    SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET) || ""
+    SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET) || ''
   );
-  const [oscarBaseUrl, setOscarBaseUrl] = useState(
-    SecureKeyStore.getKey(CustomKeyType.OSCAR_BASE_URL) || ""
+  const [o19BaseUrl, setO19BaseUrl] = useState(
+    SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL) || ''
   );
   const CALLBACK_URL = Constants.experienceUrl;
 
+  /**
+   * Handles the save action for the settings.
+   *
+   * This function performs the following actions:
+   * 1. Saves the client key, client secret, and base URL to the secure key store.
+   * 2. Initializes a new OAuth manager.
+   * 3. Deletes the access token and secret key from the secure key store.
+   * 4. Updates the state to indicate that there is no access token.
+   * 5. Dismisses the keyboard.
+   * 6. Displays an alert indicating that the settings were saved successfully.
+   */
   const handleSave = () => {
     SecureKeyStore.saveKey(CustomKeyType.CLIENT_KEY, clientKey);
     SecureKeyStore.saveKey(CustomKeyType.CLIENT_SECRET, clientSecret);
-    SecureKeyStore.saveKey(CustomKeyType.OSCAR_BASE_URL, oscarBaseUrl);
+    SecureKeyStore.saveKey(CustomKeyType.O19_BASE_URL, o19BaseUrl);
     setManager(new OAuthManager());
     SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN);
     SecureKeyStore.deleteKey(CustomKeyType.SECRET_KEY);
     setHasAccessToken(false);
-    Alert.alert("Settings saved successfully");
+    Keyboard.dismiss();
+    Alert.alert('Settings saved successfully');
   };
 
+  /**
+   * Copies the CALLBACK_URL to the clipboard and displays an alert.
+   *
+   * @async
+   * @function handleCopyCallbackUrl
+   * @returns {Promise<void>} A promise that resolves when the URL has been copied and the alert has been shown.
+   */
   const handleCopyCallbackUrl = async () => {
     await Clipboard.setStringAsync(CALLBACK_URL);
-    Alert.alert("Callback URL copied to clipboard");
+    Alert.alert('Callback URL copied to clipboard');
   };
 
   return (
@@ -61,10 +81,10 @@ const SettingPage = () => {
         placeholder="Enter Private Key"
         style={styles.input}
       />
-      <Text style={styles.inputLabel}>Oscar Base URL:</Text>
+      <Text style={styles.inputLabel}>O19 Base URL:</Text>
       <TextInput
-        value={oscarBaseUrl}
-        onChangeText={setOscarBaseUrl}
+        value={o19BaseUrl}
+        onChangeText={setO19BaseUrl}
         placeholder="Enter Base Url"
         style={styles.input}
       />
@@ -85,24 +105,24 @@ const SettingPage = () => {
 const styles = StyleSheet.create({
   input: {
     height: 40,
-    borderColor: "gray",
+    borderColor: 'gray',
     borderWidth: 1,
     paddingHorizontal: 10,
     fontSize: 16,
   },
   inputLabel: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   container: {
     padding: 20,
-    display: "flex",
+    display: 'flex',
     gap: 10,
   },
   callbackUrlContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: "gray",
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: 'gray',
     borderWidth: 1,
     paddingHorizontal: 10,
     paddingVertical: 5,

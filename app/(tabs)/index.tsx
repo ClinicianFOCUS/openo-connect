@@ -1,16 +1,16 @@
 // App.js
 
-import React from "react";
-import { View, Button, StyleSheet, ActivityIndicator } from "react-native";
-import { useOAuth } from "@/hooks/useAuth";
-import { useNavigation } from "expo-router";
-import { useAuthManagerStore } from "@/store/useAuthManagerStore";
+import React from 'react';
+import { View, Button, StyleSheet, ActivityIndicator } from 'react-native';
+import { useOAuth } from '@/hooks/useAuth';
+import { useRouter } from 'expo-router';
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import AppointmentList from '@/components/AppointmentList';
 
 const App = () => {
-  const { callApi, loading } = useOAuth();
+  const { loading } = useOAuth();
   const { hasAccessToken } = useAuthManagerStore();
-  const navigation = useNavigation();
-
+  const router = useRouter();
   return (
     <View style={styles.container}>
       {loading ? (
@@ -18,11 +18,11 @@ const App = () => {
           <ActivityIndicator size={70} color="#0000ff" />
         </View>
       ) : hasAccessToken ? (
-        <Button title={"Call api"} onPress={callApi} />
+        <AppointmentList />
       ) : (
         <Button
-          title="Login with OSCAR"
-          onPress={() => navigation.navigate("o19-login/index")}
+          title="Login with O19"
+          onPress={() => router.push('/o19-login')}
         />
       )}
     </View>
@@ -32,13 +32,13 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   loading: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }],
     zIndex: 1,
   },

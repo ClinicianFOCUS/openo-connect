@@ -1,6 +1,6 @@
 # open-o-connect
 
-A mobile application for connecting to electronic medical record systems based on the open-source "oscar" project code.
+A mobile application for connecting to electronic medical record systems based on the open-source "O19" project code.
 
 # Welcome to your Expo app 👋
 

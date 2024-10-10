@@ -1,10 +1,17 @@
-import { useAuthManagerStore } from "@/store/useAuthManagerStore";
-import { StatusType } from "@/types/types";
-import { useNavigation } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
-import { View, ActivityIndicator, StyleSheet, Alert } from "react-native";
-import { WebView } from "react-native-webview";
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import { StatusType } from '@/types/types';
+import { useNavigation } from 'expo-router';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, ActivityIndicator, StyleSheet, Alert } from 'react-native';
+import { WebView } from 'react-native-webview';
 
+/**
+ * O19Login component handles the OAuth login flow using a WebView.
+ * It initiates the OAuth flow, injects jQuery into the WebView, and manages loading states.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered component.
+ */
 const O19Login = () => {
   const { manager } = useAuthManagerStore();
   const [endpoint, setEndpoint] = useState<string>();
@@ -18,6 +25,13 @@ const O19Login = () => {
     });
   }, []);
 
+  /**
+   * Initiates the OAuth flow by requesting a token and getting the authorization URL.
+   * If the request is successful, it returns the authorization URL.
+   * If the request fails, it shows an alert and navigates back.
+   *
+   * @returns {Promise<string | undefined>} The authorization URL or undefined if the request fails.
+   */
   const initiateOAuthFlow = async () => {
     if (manager) {
       const res = await manager.getRequestToken();
@@ -26,8 +40,8 @@ const O19Login = () => {
         const authUrl = manager.getAuthorizationUrl();
         return authUrl;
       } else {
-        Alert.alert("Error", res.message, [
-          { text: "Go Back", onPress: () => navigation.goBack() },
+        Alert.alert('Error', res.message, [
+          { text: 'Go Back', onPress: () => navigation.goBack() },
         ]);
       }
     }
@@ -72,9 +86,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   loading: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }],
     zIndex: 1,
   },
