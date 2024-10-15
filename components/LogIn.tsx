@@ -21,7 +21,7 @@ import OAuthManager from '@/services/OAuthManager';
  * @component
  * @returns {JSX.Element} The rendered component.
  */
-const O19Login = () => {
+const Login = () => {
   const [endpoint, setEndpoint] = useState<string>();
   const [loginText, setLoginText] = useState<string>('Login');
   const [providerNo, setProviderNo] = useState<string>();
@@ -363,7 +363,7 @@ const O19Login = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    width: '85%',
     display: 'flex',
     gap: 10,
   },
@@ -388,4 +388,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default O19Login;
+export default Login;
