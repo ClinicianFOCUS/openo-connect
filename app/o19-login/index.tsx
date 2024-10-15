@@ -63,7 +63,22 @@ const O19Login = () => {
     }
   };
 
-  // SOAP request to get provider number
+  /**
+   * Sends a SOAP request to the specified URL to retrieve the provider number.
+   *
+   * @param {string} url - The URL to which the SOAP request is sent.
+   * @returns {Promise<AxiosResponse<any>>} - A promise that resolves to the response of the SOAP request.
+   *
+   * @example
+   * const url = 'https://example.com/soap-endpoint';
+   * getProviderNumber(url)
+   *   .then(response => {
+   *     console.log(response.data);
+   *   })
+   *   .catch(error => {
+   *     console.error('Error:', error);
+   *   });
+   */
   const getProviderNumber = async (url: string) => {
     const xmlBody = `<?xml version="1.0" encoding="utf-8"?>
     <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -93,6 +108,18 @@ const O19Login = () => {
     true; // returning true to indicate script has been injected
   `;
 
+  /**
+   * Handles the navigation state changes of the WebView.
+   *
+   * @param {WebViewNavigation} navigationState - The current state of the WebView navigation.
+   *
+   * This function performs the following actions based on the URL of the navigation state:
+   * - If the URL is the login page (`oscar/index.jsp`) and it's the first login attempt, it injects the login form and submits it.
+   * - If the URL is still the login page after one login attempt, it deletes stored credentials and sets a login error message.
+   * - If the URL is `oscar/login.do`, it deletes stored credentials and sets an account locked error message.
+   * - If the URL is not the login page, `login.do`, or `oauth/authorize`, it injects a query to get/set the client key and secret.
+   * - If the URL is `oauth/authorize`, it injects JQuery and authorizes OAuth.
+   */
   const onNavigationStateChange = (navigationState: WebViewNavigation) => {
     if (navigationState.loading) {
       return;
@@ -152,7 +179,7 @@ const O19Login = () => {
     }
   };
 
-  //Query to fill the form and submit
+  //Script to fill the form and submit
   const FILL_LOGIN_FORM_AND_SUBMIT = `
     (function() {
       document.getElementById('username').value = '${username}';
@@ -168,7 +195,7 @@ const O19Login = () => {
     })();
     true`;
 
-  //Query to get or set the client key and secret
+  //Script to get or set the client key and secret
   const SEND_GET_REQUEST = `
    function CREATE_CLIENT() {
     fetch('${BASE_URL}/admin/api/clientManage.json?method=add&name=${providerNo}&uri=${CALLBACK_URL}&lifetime=86400')
@@ -203,6 +230,7 @@ const O19Login = () => {
   true;
   `;
 
+  //Script to press authorize button
   const AUTHORIZE_OAUTH = `
     (function() {
       let authorizeButton = document.querySelector('input[type="submit"].btn.btn-primary');
@@ -214,6 +242,17 @@ const O19Login = () => {
     })();
     true`;
 
+  /**
+   * Handles the login process by performing the following steps:
+   * 1. Updates the login text to indicate the login process has started.
+   * 2. Saves the username, password, and PIN to the secure key store.
+   * 3. Sends a request to the login service to get the provider number.
+   * 4. Parses the xml response to extract the provider number.
+   * 5. Updates the provider number, endpoint, and other state variables upon successful login.
+   * 6. Handles login failure by deleting the saved keys and updating the login error message.
+   *
+   * @returns {void}
+   */
   const handleLogin = () => {
     setLoginText('Logging in...');
     SecureKeyStore.saveKey(CustomKeyType.USERNAME, username);
@@ -241,6 +280,15 @@ const O19Login = () => {
       });
   };
 
+  /**
+   * Handles messages received from the WebView.
+   *
+   * @param {WebViewMessageEvent} event - The event object containing the message data from the WebView.
+   *
+   * The function parses the message data and logs it. Depending on the status of the response,
+   * it updates the login text and error message or saves the client key and secret to the secure key store.
+   * If the response indicates a successful login, it initiates the OAuth flow and sets the endpoint URL.
+   */
   const onMessage = (event: WebViewMessageEvent) => {
     const response: CustomResponse = JSON.parse(event.nativeEvent.data);
     console.log('Received message from webview:', response);
