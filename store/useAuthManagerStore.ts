@@ -8,6 +8,8 @@ type AuthManagerStore = {
   setHasAccessToken: (hasAccessToken: boolean) => void;
   provider: any;
   setProvider: (provider: string) => void;
+  hasUserCredentials: boolean;
+  setHasUserCredentials: (hasUserCredentials: boolean) => void;
 };
 
 /**
@@ -29,4 +31,7 @@ export const useAuthManagerStore = create<AuthManagerStore>((set) => ({
   setHasAccessToken: (hasAccessToken: boolean) => set({ hasAccessToken }),
   provider: null,
   setProvider: (provider: any) => set({ provider }),
+  hasUserCredentials: false,
+  setHasUserCredentials: (hasUserCredentials: boolean) =>
+    set({ hasUserCredentials }),
 }));

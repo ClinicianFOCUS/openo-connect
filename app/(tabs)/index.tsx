@@ -9,7 +9,7 @@ import AppointmentList from '@/components/AppointmentList';
 
 const App = () => {
   const { loading } = useOAuth();
-  const { hasAccessToken } = useAuthManagerStore();
+  const { hasAccessToken, hasUserCredentials } = useAuthManagerStore();
   const router = useRouter();
   return (
     <View style={styles.container}>
@@ -17,8 +17,15 @@ const App = () => {
         <View style={styles.loading}>
           <ActivityIndicator size={70} color="#0000ff" />
         </View>
-      ) : hasAccessToken ? (
-        <AppointmentList />
+      ) : hasUserCredentials ? (
+        hasAccessToken ? (
+          <AppointmentList />
+        ) : (
+          <Button
+            title="Fetch Access Token"
+            onPress={() => router.push('/o19-login')}
+          />
+        )
       ) : (
         <Button
           title="Login with O19"

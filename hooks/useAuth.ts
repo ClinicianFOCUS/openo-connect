@@ -25,12 +25,26 @@ import { Method } from 'axios';
  *
  */
 export const useOAuth = () => {
-  const { manager, setManager, setHasAccessToken, setProvider } =
-    useAuthManagerStore();
+  const {
+    manager,
+    setManager,
+    setHasAccessToken,
+    setProvider,
+    setHasUserCredentials,
+  } = useAuthManagerStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
+
+    if (
+      SecureKeyStore.getKey(CustomKeyType.USERNAME) &&
+      SecureKeyStore.getKey(CustomKeyType.PASSWORD) &&
+      SecureKeyStore.getKey(CustomKeyType.PIN)
+    ) {
+      setHasUserCredentials(true);
+    }
+
     // Check if access token and secret key are stored in SecureKeyStore
     if (
       SecureKeyStore.getKey(CustomKeyType.ACCESS_TOKEN) &&
