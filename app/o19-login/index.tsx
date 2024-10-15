@@ -36,6 +36,7 @@ const O19Login = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [pin, setPin] = useState<string>('');
+  const [loginError, setLoginError] = useState<string>('');
 
   const { manager } = useAuthManagerStore();
   const navigation = useNavigation();
@@ -71,8 +72,8 @@ const O19Login = () => {
     <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
       <soap:Body>
         <login2 xmlns="http://ws.oscarehr.org/">
-          <arg0 xmlns="">oscardoc</arg0>
-          <arg1 xmlns="">Test@123</arg1>
+          <arg0 xmlns="">${username}</arg0>
+          <arg1 xmlns="">${password}</arg1>
         </login2>
       </soap:Body>
     </soap:Envelope>`;
@@ -196,6 +197,9 @@ const O19Login = () => {
   `;
 
   const handleLogin = () => {
+    SecureKeyStore.saveKey(CustomKeyType.USERNAME, username);
+    SecureKeyStore.saveKey(CustomKeyType.PASSWORD, password);
+    SecureKeyStore.saveKey(CustomKeyType.PIN, pin);
     getProviderNumber(`${BASE_URL}/ws/LoginService`)
       .then((response) => {
         const parser = new XMLParser();
@@ -205,10 +209,14 @@ const O19Login = () => {
             .provider.providerNo;
         setProviderNo(providerNo);
         setEndpoint(`${BASE_URL}/index.jsp`);
+        setLoginError('');
+        setLoginAttempt(0);
       })
-      .catch((error) => {
-        //todo: show something went wrong try logging in again
-        console.error(error.response.data);
+      .catch(() => {
+        SecureKeyStore.deleteKey(CustomKeyType.USERNAME);
+        SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
+        SecureKeyStore.deleteKey(CustomKeyType.PIN);
+        setLoginError('Failed to login. Please try again.');
       });
   };
 
@@ -245,6 +253,9 @@ const O19Login = () => {
         style={styles.input}
         secureTextEntry={true}
       />
+      {loginError.length > 0 && (
+        <Text style={styles.errorMessage}>{loginError}</Text>
+      )}
       <Button title="Login" onPress={handleLogin} />
       {/* {loading && (
         <View style={styles.loading}>
@@ -296,6 +307,10 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1,
     paddingHorizontal: 10,
+    fontSize: 16,
+  },
+  errorMessage: {
+    color: 'red',
     fontSize: 16,
   },
 });
