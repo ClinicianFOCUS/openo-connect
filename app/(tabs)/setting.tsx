@@ -19,12 +19,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 const SettingPage = () => {
   const { setManager, setHasAccessToken } = useAuthManagerStore();
-  const [clientKey, setClientKey] = useState(
-    SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY) || ''
-  );
-  const [clientSecret, setClientSecret] = useState(
-    SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET) || ''
-  );
   const [o19BaseUrl, setO19BaseUrl] = useState(
     SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL) || ''
   );
@@ -42,8 +36,6 @@ const SettingPage = () => {
    * 6. Displays an alert indicating that the settings were saved successfully.
    */
   const handleSave = () => {
-    SecureKeyStore.saveKey(CustomKeyType.CLIENT_KEY, clientKey);
-    SecureKeyStore.saveKey(CustomKeyType.CLIENT_SECRET, clientSecret);
     SecureKeyStore.saveKey(CustomKeyType.O19_BASE_URL, o19BaseUrl);
     setManager(new OAuthManager());
     SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN);
@@ -67,20 +59,6 @@ const SettingPage = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.inputLabel}>Client Key:</Text>
-      <TextInput
-        value={clientKey}
-        onChangeText={setClientKey}
-        placeholder="Enter Public Key"
-        style={styles.input}
-      />
-      <Text style={styles.inputLabel}>Client Secret:</Text>
-      <TextInput
-        value={clientSecret}
-        onChangeText={setClientSecret}
-        placeholder="Enter Private Key"
-        style={styles.input}
-      />
       <Text style={styles.inputLabel}>O19 Base URL:</Text>
       <TextInput
         value={o19BaseUrl}
