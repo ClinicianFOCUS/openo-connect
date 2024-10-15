@@ -1,5 +1,5 @@
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
-import { CustomKeyType, StatusType } from '@/types/types';
+import { CustomKeyType, CustomResponse, StatusType } from '@/types/types';
 import axios from 'axios';
 import Constants from 'expo-constants';
 import { useNavigation } from 'expo-router';
@@ -30,13 +30,14 @@ import { SecureKeyStore } from '@/services/SecureKeyStore';
  */
 const O19Login = () => {
   const [endpoint, setEndpoint] = useState<string>();
-  const [loading, setLoading] = useState(true);
+  const [loginText, setLoginText] = useState<string>('Login');
   const [providerNo, setProviderNo] = useState<string>();
   const [loginAttempt, setLoginAttempt] = useState<number>(0);
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [pin, setPin] = useState<string>('');
   const [loginError, setLoginError] = useState<string>('');
+  const [webViewKey, setWebViewKey] = useState(0);
 
   const { manager } = useAuthManagerStore();
   const navigation = useNavigation();
@@ -119,14 +120,22 @@ const O19Login = () => {
       url.includes('oscar/index.jsp') &&
       loginAttempt == 1
     ) {
-      console.log('Login Failed');
+      SecureKeyStore.deleteKey(CustomKeyType.USERNAME);
+      SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
+      SecureKeyStore.deleteKey(CustomKeyType.PIN);
+      setLoginError('Failed to login. Please try again.');
+      setLoginText('Login');
     }
 
     // If webview is on login.do, then the account is locked
     if (webViewRef.current && url.includes('oscar/login.do')) {
-      console.log(
+      SecureKeyStore.deleteKey(CustomKeyType.USERNAME);
+      SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
+      SecureKeyStore.deleteKey(CustomKeyType.PIN);
+      setLoginError(
         'Due to multiple failed login attempts, the account is locked. Please contact your administrator to unlock.'
       );
+      setLoginText('Login');
     }
 
     // If the URL is not the login page (oscar/index.jsp) or login.do, inject query to get/set client key and secret
@@ -143,10 +152,10 @@ const O19Login = () => {
   //Query to fill the form and submit
   const FILL_FORM_AND_SUBMIT = `
     (function() {
-      document.getElementById('username').value = 'oscardoc';
-      document.getElementById('password2').value = 'Test@123';
-      document.getElementById('pin').value = '1117';
-      document.getElementById('pin2').value = '1117';
+      document.getElementById('username').value = '${username}';
+      document.getElementById('password2').value = '${password}';
+      document.getElementById('pin').value = '${pin}';
+      document.getElementById('pin2').value = '${pin}';
       var submitButton = document.querySelector('button[type="submit"][name="submit"].btn.btn-primary.btn-block');
       if (submitButton) {
         submitButton.click();
@@ -163,11 +172,11 @@ const O19Login = () => {
     fetch('${BASE_URL}/admin/api/clientManage.json?method=add&name=${providerNo}&uri=${CALLBACK_URL}&lifetime=86400')
       .then((response) => response.json())
       .then((data) => {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ message: "Key created successfully" }));
+        window.ReactNativeWebView.postMessage(JSON.stringify({ status: ${StatusType.SUCCESS}, message: "Key created successfully" }));
         GET_CLIENT();
       })
       .catch(error => {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ message: "Failed to create key" }));
+        window.ReactNativeWebView.postMessage(JSON.stringify({ status: ${StatusType.ERROR}, message: "Failed to create key" }));
       })
   }
   function GET_CLIENT() {
@@ -178,18 +187,15 @@ const O19Login = () => {
         keyFound = data.find((item) => item.name === '${providerNo}');
 
         if (!keyFound) {
-          window.ReactNativeWebView.postMessage(JSON.stringify({ message: "Key not found. Creating Key" }));
+          window.ReactNativeWebView.postMessage(JSON.stringify({ status: ${StatusType.SUCCESS}, message: "Key not found. Creating Key" }));
           CREATE_CLIENT();
           return;
         }
-        window.ReactNativeWebView.postMessage(JSON.stringify({ key: keyFound.key, secret: keyFound.secret }));
+        window.ReactNativeWebView.postMessage(JSON.stringify({ status: ${StatusType.SUCCESS}, data : { key: keyFound.key, secret: keyFound.secret } }));
       })
       .catch((error) => {
-        console.error(
-          'Error getting client key and secret. Trying again...',
-          error
-        );
-        GET_CLIENT();
+        window.ReactNativeWebView.postMessage(JSON.stringify({ status: ${StatusType.ERROR}, message: "Failed to get key. Trying again"+error }));
+        // GET_CLIENT();
       });
   }
   GET_CLIENT();
@@ -197,6 +203,7 @@ const O19Login = () => {
   `;
 
   const handleLogin = () => {
+    setLoginText('Logging in...');
     SecureKeyStore.saveKey(CustomKeyType.USERNAME, username);
     SecureKeyStore.saveKey(CustomKeyType.PASSWORD, password);
     SecureKeyStore.saveKey(CustomKeyType.PIN, pin);
@@ -211,19 +218,28 @@ const O19Login = () => {
         setEndpoint(`${BASE_URL}/index.jsp`);
         setLoginError('');
         setLoginAttempt(0);
+        setWebViewKey((prevKey) => prevKey + 1);
       })
       .catch(() => {
         SecureKeyStore.deleteKey(CustomKeyType.USERNAME);
         SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
         SecureKeyStore.deleteKey(CustomKeyType.PIN);
         setLoginError('Failed to login. Please try again.');
+        setLoginText('Login');
       });
   };
 
   const onMessage = (event: WebViewMessageEvent) => {
-    const { data } = event.nativeEvent;
-    console.log(data.length > 0);
-    console.log('Received message:', data);
+    const response: CustomResponse = JSON.parse(event.nativeEvent.data);
+    console.log('Received message from webview:', response);
+    if (
+      response.status == StatusType.SUCCESS &&
+      response.data.key &&
+      response.data.secret
+    ) {
+      SecureKeyStore.saveKey(CustomKeyType.CLIENT_KEY, response.data.key);
+      SecureKeyStore.saveKey(CustomKeyType.CLIENT_SECRET, response.data.secret);
+    }
   };
 
   return (
@@ -256,27 +272,21 @@ const O19Login = () => {
       {loginError.length > 0 && (
         <Text style={styles.errorMessage}>{loginError}</Text>
       )}
-      <Button title="Login" onPress={handleLogin} />
-      {/* {loading && (
-        <View style={styles.loading}>
-          <ActivityIndicator size={70} color="#0000ff" />
-        </View>
-      )} */}
-      {/* {endpoint && (
+      <Button title={loginText} onPress={handleLogin} />
+      {endpoint && (
         <WebView
+          key={webViewKey}
           style={styles.webview}
           ref={webViewRef}
           source={{
             uri: endpoint,
           }}
-          onLoadStart={() => setLoading(true)}
-          onLoadEnd={() => setLoading(false)}
           onNavigationStateChange={onNavigationStateChange}
           javaScriptEnabled={true}
           onMessage={onMessage}
           userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
         />
-      )} */}
+      )}
     </View>
   );
 };
@@ -286,13 +296,6 @@ const styles = StyleSheet.create({
     padding: 20,
     display: 'flex',
     gap: 10,
-  },
-  loading: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -25 }, { translateY: -25 }],
-    zIndex: 1,
   },
   webview: {
     position: 'absolute',
