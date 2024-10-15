@@ -4,15 +4,7 @@ import axios from 'axios';
 import Constants from 'expo-constants';
 import { useNavigation } from 'expo-router';
 import React, { createRef, useState } from 'react';
-import {
-  View,
-  ActivityIndicator,
-  StyleSheet,
-  Alert,
-  Button,
-  Text,
-  TextInput,
-} from 'react-native';
+import { View, StyleSheet, Alert, Button, Text, TextInput } from 'react-native';
 import {
   WebView,
   WebViewMessageEvent,
@@ -20,6 +12,7 @@ import {
 } from 'react-native-webview';
 import { XMLParser } from 'fast-xml-parser';
 import { SecureKeyStore } from '@/services/SecureKeyStore';
+import OAuthManager from '@/services/OAuthManager';
 
 /**
  * O19Login component handles the OAuth login flow using a WebView.
@@ -39,11 +32,12 @@ const O19Login = () => {
   const [loginError, setLoginError] = useState<string>('');
   const [webViewKey, setWebViewKey] = useState(0);
 
-  const { manager } = useAuthManagerStore();
+  const { setManager } = useAuthManagerStore();
   const navigation = useNavigation();
 
   const BASE_URL = SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL);
   const CALLBACK_URL = Constants.experienceUrl;
+  const webViewRef = createRef<WebView>();
 
   /**
    * Initiates the OAuth flow by requesting a token and getting the authorization URL.
@@ -53,6 +47,8 @@ const O19Login = () => {
    * @returns {Promise<string | undefined>} The authorization URL or undefined if the request fails.
    */
   const initiateOAuthFlow = async () => {
+    const manager = new OAuthManager();
+    setManager(manager);
     if (manager) {
       const res = await manager.getRequestToken();
 
@@ -66,8 +62,8 @@ const O19Login = () => {
       }
     }
   };
-  let webViewRef = createRef<WebView>();
 
+  // SOAP request to get provider number
   const getProviderNumber = async (url: string) => {
     const xmlBody = `<?xml version="1.0" encoding="utf-8"?>
     <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -110,16 +106,16 @@ const O19Login = () => {
       loginAttempt == 0
     ) {
       console.log('INJECTING FILLED FORM');
-      webViewRef.current.injectJavaScript(FILL_FORM_AND_SUBMIT);
+      webViewRef.current.injectJavaScript(FILL_LOGIN_FORM_AND_SUBMIT);
       setLoginAttempt(loginAttempt + 1);
     }
 
+    if (!webViewRef.current) {
+      return;
+    }
+
     // If the login attempt is 1 and the URL is still the login page, then the login failed
-    if (
-      webViewRef.current &&
-      url.includes('oscar/index.jsp') &&
-      loginAttempt == 1
-    ) {
+    if (url.includes('oscar/index.jsp') && loginAttempt == 1) {
       SecureKeyStore.deleteKey(CustomKeyType.USERNAME);
       SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
       SecureKeyStore.deleteKey(CustomKeyType.PIN);
@@ -128,7 +124,7 @@ const O19Login = () => {
     }
 
     // If webview is on login.do, then the account is locked
-    if (webViewRef.current && url.includes('oscar/login.do')) {
+    if (url.includes('oscar/login.do')) {
       SecureKeyStore.deleteKey(CustomKeyType.USERNAME);
       SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
       SecureKeyStore.deleteKey(CustomKeyType.PIN);
@@ -138,31 +134,37 @@ const O19Login = () => {
       setLoginText('Login');
     }
 
-    // If the URL is not the login page (oscar/index.jsp) or login.do, inject query to get/set client key and secret
+    // If the URL is not the login page (oscar/index.jsp) or login.do or oauth/authorize, inject query to get/set client key and secret
     if (
-      webViewRef.current &&
       !url.includes('oscar/index.jsp') &&
-      !url.includes('oscar/login.do')
+      !url.includes('oscar/login.do') &&
+      !url.includes('oauth/authorize')
     ) {
       console.log('INJECTING QUERY TO GET KEY');
+      setLoginText('Getting Key');
       webViewRef.current.injectJavaScript(SEND_GET_REQUEST);
+    }
+
+    if (url.includes('oauth/authorize')) {
+      console.log('Injecting JQuery');
+      webViewRef.current.injectJavaScript(injectJQuery);
+      webViewRef.current.injectJavaScript(AUTHORIZE_OAUTH);
     }
   };
 
   //Query to fill the form and submit
-  const FILL_FORM_AND_SUBMIT = `
+  const FILL_LOGIN_FORM_AND_SUBMIT = `
     (function() {
       document.getElementById('username').value = '${username}';
       document.getElementById('password2').value = '${password}';
       document.getElementById('pin').value = '${pin}';
       document.getElementById('pin2').value = '${pin}';
-      var submitButton = document.querySelector('button[type="submit"][name="submit"].btn.btn-primary.btn-block');
+      let submitButton = document.querySelector('button[type="submit"][name="submit"].btn.btn-primary.btn-block');
       if (submitButton) {
         submitButton.click();
       } else {
         console.error('Submit button not found');
       }
-
     })();
     true`;
 
@@ -172,11 +174,11 @@ const O19Login = () => {
     fetch('${BASE_URL}/admin/api/clientManage.json?method=add&name=${providerNo}&uri=${CALLBACK_URL}&lifetime=86400')
       .then((response) => response.json())
       .then((data) => {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ status: ${StatusType.SUCCESS}, message: "Key created successfully" }));
+        window.ReactNativeWebView.postMessage(JSON.stringify({ status: "${StatusType.SUCCESS}", message: "Key created successfully" }));
         GET_CLIENT();
       })
       .catch(error => {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ status: ${StatusType.ERROR}, message: "Failed to create key" }));
+        window.ReactNativeWebView.postMessage(JSON.stringify({ status: "${StatusType.ERROR}", message: "Failed to create key" }));
       })
   }
   function GET_CLIENT() {
@@ -187,20 +189,30 @@ const O19Login = () => {
         keyFound = data.find((item) => item.name === '${providerNo}');
 
         if (!keyFound) {
-          window.ReactNativeWebView.postMessage(JSON.stringify({ status: ${StatusType.SUCCESS}, message: "Key not found. Creating Key" }));
+          window.ReactNativeWebView.postMessage(JSON.stringify({ status: "${StatusType.SUCCESS}", message: "Key not found. Creating Key" }));
           CREATE_CLIENT();
           return;
         }
-        window.ReactNativeWebView.postMessage(JSON.stringify({ status: ${StatusType.SUCCESS}, data : { key: keyFound.key, secret: keyFound.secret } }));
+        window.ReactNativeWebView.postMessage(JSON.stringify({ status: "${StatusType.SUCCESS}", data : { key: keyFound.key, secret: keyFound.secret } }));
       })
       .catch((error) => {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ status: ${StatusType.ERROR}, message: "Failed to get key. Trying again"+error }));
-        // GET_CLIENT();
+        window.ReactNativeWebView.postMessage(JSON.stringify({ status: "${StatusType.ERROR}", message: "Failed to get key. Trying again" }));
       });
   }
   GET_CLIENT();
   true;
   `;
+
+  const AUTHORIZE_OAUTH = `
+    (function() {
+      let authorizeButton = document.querySelector('input[type="submit"].btn.btn-primary');
+      if (authorizeButton) {
+        authorizeButton.click();
+      } else {
+        console.error('Submit button not found');
+      }
+    })();
+    true`;
 
   const handleLogin = () => {
     setLoginText('Logging in...');
@@ -232,13 +244,23 @@ const O19Login = () => {
   const onMessage = (event: WebViewMessageEvent) => {
     const response: CustomResponse = JSON.parse(event.nativeEvent.data);
     console.log('Received message from webview:', response);
+    if (response?.status == StatusType.ERROR) {
+      setLoginText('Login');
+      setLoginError(response.message);
+    }
     if (
       response.status == StatusType.SUCCESS &&
-      response.data.key &&
-      response.data.secret
+      response?.data?.key &&
+      response?.data?.secret
     ) {
       SecureKeyStore.saveKey(CustomKeyType.CLIENT_KEY, response.data.key);
       SecureKeyStore.saveKey(CustomKeyType.CLIENT_SECRET, response.data.secret);
+      setLoginText('Setting up Oauth');
+      initiateOAuthFlow().then((authUrl) => {
+        if (authUrl) {
+          setEndpoint(authUrl);
+        }
+      });
     }
   };
 
