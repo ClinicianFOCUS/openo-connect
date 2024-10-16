@@ -54,8 +54,7 @@ const Login = () => {
       const res = await manager.getRequestToken();
 
       if (res.status == StatusType.SUCCESS) {
-        const authUrl = manager.getAuthorizationUrl();
-        return authUrl;
+        return manager.getAuthorizationUrl();
       } else {
         Alert.alert('Error', res.message, [
           { text: 'Failed to get request token.' },
@@ -115,7 +114,7 @@ const Login = () => {
       return;
     }
 
-    const url = navigationState.url;
+    const { url } = navigationState;
 
     // Inject login credentials if the URL is the login page (oscar/index.jsp)
     if (url.includes('oscar/index.jsp') && loginAttempt == 0) {
@@ -182,9 +181,9 @@ const Login = () => {
       .then((response) => {
         const parser = new XMLParser();
         let obj = parser.parse(response.data);
-        const providerNo =
+        const { providerNo } =
           obj['soap:Envelope']['soap:Body']['ns2:login2Response'].return
-            .provider.providerNo;
+            .provider;
         setProviderNo(providerNo);
         setEndpoint(constructUrl('/index.jsp'));
         setLoginAttempt(0);

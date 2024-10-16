@@ -39,7 +39,7 @@ const FetchToken = () => {
       return;
     }
 
-    const url = navigationState.url;
+    const { url } = navigationState;
     const username = SecureKeyStore.getKey(CustomKeyType.USERNAME);
     const password = SecureKeyStore.getKey(CustomKeyType.PASSWORD);
     const pin = SecureKeyStore.getKey(CustomKeyType.PIN);
@@ -105,8 +105,7 @@ const FetchToken = () => {
       const res = await manager.getRequestToken();
 
       if (res.status == StatusType.SUCCESS) {
-        const authUrl = manager.getAuthorizationUrl();
-        return authUrl;
+        return manager.getAuthorizationUrl();
       } else {
         Alert.alert('Error', res.message, [
           { text: 'Failed to get request token.' },
