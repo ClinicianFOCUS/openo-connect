@@ -1,7 +1,6 @@
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { CustomKeyType, CustomResponse, StatusType } from '@/types/types';
 import axios from 'axios';
-import Constants from 'expo-constants';
 import { useNavigation } from 'expo-router';
 import React, { createRef, useState } from 'react';
 import { View, StyleSheet, Alert, Button, Text, TextInput } from 'react-native';
@@ -39,7 +38,6 @@ const Login = () => {
   const [webViewKey, setWebViewKey] = useState(0);
 
   const { setManager } = useAuthManagerStore();
-  const navigation = useNavigation();
 
   const BASE_URL = SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL);
   const webViewRef = createRef<WebView>();
@@ -62,7 +60,7 @@ const Login = () => {
         return authUrl;
       } else {
         Alert.alert('Error', res.message, [
-          { text: 'Go Back', onPress: () => navigation.goBack() },
+          { text: 'Failed to get request token.' },
         ]);
       }
     }
@@ -115,14 +113,11 @@ const Login = () => {
    * - If the URL is `oauth/authorize`, it injects JQuery and authorizes OAuth.
    */
   const onNavigationStateChange = (navigationState: WebViewNavigation) => {
-    if (navigationState.loading) {
+    if (navigationState.loading || !webViewRef.current) {
       return;
     }
-    const url = navigationState.url;
 
-    if (!webViewRef.current) {
-      return;
-    }
+    const url = navigationState.url;
 
     // Inject login credentials if the URL is the login page (oscar/index.jsp)
     if (url.includes('oscar/index.jsp') && loginAttempt == 0) {

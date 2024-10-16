@@ -35,6 +35,21 @@ export const useOAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Add an event listener for OAuth callback URLs to get the access token
+    let callbackListener: EmitterSubscription;
+    if (manager) {
+      callbackListener = Linking.addEventListener('url', (event) =>
+        handleUrl(event, manager)
+      );
+    }
+
+    // Clean up the event listener when the component unmounts or the manager changes
+    return () => {
+      callbackListener?.remove();
+    };
+  }, [manager]);
+
+  useEffect(() => {
     setLoading(true);
 
     if (
@@ -59,21 +74,8 @@ export const useOAuth = () => {
       initManager();
     }
 
-    // Add an event listener for OAuth callback URLs to get the access token
-    let callbackListener: EmitterSubscription;
-    if (manager) {
-      callbackListener = Linking.addEventListener('url', (event) =>
-        handleUrl(event, manager)
-      );
-    }
-
     setLoading(false);
-
-    // Clean up the event listener when the component unmounts or the manager changes
-    return () => {
-      callbackListener?.remove();
-    };
-  }, [manager]);
+  }, []);
 
   /**
    * Initializes the OAuthManager instance and sets it to the state.
@@ -114,6 +116,7 @@ export const useOAuth = () => {
 
       if (res.status == StatusType.SUCCESS) {
         setHasAccessToken(true);
+        setHasUserCredentials(true);
         Alert.alert('Access Granted');
       } else {
         Alert.alert('Error', 'Failed to get access token');
