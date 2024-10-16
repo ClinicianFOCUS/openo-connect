@@ -17,6 +17,7 @@ export enum StatusType {
 export type CustomResponse = {
   status: StatusType;
   message: string;
+  code?: number;
   data?: any;
 };
 

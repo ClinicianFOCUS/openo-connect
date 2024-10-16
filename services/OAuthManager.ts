@@ -93,7 +93,16 @@ export default class OAuthManager {
    * @returns {CustomResponse} The parsed error response.
    */
   parseError(error: AxiosError): CustomResponse {
-    if (error.response) {
+    if (error.status === 401) {
+      SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN);
+      SecureKeyStore.deleteKey(CustomKeyType.SECRET_KEY);
+
+      return {
+        status: StatusType.ERROR,
+        code: 401,
+        message: 'Access Token Expired. Fetch new token',
+      };
+    } else if (error.response) {
       return {
         status: StatusType.ERROR,
         message: `${error.code} ${

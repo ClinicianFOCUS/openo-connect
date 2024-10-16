@@ -9,8 +9,10 @@ import {
   StyleSheet,
   Button,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import AppointmentTable from './AppointmentTable';
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 
 /**
  * AppointmentList component displays a list of today's appointments.
@@ -24,6 +26,8 @@ const AppointmentList = () => {
     Appointment[]
   >([]);
   const [loading, setLoading] = useState(true);
+
+  const { setHasAccessToken } = useAuthManagerStore();
   const router = useRouter();
 
   // Fetch appointments when the component mounts
@@ -44,6 +48,11 @@ const AppointmentList = () => {
         setPastAppointments(pastAppointments);
         setUpcomingAppointments(upcomingAppointments);
         setLoading(false);
+      } else {
+        if (res?.code == 401) {
+          setHasAccessToken(false);
+        }
+        Alert.alert(res.message);
       }
     });
   };

@@ -5,7 +5,7 @@ import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { PatientDetail, StatusType } from '@/types/types';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
+import { Text, View, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 
 /**
  * AppointmentDetail component.
@@ -14,7 +14,7 @@ import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 const AppointmentDetail = () => {
   const [patientDetail, setPatientDetail] = useState<PatientDetail>();
   const [loading, setLoading] = useState(true);
-  const { manager } = useAuthManagerStore();
+  const { manager, setHasAccessToken } = useAuthManagerStore();
   const { id } = useLocalSearchParams();
 
   useEffect(() => {
@@ -28,6 +28,11 @@ const AppointmentDetail = () => {
         if (res.status === StatusType.SUCCESS) {
           setPatientDetail(res.data);
           setLoading(false);
+        } else {
+          if (res?.code == 401) {
+            setHasAccessToken(false);
+          }
+          Alert.alert(res.message);
         }
       });
   }, [id, manager]);
