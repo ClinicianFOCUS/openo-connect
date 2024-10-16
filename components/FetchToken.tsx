@@ -127,8 +127,8 @@ const FetchToken = () => {
 
 const styles = StyleSheet.create({
   webview: {
-    // position: 'absolute',
-    // display: 'none',
+    position: 'absolute',
+    display: 'none',
   },
   errorMessage: {
     color: 'red',
