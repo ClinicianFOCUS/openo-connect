@@ -1,7 +1,6 @@
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { CustomKeyType, CustomResponse, StatusType } from '@/types/types';
 import axios from 'axios';
-import { useNavigation } from 'expo-router';
 import React, { createRef, useState } from 'react';
 import { View, StyleSheet, Alert, Button, Text, TextInput } from 'react-native';
 import {
@@ -18,6 +17,7 @@ import {
   INJECT_JQUERY,
   SEND_GET_REQUEST,
 } from '@/scripts/scripts';
+import { constructUrl } from '@/utils/utils';
 
 /**
  * O19Login component handles the OAuth login flow using a WebView.
@@ -38,8 +38,6 @@ const Login = () => {
   const [webViewKey, setWebViewKey] = useState(0);
 
   const { setManager } = useAuthManagerStore();
-
-  const BASE_URL = SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL);
   const webViewRef = createRef<WebView>();
 
   /**
@@ -180,7 +178,7 @@ const Login = () => {
     SecureKeyStore.saveKey(CustomKeyType.USERNAME, username);
     SecureKeyStore.saveKey(CustomKeyType.PASSWORD, password);
     SecureKeyStore.saveKey(CustomKeyType.PIN, pin);
-    getProviderNumber(`${BASE_URL}/ws/LoginService`)
+    getProviderNumber(constructUrl('/ws/LoginService'))
       .then((response) => {
         const parser = new XMLParser();
         let obj = parser.parse(response.data);
@@ -188,7 +186,7 @@ const Login = () => {
           obj['soap:Envelope']['soap:Body']['ns2:login2Response'].return
             .provider.providerNo;
         setProviderNo(providerNo);
-        setEndpoint(`${BASE_URL}/index.jsp`);
+        setEndpoint(constructUrl('/index.jsp'));
         setLoginAttempt(0);
         setWebViewKey((prevKey) => prevKey + 1);
       })
