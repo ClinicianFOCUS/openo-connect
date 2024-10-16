@@ -1,41 +1,23 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-
-/**
- * Column configuration type.
- * @interface {Object} ColumnConfig
- * @property {string} header - The header text for the column.
- * @property {string} accessor - The key to access the data in the item.
- * @property {(item: any) => React.ReactNode} [render] - Optional render function for custom rendering.
- */
-interface ColumnConfig {
-  header: string;
-  accessor: string;
-  render?: (item: any) => React.ReactNode;
-}
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import AppointmentRow from './AppointmentRow';
+import { Appointment, ColumnConfig } from '@/types/types';
 
 /**
  * Props for the AppointmentTable component.
  * @interface {Object} TableProps
  * @property {ColumnConfig[]} columns - Array of column configurations.
- * @property {any[]} upcoming - Array of upcoming appointments.
- * @property {any[]} past - Array of past appointments.
- * @property {(item: any) => string} keyExtractor - Function to extract a unique key for each item.
- * @property {(item: any) => void} [onPress] - Optional function to handle item press.
+ * @property {Appointment[]} upcoming - Array of upcoming appointments.
+ * @property {Appointment[]} past - Array of past appointments.
+ * @property {(item: Appointment) => string} keyExtractor - Function to extract a unique key for each item.
+ * @property {(item: Appointment) => void} [onPress] - Optional function to handle item press.
  */
 interface TableProps {
   columns: ColumnConfig[];
-  upcoming: any[];
-  past: any[];
-  keyExtractor: (item: any) => string;
-  onPress?: (item: any) => void;
+  upcoming: Appointment[];
+  past: Appointment[];
+  keyExtractor: (item: Appointment) => string;
+  onPress?: (item: Appointment) => void;
 }
 
 /**
@@ -72,19 +54,15 @@ const AppointmentTable: React.FC<TableProps> = ({
             <View style={{ maxHeight: 150 }}>
               <FlatList
                 data={upcoming}
+                showsVerticalScrollIndicator={true}
+                showsHorizontalScrollIndicator={true}
+                persistentScrollbar={true}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => onPress && onPress(item)}>
-                    <View style={styles.row}>
-                      {columns.map((column) => (
-                        <Text key={column.accessor} style={styles.itemText}>
-                          {column.render
-                            ? column.render(item)
-                            : item[column.accessor]}
-                        </Text>
-                      ))}
-                      <Ionicons size={20} name="chevron-forward-outline" />
-                    </View>
-                  </TouchableOpacity>
+                  <AppointmentRow
+                    item={item}
+                    columns={columns}
+                    onPress={onPress}
+                  />
                 )}
                 keyExtractor={keyExtractor}
               />
@@ -112,19 +90,15 @@ const AppointmentTable: React.FC<TableProps> = ({
             <View style={{ maxHeight: 150 }}>
               <FlatList
                 data={past}
+                showsVerticalScrollIndicator={true}
+                showsHorizontalScrollIndicator={true}
+                persistentScrollbar={true}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => onPress && onPress(item)}>
-                    <View style={styles.row}>
-                      {columns.map((column) => (
-                        <Text key={column.accessor} style={styles.itemText}>
-                          {column.render
-                            ? column.render(item)
-                            : item[column.accessor]}
-                        </Text>
-                      ))}
-                      <Ionicons size={20} name="chevron-forward-outline" />
-                    </View>
-                  </TouchableOpacity>
+                  <AppointmentRow
+                    item={item}
+                    columns={columns}
+                    onPress={onPress}
+                  />
                 )}
                 keyExtractor={keyExtractor}
               />
@@ -147,9 +121,8 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: 'black',
   },
   titleText: {
     fontWeight: 'bold',
@@ -165,6 +138,20 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
+  },
+  icon: {
+    height: 35,
+    width: 35,
+    resizeMode: 'contain',
+  },
+  reasonText: {
+    textAlign: 'left',
+    paddingBottom: 10,
+    paddingLeft: 10,
+  },
+  borderBottom: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
   },
 });
 

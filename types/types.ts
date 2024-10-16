@@ -22,6 +22,7 @@ export type CustomResponse = {
 };
 
 export type Appointment = {
+  id: number;
   demographicNo: number;
   appointmentNo: number;
   name: string;
@@ -71,3 +72,16 @@ export type PatientDetail = {
   email: string;
   hin: string;
 };
+
+/**
+ * Column configuration type.
+ * @interface {Object} ColumnConfig
+ * @property {string} header - The header text for the column.
+ * @property {string} accessor - The key to access the data in the item.
+ * @property {(item: any) => React.ReactNode} [render] - Optional render function for custom rendering.
+ */
+export interface ColumnConfig {
+  header: string;
+  accessor: keyof Appointment;
+  render?: (item: Appointment) => React.ReactNode;
+}

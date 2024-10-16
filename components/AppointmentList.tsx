@@ -82,14 +82,10 @@ const AppointmentList = () => {
               header: 'Time',
               accessor: 'startTime',
             },
-            {
-              header: 'Duration',
-              accessor: 'duration',
-            },
           ]}
           upcoming={upcomingAppointments}
           past={pastAppointments}
-          keyExtractor={(item) => item.appointmentNo}
+          keyExtractor={(item) => item.appointmentNo.toString()}
           onPress={(item) =>
             router.push(`/patient-detail/${item.demographicNo}`)
           }

@@ -124,7 +124,7 @@ const PatientAppointment = () => {
           ]}
           upcoming={upcomingAppointments}
           past={pastAppointments}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
         />
       )}
     </View>
