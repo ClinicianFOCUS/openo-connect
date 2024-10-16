@@ -149,11 +149,7 @@ const Login = () => {
     }
 
     // If the URL is not the login page (oscar/index.jsp) or login.do or oauth/authorize, inject query to get/set client key and secret
-    if (
-      !url.includes('oscar/index.jsp') &&
-      !url.includes('oscar/login.do') &&
-      !url.includes('oauth/authorize')
-    ) {
+    if (url.includes('oscar/provider')) {
       console.log('INJECTING QUERY TO GET KEY');
       setLoginText('Getting Key');
       providerNo &&

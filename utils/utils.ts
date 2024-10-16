@@ -1,4 +1,5 @@
-import { Appointment } from '@/types/types';
+import { SecureKeyStore } from '@/services/SecureKeyStore';
+import { Appointment, CustomKeyType } from '@/types/types';
 
 /**
  * Splits the appointment history into past and upcoming appointments.
@@ -46,4 +47,14 @@ export const splitAppointments = (appointmentHistory: Appointment[]) => {
   });
 
   return { pastAppointments, upcomingAppointments };
+};
+
+export const constructUrl = (endpoint: string): string => {
+  let base_url = SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL);
+
+  if (base_url?.startsWith('/')) {
+    base_url = base_url.substring(1);
+  }
+
+  return `${base_url}${endpoint}`;
 };
