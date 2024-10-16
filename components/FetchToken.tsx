@@ -20,6 +20,20 @@ const FetchToken = () => {
   const webViewRef = createRef<WebView>();
   const { manager, setHasUserCredentials } = useAuthManagerStore();
 
+  /**
+   * Handles the navigation state changes of the WebView.
+   *
+   * @param {WebViewNavigation} navigationState - The current state of the WebView navigation.
+   *
+   * This function performs the following actions based on the URL in the navigation state:
+   * - If the URL is the login page (`oscar/index.jsp`) and it's the first login attempt, it injects the login credentials into the form and submits it.
+   * - If the URL is the login page (`oscar/index.jsp`) and it's the second login attempt, it deletes the stored credentials and alerts the user about invalid credentials.
+   * - If the URL is `oscar/login.do`, it deletes the stored credentials and alerts the user that the account is locked.
+   * - If the URL is `oscar/provider`, it initiates the OAuth flow and sets the endpoint.
+   * - If the URL is `oauth/authorize`, it injects jQuery and authorizes OAuth.
+   *
+   * The function also ensures that the WebView reference is available and that the necessary credentials are present before performing any actions.
+   */
   const onNavigationStateChange = (navigationState: WebViewNavigation) => {
     if (navigationState.loading || !webViewRef.current) {
       return;
@@ -101,6 +115,13 @@ const FetchToken = () => {
     }
   };
 
+  /**
+   * Fetches the access token by constructing the URL for the endpoint,
+   * updating the button text, setting the endpoint, resetting the login attempt,
+   * and refreshing the WebView key.
+   *
+   * @function
+   */
   const fetchAccessToken = () => {
     const url = constructUrl('/index.jsp');
     setButtonText('Fetching Token');

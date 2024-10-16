@@ -49,6 +49,12 @@ export const splitAppointments = (appointmentHistory: Appointment[]) => {
   return { pastAppointments, upcomingAppointments };
 };
 
+/**
+ * Constructs a full URL by appending the given endpoint to the base URL.
+ *
+ * @param endpoint - The endpoint to be appended to the base URL.
+ * @returns The constructed full URL as a string.
+ */
 export const constructUrl = (endpoint: string): string => {
   let base_url = SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL);
 
