@@ -19,7 +19,7 @@
     "@react-navigation/native": "^6.0.2",
     "axios": "^1.7.7",
     "crypto-js": "^4.2.0",
-    "expo": "~51.0.28",
+    "expo": "^51.0.38",
     "expo-camera": "~15.0.16",
     "expo-clipboard": "~6.0.3",
     "expo-constants": "~16.0.2",
