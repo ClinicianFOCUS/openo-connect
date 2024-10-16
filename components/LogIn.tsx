@@ -13,6 +13,12 @@ import {
 import { XMLParser } from 'fast-xml-parser';
 import { SecureKeyStore } from '@/services/SecureKeyStore';
 import OAuthManager from '@/services/OAuthManager';
+import {
+  AUTHORIZE_OAUTH,
+  FILL_LOGIN_FORM_AND_SUBMIT,
+  INJECT_JQUERY,
+  SEND_GET_REQUEST,
+} from '@/scripts/scripts';
 
 /**
  * O19Login component handles the OAuth login flow using a WebView.
@@ -36,7 +42,6 @@ const Login = () => {
   const navigation = useNavigation();
 
   const BASE_URL = SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL);
-  const CALLBACK_URL = Constants.experienceUrl;
   const webViewRef = createRef<WebView>();
 
   /**
@@ -97,17 +102,6 @@ const Login = () => {
     });
   };
 
-  // jQuery injection script
-  const injectJQuery = `
-    (function() {
-      var script = document.createElement('script');
-      script.src = 'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js';
-      script.type = 'text/javascript';
-      document.head.appendChild(script);
-    })();
-    true; // returning true to indicate script has been injected
-  `;
-
   /**
    * Handles the navigation state changes of the WebView.
    *
@@ -126,19 +120,17 @@ const Login = () => {
     }
     const url = navigationState.url;
 
-    // Inject login credentials if the URL is the login page (oscar/index.jsp)
-    if (
-      webViewRef.current &&
-      url.includes('oscar/index.jsp') &&
-      loginAttempt == 0
-    ) {
-      console.log('INJECTING FILLED FORM');
-      webViewRef.current.injectJavaScript(FILL_LOGIN_FORM_AND_SUBMIT);
-      setLoginAttempt(loginAttempt + 1);
-    }
-
     if (!webViewRef.current) {
       return;
+    }
+
+    // Inject login credentials if the URL is the login page (oscar/index.jsp)
+    if (url.includes('oscar/index.jsp') && loginAttempt == 0) {
+      console.log('INJECTING FILLED FORM');
+      webViewRef.current.injectJavaScript(
+        FILL_LOGIN_FORM_AND_SUBMIT(username, password, pin)
+      );
+      setLoginAttempt(loginAttempt + 1);
     }
 
     // If the login attempt is 1 and the URL is still the login page, then the login failed
@@ -169,78 +161,16 @@ const Login = () => {
     ) {
       console.log('INJECTING QUERY TO GET KEY');
       setLoginText('Getting Key');
-      webViewRef.current.injectJavaScript(SEND_GET_REQUEST);
+      providerNo &&
+        webViewRef.current.injectJavaScript(SEND_GET_REQUEST(providerNo));
     }
 
     if (url.includes('oauth/authorize')) {
       console.log('Injecting JQuery');
-      webViewRef.current.injectJavaScript(injectJQuery);
-      webViewRef.current.injectJavaScript(AUTHORIZE_OAUTH);
+      webViewRef.current.injectJavaScript(INJECT_JQUERY());
+      webViewRef.current.injectJavaScript(AUTHORIZE_OAUTH());
     }
   };
-
-  //Script to fill the form and submit
-  const FILL_LOGIN_FORM_AND_SUBMIT = `
-    (function() {
-      document.getElementById('username').value = '${username}';
-      document.getElementById('password2').value = '${password}';
-      document.getElementById('pin').value = '${pin}';
-      document.getElementById('pin2').value = '${pin}';
-      let submitButton = document.querySelector('button[type="submit"][name="submit"].btn.btn-primary.btn-block');
-      if (submitButton) {
-        submitButton.click();
-      } else {
-        console.error('Submit button not found');
-      }
-    })();
-    true`;
-
-  //Script to get or set the client key and secret
-  const SEND_GET_REQUEST = `
-   function CREATE_CLIENT() {
-    fetch('${BASE_URL}/admin/api/clientManage.json?method=add&name=${providerNo}&uri=${CALLBACK_URL}&lifetime=86400')
-      .then((response) => response.json())
-      .then((data) => {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ status: "${StatusType.SUCCESS}", message: "Key created successfully" }));
-        GET_CLIENT();
-      })
-      .catch(error => {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ status: "${StatusType.ERROR}", message: "Failed to create key" }));
-      })
-  }
-  function GET_CLIENT() {
-    let keyFound = null;
-    fetch('${BASE_URL}/admin/api/clientManage.json?method=list')
-      .then((response) => response.json())
-      .then((data) => {
-        keyFound = data.find((item) => item.name === '${providerNo}');
-
-        if (!keyFound) {
-          window.ReactNativeWebView.postMessage(JSON.stringify({ status: "${StatusType.SUCCESS}", message: "Key not found. Creating Key" }));
-          CREATE_CLIENT();
-          return;
-        }
-        window.ReactNativeWebView.postMessage(JSON.stringify({ status: "${StatusType.SUCCESS}", data : { key: keyFound.key, secret: keyFound.secret } }));
-      })
-      .catch((error) => {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ status: "${StatusType.ERROR}", message: "Failed to get key. Trying again" }));
-      });
-  }
-  GET_CLIENT();
-  true;
-  `;
-
-  //Script to press authorize button
-  const AUTHORIZE_OAUTH = `
-    (function() {
-      let authorizeButton = document.querySelector('input[type="submit"].btn.btn-primary');
-      if (authorizeButton) {
-        authorizeButton.click();
-      } else {
-        console.error('Submit button not found');
-      }
-    })();
-    true`;
 
   /**
    * Handles the login process by performing the following steps:
@@ -255,6 +185,7 @@ const Login = () => {
    */
   const handleLogin = () => {
     setLoginText('Logging in...');
+    setLoginError('');
     SecureKeyStore.saveKey(CustomKeyType.USERNAME, username);
     SecureKeyStore.saveKey(CustomKeyType.PASSWORD, password);
     SecureKeyStore.saveKey(CustomKeyType.PIN, pin);
@@ -267,7 +198,6 @@ const Login = () => {
             .provider.providerNo;
         setProviderNo(providerNo);
         setEndpoint(`${BASE_URL}/index.jsp`);
-        setLoginError('');
         setLoginAttempt(0);
         setWebViewKey((prevKey) => prevKey + 1);
       })

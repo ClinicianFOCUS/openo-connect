@@ -37,9 +37,6 @@ export const useOAuth = () => {
   useEffect(() => {
     setLoading(true);
 
-    SecureKeyStore.deleteKey(CustomKeyType.USERNAME);
-    SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
-    SecureKeyStore.deleteKey(CustomKeyType.PIN);
     if (
       SecureKeyStore.getKey(CustomKeyType.USERNAME) &&
       SecureKeyStore.getKey(CustomKeyType.PASSWORD) &&
