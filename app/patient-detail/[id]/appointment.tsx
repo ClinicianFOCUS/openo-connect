@@ -106,26 +106,70 @@ const PatientAppointment = () => {
           <ActivityIndicator size={70} color="#0000ff" />
         </View>
       ) : (
-        <AppointmentTable
-          columns={[
-            {
-              header: 'Date',
-              accessor: 'appointmentDate',
-            },
-            {
-              header: 'Time',
-              accessor: 'startTime',
-            },
-            {
-              header: 'Status',
-              accessor: 'status',
-              render: (item) => getStatusFromCode(item.status),
-            },
-          ]}
-          upcoming={upcomingAppointments}
-          past={pastAppointments}
-          keyExtractor={(item) => item.id.toString()}
-        />
+        <View>
+          {/* Render upcoming appointments section */}
+          {!upcomingAppointments || upcomingAppointments.length == 0 ? (
+            <View style={{ marginBottom: 16 }}>
+              <Text style={styles.title}>Upcoming Appointment</Text>
+              <Text style={{ fontSize: 16 }}>
+                No upcoming appointments found.
+              </Text>
+            </View>
+          ) : (
+            <View>
+              <Text style={styles.title}>Upcoming Appointment</Text>
+              <AppointmentTable
+                columns={[
+                  {
+                    header: 'Date',
+                    accessor: 'appointmentDate',
+                  },
+                  {
+                    header: 'Time',
+                    accessor: 'startTime',
+                  },
+                  {
+                    header: 'Status',
+                    accessor: 'status',
+                    render: (item) => getStatusFromCode(item.status),
+                  },
+                ]}
+                appointments={upcomingAppointments}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            </View>
+          )}
+          {/* Render past appointments section */}
+          {!pastAppointments || pastAppointments.length == 0 ? (
+            <View style={{ marginTop: 16 }}>
+              <Text style={styles.title}>Past Appointment</Text>
+              <Text style={{ fontSize: 16 }}>No past appointments found.</Text>
+            </View>
+          ) : (
+            <View style={{ marginTop: 16 }}>
+              <Text style={styles.title}>Past Appointment</Text>
+              <AppointmentTable
+                columns={[
+                  {
+                    header: 'Date',
+                    accessor: 'appointmentDate',
+                  },
+                  {
+                    header: 'Time',
+                    accessor: 'startTime',
+                  },
+                  {
+                    header: 'Status',
+                    accessor: 'status',
+                    render: (item) => getStatusFromCode(item.status),
+                  },
+                ]}
+                appointments={pastAppointments}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            </View>
+          )}
+        </View>
       )}
     </View>
   );

@@ -21,10 +21,7 @@ import { useAuthManagerStore } from '@/store/useAuthManagerStore';
  */
 const AppointmentList = () => {
   const { callApi } = useOAuth();
-  const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
-  const [upcomingAppointments, setUpcomingAppointments] = useState<
-    Appointment[]
-  >([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
 
   const { setHasAccessToken } = useAuthManagerStore();
@@ -45,8 +42,7 @@ const AppointmentList = () => {
         const { pastAppointments, upcomingAppointments } = splitAppointments(
           res.data
         );
-        setPastAppointments(pastAppointments);
-        setUpcomingAppointments(upcomingAppointments);
+        setAppointments(upcomingAppointments.concat(pastAppointments));
         setLoading(false);
       } else {
         if (res?.code == 401) {
@@ -83,8 +79,7 @@ const AppointmentList = () => {
               accessor: 'startTime',
             },
           ]}
-          upcoming={upcomingAppointments}
-          past={pastAppointments}
+          appointments={appointments}
           keyExtractor={(item) => item.appointmentNo.toString()}
           onPress={(item) =>
             router.push(`/patient-detail/${item.demographicNo}`)

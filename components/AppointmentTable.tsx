@@ -7,15 +7,13 @@ import { Appointment, ColumnConfig } from '@/types/types';
  * Props for the AppointmentTable component.
  * @interface {Object} TableProps
  * @property {ColumnConfig[]} columns - Array of column configurations.
- * @property {Appointment[]} upcoming - Array of upcoming appointments.
- * @property {Appointment[]} past - Array of past appointments.
+ * @property {Appointment[]} appointment - Array of appointments.
  * @property {(item: Appointment) => string} keyExtractor - Function to extract a unique key for each item.
  * @property {(item: Appointment) => void} [onPress] - Optional function to handle item press.
  */
 interface TableProps {
   columns: ColumnConfig[];
-  upcoming: Appointment[];
-  past: Appointment[];
+  appointments: Appointment[];
   keyExtractor: (item: Appointment) => string;
   onPress?: (item: Appointment) => void;
 }
@@ -27,85 +25,31 @@ interface TableProps {
  */
 const AppointmentTable: React.FC<TableProps> = ({
   columns,
-  upcoming,
-  past,
+  appointments,
   keyExtractor,
   onPress,
 }) => {
   return (
     <View>
-      {/* Render upcoming appointments section */}
-      {!upcoming || upcoming.length == 0 ? (
-        <View style={{ marginBottom: 16 }}>
-          <Text style={styles.title}>Upcoming Appointment</Text>
-          <Text style={{ fontSize: 16 }}>No upcoming appointments found.</Text>
-        </View>
-      ) : (
-        <View>
-          <Text style={styles.title}>Upcoming Appointment</Text>
-          <View>
-            <View style={styles.header}>
-              {columns.map((column) => (
-                <Text key={column.accessor} style={styles.titleText}>
-                  {column.header}
-                </Text>
-              ))}
-            </View>
-            <View style={{ maxHeight: 150 }}>
-              <FlatList
-                data={upcoming}
-                showsVerticalScrollIndicator={true}
-                showsHorizontalScrollIndicator={true}
-                persistentScrollbar={true}
-                renderItem={({ item }) => (
-                  <AppointmentRow
-                    item={item}
-                    columns={columns}
-                    onPress={onPress}
-                  />
-                )}
-                keyExtractor={keyExtractor}
-              />
-            </View>
-          </View>
-        </View>
-      )}
-      {/* Render past appointments section */}
-      {!past || past.length == 0 ? (
-        <View style={{ marginTop: 16 }}>
-          <Text style={styles.title}>Past Appointment</Text>
-          <Text style={{ fontSize: 16 }}>No past appointments found.</Text>
-        </View>
-      ) : (
-        <View style={{ marginTop: 16 }}>
-          <Text style={styles.title}>Past Appointment</Text>
-          <View>
-            <View style={styles.header}>
-              {columns.map((column) => (
-                <Text key={column.accessor} style={styles.titleText}>
-                  {column.header}
-                </Text>
-              ))}
-            </View>
-            <View style={{ maxHeight: 150 }}>
-              <FlatList
-                data={past}
-                showsVerticalScrollIndicator={true}
-                showsHorizontalScrollIndicator={true}
-                persistentScrollbar={true}
-                renderItem={({ item }) => (
-                  <AppointmentRow
-                    item={item}
-                    columns={columns}
-                    onPress={onPress}
-                  />
-                )}
-                keyExtractor={keyExtractor}
-              />
-            </View>
-          </View>
-        </View>
-      )}
+      <View style={styles.header}>
+        {columns.map((column) => (
+          <Text key={column.accessor} style={styles.titleText}>
+            {column.header}
+          </Text>
+        ))}
+      </View>
+      <View style={{ maxHeight: 150 }}>
+        <FlatList
+          data={appointments}
+          showsVerticalScrollIndicator={true}
+          showsHorizontalScrollIndicator={true}
+          persistentScrollbar={true}
+          renderItem={({ item }) => (
+            <AppointmentRow item={item} columns={columns} onPress={onPress} />
+          )}
+          keyExtractor={keyExtractor}
+        />
+      </View>
     </View>
   );
 };
