@@ -15,9 +15,10 @@ const FetchToken = () => {
   const [endpoint, setEndpoint] = useState<string>();
   const [loginAttempt, setLoginAttempt] = useState<number>(0);
   const [webViewKey, setWebViewKey] = useState(0);
+  const [buttonText, setButtonText] = useState<string>('Fetch Access Token');
 
   const webViewRef = createRef<WebView>();
-  const { manager } = useAuthManagerStore();
+  const { manager, setHasUserCredentials } = useAuthManagerStore();
 
   const onNavigationStateChange = (navigationState: WebViewNavigation) => {
     if (navigationState.loading || !webViewRef.current) {
@@ -46,6 +47,7 @@ const FetchToken = () => {
       SecureKeyStore.deleteKey(CustomKeyType.USERNAME);
       SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
       SecureKeyStore.deleteKey(CustomKeyType.PIN);
+      setHasUserCredentials(false);
       Alert.alert('Invalid Credentials. Please try again.');
     }
 
@@ -54,6 +56,7 @@ const FetchToken = () => {
       SecureKeyStore.deleteKey(CustomKeyType.USERNAME);
       SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
       SecureKeyStore.deleteKey(CustomKeyType.PIN);
+      setHasUserCredentials(false);
       Alert.alert(
         'Your account has been locked. Please contact an administrator.'
       );
@@ -100,14 +103,19 @@ const FetchToken = () => {
 
   const fetchAccessToken = () => {
     const url = constructUrl('/index.jsp');
+    setButtonText('Fetching Token');
     setEndpoint(url);
     setLoginAttempt(0);
     setWebViewKey((prevKey) => prevKey + 1);
   };
 
   return (
-    <View>
-      <Button title="Fetch Access Token" onPress={fetchAccessToken} />
+    <View style={styles.container}>
+      <Button
+        title={buttonText}
+        onPress={fetchAccessToken}
+        disabled={buttonText == 'Fetching Token'}
+      />
       {endpoint && (
         <WebView
           key={webViewKey}
@@ -126,6 +134,10 @@ const FetchToken = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    width: '60%',
+    display: 'flex',
+  },
   webview: {
     position: 'absolute',
     display: 'none',

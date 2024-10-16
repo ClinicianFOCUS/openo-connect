@@ -261,7 +261,11 @@ const Login = () => {
       {loginError.length > 0 && (
         <Text style={styles.errorMessage}>{loginError}</Text>
       )}
-      <Button title={loginText} onPress={handleLogin} />
+      <Button
+        title={loginText}
+        onPress={handleLogin}
+        disabled={loginText !== 'Login'}
+      />
       {endpoint && (
         <WebView
           key={webViewKey}

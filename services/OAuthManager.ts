@@ -51,7 +51,7 @@ export default class OAuthManager {
           CryptoJS.enc.Base64
         );
       },
-    }); // This will store your request and access tokens
+    });
     this.callback_url = callback_url;
     this.o19_api_base_url = o19_api_base_url;
   }
