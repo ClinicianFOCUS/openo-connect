@@ -34,6 +34,7 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
+      {/* Username input field */}
       <Text style={styles.inputLabel}>Username:</Text>
       <TextInput
         value={username}
@@ -41,6 +42,8 @@ const Login = () => {
         placeholder="Enter Username"
         style={styles.input}
       />
+
+      {/* Password input field */}
       <Text style={styles.inputLabel}>Password:</Text>
       <TextInput
         value={password}
@@ -50,6 +53,8 @@ const Login = () => {
         style={styles.input}
         secureTextEntry={true}
       />
+
+      {/* PIN input field */}
       <Text style={styles.inputLabel}>Pin:</Text>
       <TextInput
         value={pin}
@@ -59,14 +64,20 @@ const Login = () => {
         style={styles.input}
         secureTextEntry={true}
       />
+
+      {/* Display login error message if any */}
       {loginError.length > 0 && (
         <Text style={styles.errorMessage}>{loginError}</Text>
       )}
+
+      {/* Login button */}
       <Button
         title={loginText}
         onPress={handleLogin}
         disabled={loginText !== 'Login'}
       />
+
+      {/* Render O19WebView component if login process has started */}
       {loginText !== 'Login' && (
         <O19WebView
           initialButtonText="Login"
