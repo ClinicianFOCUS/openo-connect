@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { CameraView, CameraProps } from 'expo-camera';
 import { useState, useRef } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -30,7 +31,7 @@ export default function CameraComponent({ onCapture }: CameraComponentProps) {
   const takePicture = async () => {
     const photo = await cameraRef.current?.takePictureAsync({ base64: true });
     if (photo?.base64) {
-      onCapture(photo.base64);
+      // onCapture(photo.base64);
     }
   };
 
@@ -38,12 +39,34 @@ export default function CameraComponent({ onCapture }: CameraComponentProps) {
     <View style={{ flex: 1 }}>
       <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip Camera</Text>
+          <TouchableOpacity
+            style={styles.buttonFlip}
+            onPress={toggleCameraFacing}
+          >
+            <Ionicons name="camera-reverse" size={36} color="white" />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttonCapture} onPress={takePicture}>
+            <View
+              style={{
+                borderWidth: 5,
+                borderColor: 'white',
+                borderRadius: 50,
+              }}
+            >
+              <View
+                style={{
+                  borderRadius: 50,
+                  height: 60,
+                  width: 60,
+                  backgroundColor: '#A9A9A9',
+                }}
+              ></View>
+            </View>
           </TouchableOpacity>
         </View>
       </CameraView>
-      <Button title="Take Picture" onPress={takePicture} />
     </View>
   );
 }
@@ -56,12 +79,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     backgroundColor: 'transparent',
-    margin: 64,
+    margin: 10,
   },
-  button: {
+  buttonFlip: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  buttonCapture: {
     flex: 1,
     alignSelf: 'flex-end',
     alignItems: 'center',
+    paddingBottom: 25,
   },
   text: {
     fontSize: 24,
