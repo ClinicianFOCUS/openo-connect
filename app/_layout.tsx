@@ -12,10 +12,7 @@ export default function RootLayout() {
       <Stack.Screen name="(tabs)" options={{ headerTitle: 'Open-O-Connect' }} />
 
       {/* Patient detail screen with dynamic id */}
-      <Stack.Screen
-        name="patient-detail/[id]"
-        options={{ headerTitle: 'Patient Details' }}
-      />
+      <Stack.Screen name="patient-detail/[id]" />
     </Stack>
   );
 }

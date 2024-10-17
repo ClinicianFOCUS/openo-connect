@@ -3,8 +3,8 @@
  */
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { PatientDetail, StatusType } from '@/types/types';
-import { useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Text, View, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 
 /**
@@ -16,6 +16,7 @@ const AppointmentDetail = () => {
   const [loading, setLoading] = useState(true);
   const { manager, setHasAccessToken } = useAuthManagerStore();
   const { id } = useLocalSearchParams();
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (!manager) {
@@ -36,6 +37,14 @@ const AppointmentDetail = () => {
         }
       });
   }, [id, manager]);
+
+  useLayoutEffect(() => {
+    if (patientDetail) {
+      navigation.getParent()?.setOptions({
+        headerTitle: `${patientDetail.firstName} ${patientDetail.lastName}`,
+      });
+    }
+  }, [navigation, patientDetail]);
 
   /**
    * Renders the patient detail.
