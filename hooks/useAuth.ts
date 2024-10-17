@@ -52,11 +52,12 @@ export const useOAuth = () => {
   useEffect(() => {
     setLoading(true);
 
-    if (
+    // Check if user credentials are stored in SecureKeyStore
+    const hasCreds =
       SecureKeyStore.getKey(CustomKeyType.USERNAME) &&
       SecureKeyStore.getKey(CustomKeyType.PASSWORD) &&
-      SecureKeyStore.getKey(CustomKeyType.PIN)
-    ) {
+      SecureKeyStore.getKey(CustomKeyType.PIN);
+    if (hasCreds) {
       setHasUserCredentials(true);
     }
 
@@ -69,8 +70,8 @@ export const useOAuth = () => {
       getProviderNo();
     }
 
-    // Init new manager if not present
-    if (!manager) {
+    // Initialize the OAuthManager if it is not already initialized and there are stored credentials
+    if (!manager && hasCreds) {
       initManager();
     }
 
@@ -87,9 +88,10 @@ export const useOAuth = () => {
    */
   const initManager = async () => {
     try {
+      console.log('Setting up new manager');
       setManager(new OAuthManager());
     } catch (error) {
-      console.error('Error creating OAuthManager', error);
+      console.log('Error creating OAuthManager', error);
     }
   };
 
@@ -165,5 +167,5 @@ export const useOAuth = () => {
     }
   };
 
-  return { callApi, loading };
+  return { loading };
 };

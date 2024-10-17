@@ -22,7 +22,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
  * It also provides a refresh button to re-fetch the appointments.
  */
 const AppointmentList = () => {
-  const { callApi } = useOAuth();
+  const { manager } = useAuthManagerStore();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,31 +32,38 @@ const AppointmentList = () => {
   // Fetch appointments when the component mounts
   useEffect(() => {
     fetchAppointments();
-  }, []);
+  }, [manager]);
 
   /**
    * Fetches today's appointments from the API and updates the state.
    */
   const fetchAppointments = () => {
+    // Check if the manager is available before fetching appointments
+    if (!manager) {
+      return;
+    }
+
     setLoading(true);
-    callApi('GET', 'schedule/day/today').then((res) => {
+    manager.makeAuthorizedRequest('GET', 'schedule/day/today').then((res) => {
       if (res.status === StatusType.SUCCESS) {
+        // Split appointments into past and upcoming
         const { pastAppointments, upcomingAppointments } = splitAppointments(
           res.data
         );
         setAppointments(upcomingAppointments.concat(pastAppointments));
         setLoading(false);
       } else {
+        // Handle unauthorized access
         if (res?.code == 401) {
           setHasAccessToken(false);
         }
-        Alert.alert(res.message);
       }
     });
   };
 
   return (
     <View style={styles.container}>
+      {/* Header section with title and refresh button */}
       <View style={styles.header}>
         <Text style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 20 }}>
           Today's Appointments
@@ -67,6 +74,7 @@ const AppointmentList = () => {
           </TouchableOpacity>
         </View>
       </View>
+      {/* Loading indicator or appointment table based on loading state */}
       {loading ? (
         <View style={styles.loading}>
           <ActivityIndicator size={70} color="#0000ff" />
