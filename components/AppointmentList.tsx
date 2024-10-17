@@ -10,9 +10,11 @@ import {
   Button,
   ActivityIndicator,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import AppointmentTable from './AppointmentTable';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 /**
  * AppointmentList component displays a list of today's appointments.
@@ -60,7 +62,9 @@ const AppointmentList = () => {
           Today's Appointments
         </Text>
         <View>
-          <Button title="Refresh" onPress={fetchAppointments} />
+          <TouchableOpacity onPress={fetchAppointments}>
+            <Ionicons name="refresh" size={36} color="black" />
+          </TouchableOpacity>
         </View>
       </View>
       {loading ? (

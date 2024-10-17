@@ -5,6 +5,7 @@ import AppointmentTable from '@/components/AppointmentTable';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { Appointment, AppointmentStatus, StatusType } from '@/types/types';
 import { splitAppointments } from '@/utils/utils';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -14,6 +15,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   Button,
+  TouchableOpacity,
 } from 'react-native';
 
 /**
@@ -98,7 +100,9 @@ const PatientAppointment = () => {
           Appointment History
         </Text>
         <View>
-          <Button title="Refresh" onPress={fetchData} />
+          <TouchableOpacity onPress={fetchData}>
+            <Ionicons name="refresh" size={36} color="black" />
+          </TouchableOpacity>
         </View>
       </View>
       {loading ? (
