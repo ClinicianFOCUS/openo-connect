@@ -39,12 +39,14 @@ const AppointmentList = () => {
    * Fetches today's appointments from the API and updates the state.
    */
   const fetchAppointments = () => {
+    // Check if the manager is available before fetching appointments
     if (!manager) {
       return;
     }
     setLoading(true);
     manager.makeAuthorizedRequest('GET', 'schedule/day/today').then((res) => {
       if (res.status === StatusType.SUCCESS) {
+        // Split appointments into past and upcoming
         const { pastAppointments, upcomingAppointments } = splitAppointments(
           res.data
         );
@@ -52,6 +54,7 @@ const AppointmentList = () => {
         setUpcomingAppointments(upcomingAppointments);
         setLoading(false);
       } else {
+        // Handle unauthorized access
         if (res?.code == 401) {
           setHasAccessToken(false);
         }
@@ -61,6 +64,7 @@ const AppointmentList = () => {
 
   return (
     <View style={styles.container}>
+      {/* Header section with title and refresh button */}
       <View style={styles.header}>
         <Text style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 20 }}>
           Today's Appointments
@@ -69,6 +73,7 @@ const AppointmentList = () => {
           <Button title="Refresh" onPress={fetchAppointments} />
         </View>
       </View>
+      {/* Loading indicator or appointment table based on loading state */}
       {loading ? (
         <View style={styles.loading}>
           <ActivityIndicator size={70} color="#0000ff" />

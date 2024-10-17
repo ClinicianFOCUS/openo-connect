@@ -53,6 +53,7 @@ export const useOAuth = () => {
   useEffect(() => {
     setLoading(true);
 
+    // Check if user credentials are stored in SecureKeyStore
     if (
       SecureKeyStore.getKey(CustomKeyType.USERNAME) &&
       SecureKeyStore.getKey(CustomKeyType.PASSWORD) &&
@@ -70,7 +71,7 @@ export const useOAuth = () => {
       getProviderNo();
     }
 
-    // Init new manager if not present
+    // Initialize the OAuthManager if it is not already initialized and there are stored credentials
     if (!manager && hasUserCredentials) {
       initManager();
     }

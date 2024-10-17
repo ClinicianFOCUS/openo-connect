@@ -29,10 +29,10 @@ const AppointmentDetail = () => {
           setPatientDetail(res.data);
           setLoading(false);
         } else {
+          //Handle unauthorized access
           if (res?.code == 401) {
             setHasAccessToken(false);
           }
-          Alert.alert(res.message);
         }
       });
   }, [id, manager]);

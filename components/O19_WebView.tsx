@@ -207,10 +207,12 @@ const O19WebView: React.FC<O19WebViewProps> = ({
   const onMessage = (event: WebViewMessageEvent) => {
     const response: CustomResponse = JSON.parse(event.nativeEvent.data);
     console.log('Received message from webview:', response);
+    // If the response is an error, update the login text and error message
     if (response?.status == StatusType.ERROR) {
       setButtonText(initialButtonText);
       setError(response.message);
     }
+    // If the response is a success, update the login text and error message
     if (
       response.status == StatusType.SUCCESS &&
       response?.data?.key &&

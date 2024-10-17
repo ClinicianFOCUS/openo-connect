@@ -17,15 +17,22 @@ const FetchToken = () => {
 
   return (
     <View style={styles.container}>
+      {/* Display a message prompting the user to refetch the token */}
       <Text style={styles.message}>
         Token expired or settings have been changed. Please refetch token.
       </Text>
+
+      {/* Button to initiate the token fetching process */}
       <Button
         title={buttonText}
         onPress={() => setButtonText('Fetching Token')}
         disabled={buttonText != 'Fetch Access Token'}
       />
+
+      {/* Display an error message if there is an error */}
       {error.length > 0 && <Text style={styles.errorMessage}>{error}</Text>}
+
+      {/* Conditionally render the O19WebView component if the button text is not 'Fetch Access Token' */}
       {buttonText != 'Fetch Access Token' && (
         <O19WebView
           initialButtonText="Fetch Access Token"
