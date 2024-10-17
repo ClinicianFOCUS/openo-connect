@@ -16,12 +16,6 @@ export default function RootLayout() {
         name="patient-detail/[id]"
         options={{ headerTitle: 'Patient Details' }}
       />
-
-      {/* Authorization login screen */}
-      <Stack.Screen
-        name="o19-login/index"
-        options={{ headerTitle: 'Authorize' }}
-      />
     </Stack>
   );
 }

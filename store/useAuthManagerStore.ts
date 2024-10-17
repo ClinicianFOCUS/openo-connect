@@ -8,6 +8,8 @@ type AuthManagerStore = {
   setHasAccessToken: (hasAccessToken: boolean) => void;
   provider: any;
   setProvider: (provider: string) => void;
+  hasUserCredentials: boolean;
+  setHasUserCredentials: (hasUserCredentials: boolean) => void;
 };
 
 /**
@@ -21,6 +23,10 @@ type AuthManagerStore = {
  * @property {(hasAccessToken: boolean) => void} setHasAccessToken - Sets the access token presence state.
  * @property {any | null} provider - The authentication provider.
  * @property {(provider: any) => void} setProvider - Sets the authentication provider.
+ * @property {boolean} hasUserCredentials - Indicates if user credentials are present.
+ * @property {(hasUserCredentials: boolean) => void} setHasUserCredentials - Sets the user credentials state.
+ *
+ * @returns {AuthManagerStore} The authentication manager store.
  */
 export const useAuthManagerStore = create<AuthManagerStore>((set) => ({
   manager: null,
@@ -29,4 +35,7 @@ export const useAuthManagerStore = create<AuthManagerStore>((set) => ({
   setHasAccessToken: (hasAccessToken: boolean) => set({ hasAccessToken }),
   provider: null,
   setProvider: (provider: any) => set({ provider }),
+  hasUserCredentials: false,
+  setHasUserCredentials: (hasUserCredentials: boolean) =>
+    set({ hasUserCredentials }),
 }));

@@ -4,6 +4,9 @@ export enum CustomKeyType {
   O19_BASE_URL = 'o19_base_url',
   ACCESS_TOKEN = 'access_token',
   SECRET_KEY = 'secret_key',
+  USERNAME = 'username',
+  PASSWORD = 'password',
+  PIN = 'pin',
 }
 
 export enum StatusType {
@@ -14,6 +17,7 @@ export enum StatusType {
 export type CustomResponse = {
   status: StatusType;
   message: string;
+  code?: number;
   data?: any;
 };
 

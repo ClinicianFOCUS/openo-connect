@@ -51,7 +51,7 @@ export default class OAuthManager {
           CryptoJS.enc.Base64
         );
       },
-    }); // This will store your request and access tokens
+    });
     this.callback_url = callback_url;
     this.o19_api_base_url = o19_api_base_url;
   }
@@ -93,7 +93,17 @@ export default class OAuthManager {
    * @returns {CustomResponse} The parsed error response.
    */
   parseError(error: AxiosError): CustomResponse {
-    if (error.response) {
+    // Check if the error is due to an expired access token
+    if (error.status === 401) {
+      SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN);
+      SecureKeyStore.deleteKey(CustomKeyType.SECRET_KEY);
+
+      return {
+        status: StatusType.ERROR,
+        code: 401,
+        message: 'Access Token Expired. Fetch new token',
+      };
+    } else if (error.response) {
       return {
         status: StatusType.ERROR,
         message: `${error.code} ${
