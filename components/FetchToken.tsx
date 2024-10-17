@@ -15,15 +15,14 @@ const FetchToken = () => {
   const [buttonText, setButtonText] = useState<string>('Fetch Access Token');
   const [error, setError] = useState<string>('');
 
-  const fetchAccessToken = () => {
-    setButtonText('Fetching Token');
-  };
-
   return (
     <View style={styles.container}>
+      <Text style={styles.message}>
+        Token expired or settings have been changed. Please refetch token.
+      </Text>
       <Button
         title={buttonText}
-        onPress={fetchAccessToken}
+        onPress={() => setButtonText('Fetching Token')}
         disabled={buttonText != 'Fetch Access Token'}
       />
       {error.length > 0 && <Text style={styles.errorMessage}>{error}</Text>}
@@ -47,9 +46,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     display: 'none',
   },
+  message: {
+    marginBottom: 10,
+    fontSize: 14,
+  },
   errorMessage: {
+    marginTop: 10,
     color: 'red',
-    fontSize: 16,
+    fontSize: 14,
   },
 });
 

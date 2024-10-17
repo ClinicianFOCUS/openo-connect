@@ -55,7 +55,6 @@ const AppointmentList = () => {
         if (res?.code == 401) {
           setHasAccessToken(false);
         }
-        Alert.alert(res.message);
       }
     });
   };
