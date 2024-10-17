@@ -130,30 +130,37 @@ const FetchToken = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Button
-        title={buttonText}
-        onPress={fetchAccessToken}
-        disabled={buttonText == 'Fetching Token'}
-      />
-      {endpoint && (
-        <WebView
-          key={webViewKey}
-          style={styles.webview}
-          ref={webViewRef}
-          source={{
-            uri: endpoint,
-          }}
-          onNavigationStateChange={onNavigationStateChange}
-          javaScriptEnabled={true}
-          userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+    <View style={styles.center}>
+      <View style={styles.container}>
+        <Button
+          title={buttonText}
+          onPress={fetchAccessToken}
+          disabled={buttonText == 'Fetching Token'}
         />
-      )}
+        {endpoint && (
+          <WebView
+            key={webViewKey}
+            style={styles.webview}
+            ref={webViewRef}
+            source={{
+              uri: endpoint,
+            }}
+            onNavigationStateChange={onNavigationStateChange}
+            javaScriptEnabled={true}
+            userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+          />
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     width: '60%',
     display: 'flex',

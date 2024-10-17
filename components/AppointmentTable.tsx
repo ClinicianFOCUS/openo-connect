@@ -30,7 +30,7 @@ const AppointmentTable: React.FC<TableProps> = ({
   onPress,
 }) => {
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.header}>
         {columns.map((column) => (
           <Text key={column.accessor} style={styles.titleText}>
@@ -38,7 +38,7 @@ const AppointmentTable: React.FC<TableProps> = ({
           </Text>
         ))}
       </View>
-      <View style={{ maxHeight: 150 }}>
+      <View style={{ flex: 1 }}>
         <FlatList
           data={appointments}
           showsVerticalScrollIndicator={true}
@@ -55,6 +55,9 @@ const AppointmentTable: React.FC<TableProps> = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -62,40 +65,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#bfbfbf',
     paddingEnd: 20,
   },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-  },
   titleText: {
     fontWeight: 'bold',
     fontSize: 15,
     textAlign: 'center',
   },
-  itemText: {
+  listContainer: {
     flex: 1,
-    fontSize: 15,
-    textAlign: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  icon: {
-    height: 35,
-    width: 35,
-    resizeMode: 'contain',
-  },
-  reasonText: {
-    textAlign: 'left',
-    paddingBottom: 10,
-    paddingLeft: 10,
-  },
-  borderBottom: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'black',
+    borderColor: 'black',
+    borderWidth: 5,
   },
 });
 

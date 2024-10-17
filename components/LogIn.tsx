@@ -231,59 +231,66 @@ const Login = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.inputLabel}>Username:</Text>
-      <TextInput
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Enter Username"
-        style={styles.input}
-      />
-      <Text style={styles.inputLabel}>Password:</Text>
-      <TextInput
-        value={password}
-        textContentType="password"
-        onChangeText={setPassword}
-        placeholder="Enter Password"
-        style={styles.input}
-        secureTextEntry={true}
-      />
-      <Text style={styles.inputLabel}>Pin:</Text>
-      <TextInput
-        value={pin}
-        textContentType="password"
-        onChangeText={setPin}
-        placeholder="Enter Pin"
-        style={styles.input}
-        secureTextEntry={true}
-      />
-      {loginError.length > 0 && (
-        <Text style={styles.errorMessage}>{loginError}</Text>
-      )}
-      <Button
-        title={loginText}
-        onPress={handleLogin}
-        disabled={loginText !== 'Login'}
-      />
-      {endpoint && (
-        <WebView
-          key={webViewKey}
-          style={styles.webview}
-          ref={webViewRef}
-          source={{
-            uri: endpoint,
-          }}
-          onNavigationStateChange={onNavigationStateChange}
-          javaScriptEnabled={true}
-          onMessage={onMessage}
-          userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+    <View style={styles.center}>
+      <View style={styles.container}>
+        <Text style={styles.inputLabel}>Username:</Text>
+        <TextInput
+          value={username}
+          onChangeText={setUsername}
+          placeholder="Enter Username"
+          style={styles.input}
         />
-      )}
+        <Text style={styles.inputLabel}>Password:</Text>
+        <TextInput
+          value={password}
+          textContentType="password"
+          onChangeText={setPassword}
+          placeholder="Enter Password"
+          style={styles.input}
+          secureTextEntry={true}
+        />
+        <Text style={styles.inputLabel}>Pin:</Text>
+        <TextInput
+          value={pin}
+          textContentType="password"
+          onChangeText={setPin}
+          placeholder="Enter Pin"
+          style={styles.input}
+          secureTextEntry={true}
+        />
+        {loginError.length > 0 && (
+          <Text style={styles.errorMessage}>{loginError}</Text>
+        )}
+        <Button
+          title={loginText}
+          onPress={handleLogin}
+          disabled={loginText !== 'Login'}
+        />
+        {endpoint && (
+          <WebView
+            key={webViewKey}
+            style={styles.webview}
+            ref={webViewRef}
+            source={{
+              uri: endpoint,
+            }}
+            onNavigationStateChange={onNavigationStateChange}
+            javaScriptEnabled={true}
+            onMessage={onMessage}
+            userAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+          />
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     width: '85%',
     display: 'flex',

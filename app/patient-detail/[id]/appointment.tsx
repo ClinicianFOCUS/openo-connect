@@ -92,7 +92,7 @@ const PatientAppointment = () => {
   };
 
   return (
-    <View style={styles.detailContainer}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 20 }}>
           Appointment History
@@ -106,18 +106,25 @@ const PatientAppointment = () => {
           <ActivityIndicator size={70} color="#0000ff" />
         </View>
       ) : (
-        <View>
+        <View
+          style={{
+            height: '92%',
+            display: 'flex',
+            gap: 60,
+          }}
+        >
           {/* Render upcoming appointments section */}
-          {!upcomingAppointments || upcomingAppointments.length == 0 ? (
-            <View style={{ marginBottom: 16 }}>
-              <Text style={styles.title}>Upcoming Appointment</Text>
+          <View
+            style={{
+              maxHeight: '42%',
+            }}
+          >
+            <Text style={styles.title}>Upcoming Appointment</Text>
+            {!upcomingAppointments || upcomingAppointments.length == 0 ? (
               <Text style={{ fontSize: 16 }}>
                 No upcoming appointments found.
               </Text>
-            </View>
-          ) : (
-            <View>
-              <Text style={styles.title}>Upcoming Appointment</Text>
+            ) : (
               <AppointmentTable
                 columns={[
                   {
@@ -137,17 +144,18 @@ const PatientAppointment = () => {
                 appointments={upcomingAppointments}
                 keyExtractor={(item) => item.id.toString()}
               />
-            </View>
-          )}
+            )}
+          </View>
           {/* Render past appointments section */}
-          {!pastAppointments || pastAppointments.length == 0 ? (
-            <View style={{ marginTop: 16 }}>
-              <Text style={styles.title}>Past Appointment</Text>
+          <View
+            style={{
+              maxHeight: '42%',
+            }}
+          >
+            <Text style={styles.title}>Past Appointment</Text>
+            {!pastAppointments || pastAppointments.length == 0 ? (
               <Text style={{ fontSize: 16 }}>No past appointments found.</Text>
-            </View>
-          ) : (
-            <View style={{ marginTop: 16 }}>
-              <Text style={styles.title}>Past Appointment</Text>
+            ) : (
               <AppointmentTable
                 columns={[
                   {
@@ -167,8 +175,8 @@ const PatientAppointment = () => {
                 appointments={pastAppointments}
                 keyExtractor={(item) => item.id.toString()}
               />
-            </View>
-          )}
+            )}
+          </View>
         </View>
       )}
     </View>
@@ -185,22 +193,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
   },
-  titleText: {
-    textAlign: 'center',
-    flex: 1,
-    fontSize: 16,
-    fontWeight: 'bold',
-    borderWidth: 1,
-  },
-  itemText: {
-    textAlign: 'center',
-    flex: 1,
-    fontSize: 16,
-    borderWidth: 1,
-  },
   detailContainer: {
+    padding: 16,
+    display: 'flex',
+  },
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+  appointmentSection: {
     flex: 1,
     padding: 16,
+  },
+  noAppointmentsText: {
+    fontSize: 16,
   },
   loading: {
     position: 'absolute',
