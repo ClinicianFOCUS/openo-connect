@@ -31,7 +31,7 @@ export default function CameraComponent({ onCapture }: CameraComponentProps) {
   const takePicture = async () => {
     const photo = await cameraRef.current?.takePictureAsync({ base64: true });
     if (photo?.base64) {
-      // onCapture(photo.base64);
+      onCapture(photo.base64);
     }
   };
 
