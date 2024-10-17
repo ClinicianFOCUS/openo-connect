@@ -20,7 +20,7 @@ import { useAuthManagerStore } from '@/store/useAuthManagerStore';
  * It also provides a refresh button to re-fetch the appointments.
  */
 const AppointmentList = () => {
-  const { callApi } = useOAuth();
+  const { manager } = useAuthManagerStore();
   const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState<
     Appointment[]
@@ -33,14 +33,17 @@ const AppointmentList = () => {
   // Fetch appointments when the component mounts
   useEffect(() => {
     fetchAppointments();
-  }, []);
+  }, [manager]);
 
   /**
    * Fetches today's appointments from the API and updates the state.
    */
   const fetchAppointments = () => {
+    if (!manager) {
+      return;
+    }
     setLoading(true);
-    callApi('GET', 'schedule/day/today').then((res) => {
+    manager.makeAuthorizedRequest('GET', 'schedule/day/today').then((res) => {
       if (res.status === StatusType.SUCCESS) {
         const { pastAppointments, upcomingAppointments } = splitAppointments(
           res.data

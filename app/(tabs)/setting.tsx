@@ -37,7 +37,13 @@ const SettingPage = () => {
    */
   const handleSave = () => {
     SecureKeyStore.saveKey(CustomKeyType.O19_BASE_URL, o19BaseUrl);
-    setManager(new OAuthManager());
+    if (
+      SecureKeyStore.getKey(CustomKeyType.CLIENT_KEY) &&
+      SecureKeyStore.getKey(CustomKeyType.CLIENT_SECRET)
+    ) {
+      console.log('Setting up new manager');
+      setManager(new OAuthManager());
+    }
     SecureKeyStore.deleteKey(CustomKeyType.ACCESS_TOKEN);
     SecureKeyStore.deleteKey(CustomKeyType.SECRET_KEY);
     setHasAccessToken(false);

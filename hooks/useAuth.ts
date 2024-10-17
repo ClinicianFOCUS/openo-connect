@@ -27,6 +27,7 @@ import { Method } from 'axios';
 export const useOAuth = () => {
   const {
     manager,
+    hasUserCredentials,
     setManager,
     setHasAccessToken,
     setProvider,
@@ -70,7 +71,7 @@ export const useOAuth = () => {
     }
 
     // Init new manager if not present
-    if (!manager) {
+    if (!manager && hasUserCredentials) {
       initManager();
     }
 
@@ -87,9 +88,10 @@ export const useOAuth = () => {
    */
   const initManager = async () => {
     try {
+      console.log('Setting up new manager');
       setManager(new OAuthManager());
     } catch (error) {
-      console.error('Error creating OAuthManager', error);
+      console.log('Error creating OAuthManager', error);
     }
   };
 
@@ -165,5 +167,5 @@ export const useOAuth = () => {
     }
   };
 
-  return { callApi, loading };
+  return { loading };
 };
