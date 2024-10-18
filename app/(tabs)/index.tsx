@@ -1,5 +1,3 @@
-// App.js
-
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useOAuth } from '@/hooks/useAuth';
@@ -7,25 +5,15 @@ import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import AppointmentList from '@/components/AppointmentList';
 import FetchToken from '@/components/FetchToken';
 import Login from '@/components/LogIn';
-import useLocalAuth from '@/hooks/useLocalAuth';
-import AppLocked from '@/components/AppLocked';
 
 const App = () => {
   // Get loading state from OAuth hook
   const { loading } = useOAuth();
-  const { isAuthenticated } = useLocalAuth();
 
   // Get authentication state from AuthManager store
   const { hasAccessToken, hasUserCredentials } = useAuthManagerStore();
 
-  if (!isAuthenticated) {
-    return (
-      <View style={styles.container}>
-        <AppLocked />
-      </View>
-    );
-  }
-
+  // Show loading indicator while checking authentication state and oauth manager has been initialized
   if (loading) {
     return (
       <View style={styles.container}>
@@ -36,6 +24,7 @@ const App = () => {
     );
   }
 
+  // Show if user credentials are provided
   if (hasUserCredentials) {
     return (
       <View style={styles.container}>
@@ -44,6 +33,7 @@ const App = () => {
     );
   }
 
+  // Show if user credentials are not provided
   return (
     <View style={styles.container}>
       <Login />
@@ -54,8 +44,6 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   loading: {
     position: 'absolute',
