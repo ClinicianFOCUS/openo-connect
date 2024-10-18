@@ -25,12 +25,43 @@ import { Method } from 'axios';
  *
  */
 export const useOAuth = () => {
-  const { manager, setManager, setHasAccessToken, setProvider } =
-    useAuthManagerStore();
+  const {
+    manager,
+    hasUserCredentials,
+    setManager,
+    setHasAccessToken,
+    setProvider,
+    setHasUserCredentials,
+  } = useAuthManagerStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Add an event listener for OAuth callback URLs to get the access token
+    let callbackListener: EmitterSubscription;
+    if (manager) {
+      callbackListener = Linking.addEventListener('url', (event) =>
+        handleUrl(event, manager)
+      );
+    }
+
+    // Clean up the event listener when the component unmounts or the manager changes
+    return () => {
+      callbackListener?.remove();
+    };
+  }, [manager]);
+
+  useEffect(() => {
     setLoading(true);
+
+    // Check if user credentials are stored in SecureKeyStore
+    if (
+      SecureKeyStore.getKey(CustomKeyType.USERNAME) &&
+      SecureKeyStore.getKey(CustomKeyType.PASSWORD) &&
+      SecureKeyStore.getKey(CustomKeyType.PIN)
+    ) {
+      setHasUserCredentials(true);
+    }
+
     // Check if access token and secret key are stored in SecureKeyStore
     if (
       SecureKeyStore.getKey(CustomKeyType.ACCESS_TOKEN) &&
@@ -40,26 +71,13 @@ export const useOAuth = () => {
       getProviderNo();
     }
 
-    // Init new manager if not present
-    if (!manager) {
+    // Initialize the OAuthManager if it is not already initialized and there are stored credentials
+    if (!manager && hasUserCredentials) {
       initManager();
     }
 
-    // Add an event listener for OAuth callback URLs to get the access token
-    let callbackListener: EmitterSubscription;
-    if (manager) {
-      callbackListener = Linking.addEventListener('url', (event) =>
-        handleUrl(event, manager)
-      );
-    }
-
     setLoading(false);
-
-    // Clean up the event listener when the component unmounts or the manager changes
-    return () => {
-      callbackListener?.remove();
-    };
-  }, [manager]);
+  }, []);
 
   /**
    * Initializes the OAuthManager instance and sets it to the state.
@@ -71,9 +89,10 @@ export const useOAuth = () => {
    */
   const initManager = async () => {
     try {
+      console.log('Setting up new manager');
       setManager(new OAuthManager());
     } catch (error) {
-      console.error('Error creating OAuthManager', error);
+      console.log('Error creating OAuthManager', error);
     }
   };
 
@@ -100,6 +119,7 @@ export const useOAuth = () => {
 
       if (res.status == StatusType.SUCCESS) {
         setHasAccessToken(true);
+        setHasUserCredentials(true);
         Alert.alert('Access Granted');
       } else {
         Alert.alert('Error', 'Failed to get access token');
@@ -148,5 +168,5 @@ export const useOAuth = () => {
     }
   };
 
-  return { callApi, loading };
+  return { loading };
 };
