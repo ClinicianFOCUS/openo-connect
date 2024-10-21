@@ -1,6 +1,7 @@
 /**
  * Component to display appointment details for a patient.
  */
+import AppointmentSection from '@/components/AppointmentSection';
 import AppointmentTable from '@/components/AppointmentTable';
 import { useAppointmentStatus } from '@/hooks/useAppointmentStatus';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
@@ -89,61 +90,45 @@ const PatientAppointment = () => {
       ) : (
         <View style={styles.tableContainer}>
           {/* Render upcoming appointments section */}
-          <View style={styles.table}>
-            <Text style={styles.title}>Upcoming Appointment</Text>
-            {!upcomingAppointments || upcomingAppointments.length == 0 ? (
-              <Text style={{ fontSize: 16 }}>
-                No upcoming appointments found.
-              </Text>
-            ) : (
-              <AppointmentTable
-                columns={[
-                  {
-                    header: 'Date',
-                    accessor: 'appointmentDate',
-                  },
-                  {
-                    header: 'Time',
-                    accessor: 'startTime',
-                  },
-                  {
-                    header: 'Status',
-                    accessor: 'status',
-                    render: (item) => getStatusFromCode(item.status),
-                  },
-                ]}
-                appointments={upcomingAppointments}
-                keyExtractor={(item) => item.id.toString()}
-              />
-            )}
-          </View>
+          <AppointmentSection
+            title="Upcoming Appointment"
+            appointments={upcomingAppointments}
+            columns={[
+              {
+                header: 'Date',
+                accessor: 'appointmentDate',
+              },
+              {
+                header: 'Time',
+                accessor: 'startTime',
+              },
+              {
+                header: 'Status',
+                accessor: 'status',
+                render: (item) => getStatusFromCode(item.status),
+              },
+            ]}
+          />
           {/* Render past appointments section */}
-          <View style={styles.table}>
-            <Text style={styles.title}>Past Appointment</Text>
-            {!pastAppointments || pastAppointments.length == 0 ? (
-              <Text style={{ fontSize: 16 }}>No past appointments found.</Text>
-            ) : (
-              <AppointmentTable
-                columns={[
-                  {
-                    header: 'Date',
-                    accessor: 'appointmentDate',
-                  },
-                  {
-                    header: 'Time',
-                    accessor: 'startTime',
-                  },
-                  {
-                    header: 'Status',
-                    accessor: 'status',
-                    render: (item) => getStatusFromCode(item.status),
-                  },
-                ]}
-                appointments={pastAppointments}
-                keyExtractor={(item) => item.id.toString()}
-              />
-            )}
-          </View>
+          <AppointmentSection
+            title="Past Appointment"
+            appointments={pastAppointments}
+            columns={[
+              {
+                header: 'Date',
+                accessor: 'appointmentDate',
+              },
+              {
+                header: 'Time',
+                accessor: 'startTime',
+              },
+              {
+                header: 'Status',
+                accessor: 'status',
+                render: (item) => getStatusFromCode(item.status),
+              },
+            ]}
+          />
         </View>
       )}
     </View>
