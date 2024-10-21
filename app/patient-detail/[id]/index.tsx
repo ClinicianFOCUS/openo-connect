@@ -38,6 +38,7 @@ const AppointmentDetail = () => {
       });
   }, [id, manager]);
 
+  // Used to update the title of the screen to the patient's name
   useLayoutEffect(() => {
     if (patientDetail) {
       navigation.getParent()?.setOptions({

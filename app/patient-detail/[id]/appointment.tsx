@@ -2,6 +2,7 @@
  * Component to display appointment details for a patient.
  */
 import AppointmentTable from '@/components/AppointmentTable';
+import { useAppointmentStatus } from '@/hooks/useAppointmentStatus';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { Appointment, AppointmentStatus, StatusType } from '@/types/types';
 import { splitAppointments } from '@/utils/utils';
@@ -10,11 +11,9 @@ import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  FlatList,
   Text,
   StyleSheet,
   ActivityIndicator,
-  Button,
   TouchableOpacity,
 } from 'react-native';
 
@@ -33,6 +32,7 @@ const PatientAppointment = () => {
   const [loading, setLoading] = useState(true);
   const { manager } = useAuthManagerStore();
   const { id } = useLocalSearchParams();
+  const { getStatusFromCode } = useAppointmentStatus();
 
   useEffect(() => {
     if (!manager) {
@@ -47,15 +47,10 @@ const PatientAppointment = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      //Fetch both history and statuses concurrently
-      const [appointmentHistoryRes, appointmentStatusesRes] = await Promise.all(
-        [
-          manager?.makeAuthorizedRequest(
-            'POST',
-            `schedule/${id}/appointmentHistory`
-          ),
-          manager?.makeAuthorizedRequest('GET', `schedule/statuses`),
-        ]
+      //Fetch appointment history
+      const appointmentHistoryRes = await manager?.makeAuthorizedRequest(
+        'POST',
+        `schedule/${id}/appointmentHistory`
       );
 
       if (
@@ -69,28 +64,10 @@ const PatientAppointment = () => {
         setUpcomingAppointments(upcomingAppointments);
       }
 
-      if (
-        appointmentStatusesRes &&
-        appointmentStatusesRes.status === StatusType.SUCCESS
-      ) {
-        setAppointmentStatuses(appointmentStatusesRes.data.content);
-      }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  };
-
-  /**
-   * Gets the status description from the status code.
-   * @param {string} status - The status code.
-   * @returns {string} The status description.
-   */
-  const getStatusFromCode = (status: string): string => {
-    const statusFound = appointmentStatuses.find(
-      (item) => item.status === status
-    );
-    return statusFound ? statusFound.description : status;
   };
 
   return (
@@ -110,19 +87,9 @@ const PatientAppointment = () => {
           <ActivityIndicator size={70} color="#0000ff" />
         </View>
       ) : (
-        <View
-          style={{
-            height: '92%',
-            display: 'flex',
-            gap: 60,
-          }}
-        >
+        <View style={styles.tableContainer}>
           {/* Render upcoming appointments section */}
-          <View
-            style={{
-              maxHeight: '42%',
-            }}
-          >
+          <View style={styles.table}>
             <Text style={styles.title}>Upcoming Appointment</Text>
             {!upcomingAppointments || upcomingAppointments.length == 0 ? (
               <Text style={{ fontSize: 16 }}>
@@ -151,11 +118,7 @@ const PatientAppointment = () => {
             )}
           </View>
           {/* Render past appointments section */}
-          <View
-            style={{
-              maxHeight: '42%',
-            }}
-          >
+          <View style={styles.table}>
             <Text style={styles.title}>Past Appointment</Text>
             {!pastAppointments || pastAppointments.length == 0 ? (
               <Text style={{ fontSize: 16 }}>No past appointments found.</Text>
@@ -218,6 +181,14 @@ const styles = StyleSheet.create({
     left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }],
     zIndex: 1,
+  },
+  tableContainer: {
+    height: '92%',
+    display: 'flex',
+    gap: 60,
+  },
+  table: {
+    maxHeight: '42%',
   },
 });
 

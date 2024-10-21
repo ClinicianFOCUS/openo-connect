@@ -10,9 +10,16 @@ interface AppointmentRowProps {
   onPress?: (item: Appointment) => void;
 }
 
+/**
+ * A functional component that renders a row for an appointment.
+ *
+ * @param {AppointmentRowProps} props - The properties for the component.
+ * @returns {JSX.Element} The rendered component.
+ */
 const AppointmentRow: React.FC<AppointmentRowProps> = React.memo(
   ({ item, columns, onPress }) => {
     const { getColorFromStatus, getIconFromStatus } = useAppointmentStatus();
+
     return (
       <TouchableOpacity
         style={{
@@ -25,6 +32,7 @@ const AppointmentRow: React.FC<AppointmentRowProps> = React.memo(
             source={{ uri: getIconFromStatus(item.status) }}
             style={styles.icon}
           />
+          {/* Loop through column to display the values corresponding to it */}
           {columns.map((column) => (
             <Text key={column.accessor} style={styles.itemText}>
               {column.render ? column.render(item) : item[column.accessor]}
@@ -36,6 +44,7 @@ const AppointmentRow: React.FC<AppointmentRowProps> = React.memo(
           <Text style={[styles.itemText, styles.reasonText]}>
             Reason: {item.reason}
           </Text>
+          {/* Display notes if available */}
           {item.notes && (
             <Text style={[styles.itemText, styles.reasonText]}>
               Notes: {item.notes}

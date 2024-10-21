@@ -29,9 +29,17 @@ const AppointmentTable: React.FC<TableProps> = ({
   keyExtractor,
   onPress,
 }) => {
+  if (appointments.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ fontSize: 16 }}>No Appointments</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        {/* Loop through columns to get the headers for table */}
         {columns.map((column) => (
           <Text key={column.accessor} style={styles.titleText}>
             {column.header}
