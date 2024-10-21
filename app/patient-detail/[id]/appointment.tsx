@@ -5,7 +5,12 @@ import AppointmentSection from '@/components/AppointmentSection';
 import AppointmentTable from '@/components/AppointmentTable';
 import { useAppointmentStatus } from '@/hooks/useAppointmentStatus';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
-import { Appointment, AppointmentStatus, StatusType } from '@/types/types';
+import {
+  Appointment,
+  AppointmentStatus,
+  ColumnConfig,
+  StatusType,
+} from '@/types/types';
 import { splitAppointments } from '@/utils/utils';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useLocalSearchParams } from 'expo-router';
@@ -23,9 +28,6 @@ import {
  * @returns {JSX.Element} The rendered component.
  */
 const PatientAppointment = () => {
-  const [appointmentStatuses, setAppointmentStatuses] = useState<
-    AppointmentStatus[]
-  >([]);
   const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState<
     Appointment[]
@@ -41,6 +43,22 @@ const PatientAppointment = () => {
     }
     fetchData();
   }, []);
+
+  const COLUMNS: ColumnConfig[] = [
+    {
+      header: 'Date',
+      accessor: 'appointmentDate',
+    },
+    {
+      header: 'Time',
+      accessor: 'startTime',
+    },
+    {
+      header: 'Status',
+      accessor: 'status',
+      render: (item: Appointment) => getStatusFromCode(item.status),
+    },
+  ];
 
   /**
    * Fetches appointment history and statuses.
@@ -93,41 +111,13 @@ const PatientAppointment = () => {
           <AppointmentSection
             title="Upcoming Appointment"
             appointments={upcomingAppointments}
-            columns={[
-              {
-                header: 'Date',
-                accessor: 'appointmentDate',
-              },
-              {
-                header: 'Time',
-                accessor: 'startTime',
-              },
-              {
-                header: 'Status',
-                accessor: 'status',
-                render: (item) => getStatusFromCode(item.status),
-              },
-            ]}
+            columns={COLUMNS}
           />
           {/* Render past appointments section */}
           <AppointmentSection
             title="Past Appointment"
             appointments={pastAppointments}
-            columns={[
-              {
-                header: 'Date',
-                accessor: 'appointmentDate',
-              },
-              {
-                header: 'Time',
-                accessor: 'startTime',
-              },
-              {
-                header: 'Status',
-                accessor: 'status',
-                render: (item) => getStatusFromCode(item.status),
-              },
-            ]}
+            columns={COLUMNS}
           />
         </View>
       )}
