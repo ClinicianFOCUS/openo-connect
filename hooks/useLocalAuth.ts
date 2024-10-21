@@ -1,21 +1,36 @@
 import { useEffect, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { authenticateUser } from '@/utils/localAuth';
+import { StatusType } from '@/types/types';
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import { useRouter } from 'expo-router';
 
 const useLocalAuth = () => {
-  const [appState, setAppState] = useState(AppState.currentState);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const { setIsAuthenticated, appState, setAppState } = useAuthManagerStore();
+  const router = useRouter();
 
   useEffect(() => {
-    authenticateUser();
+    authenticateUser().then((res) => {
+      if (res.status == StatusType.SUCCESS) {
+        setIsAuthenticated(true);
+      }
+    });
   }, []);
 
   useEffect(() => {
     // Listener for app state changes
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
-      // When app transitions from background to active (foreground)
+      // When app transitions from background to active (foreground) redirect user to app locked screen
       if (appState.match(/inactive|background/) && nextAppState === 'active') {
-        authenticateUser(); // Trigger authentication
+        setIsAuthenticated(false);
+        router.replace('/');
+        // Trigger authentication
+        authenticateUser().then((res) => {
+          if (res.status == StatusType.SUCCESS) {
+            setIsAuthenticated(true);
+          }
+        });
       }
 
       setAppState(nextAppState); // Update the appState
@@ -32,32 +47,6 @@ const useLocalAuth = () => {
       subscription.remove();
     };
   }, [appState]);
-
-  // Function to authenticate the user
-  const authenticateUser = async () => {
-    // Check if the device has the necessary hardware for local authentication
-    const hasHardware = await LocalAuthentication.hasHardwareAsync();
-    if (!hasHardware) return; // Exit if no hardware is available
-
-    // Check if the user has enrolled in local authentication (e.g., fingerprint, face recognition)
-    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-    if (!isEnrolled) return; // Exit if no enrollment is found
-
-    // Prompt the user to authenticate
-    const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: 'Authenticate to access the app',
-    });
-
-    // Handle the authentication result
-    if (!result.success) {
-      console.log('Authentication failed');
-      // Optionally, navigate to a login screen or exit the app
-    } else {
-      setIsAuthenticated(true); // Set the authentication state to true if successful
-    }
-  };
-
-  return { authenticateUser, isAuthenticated };
 };
 
 export default useLocalAuth;

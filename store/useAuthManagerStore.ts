@@ -1,4 +1,5 @@
 import OAuthManager from '@/services/OAuthManager';
+import { AppState, AppStateStatus } from 'react-native';
 import { create } from 'zustand';
 
 type AuthManagerStore = {
@@ -10,6 +11,10 @@ type AuthManagerStore = {
   setProvider: (provider: string) => void;
   hasUserCredentials: boolean;
   setHasUserCredentials: (hasUserCredentials: boolean) => void;
+  isAuthenticated: boolean;
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
+  appState: AppStateStatus;
+  setAppState: (appState: AppStateStatus) => void;
 };
 
 /**
@@ -25,6 +30,10 @@ type AuthManagerStore = {
  * @property {(provider: any) => void} setProvider - Sets the authentication provider.
  * @property {boolean} hasUserCredentials - Indicates if user credentials are present.
  * @property {(hasUserCredentials: boolean) => void} setHasUserCredentials - Sets the user credentials state.
+ * @property {boolean} isAuthenticated - Indicates if user has authenticated locally (biometrics).
+ * @property {(isAuthenticated: boolean) => void} setIsAuthenticated - Sets the user has authenticated locally (biometrics) state.
+ * @property {AppStateStatus} appState - Indicates the current state of app
+ * @property {(appState: AppStateStatus) => void} setAppState - Sets the current state of app
  *
  * @returns {AuthManagerStore} The authentication manager store.
  */
@@ -38,4 +47,8 @@ export const useAuthManagerStore = create<AuthManagerStore>((set) => ({
   hasUserCredentials: false,
   setHasUserCredentials: (hasUserCredentials: boolean) =>
     set({ hasUserCredentials }),
+  isAuthenticated: false,
+  setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
+  appState: AppState.currentState,
+  setAppState: (appState: AppStateStatus) => set({ appState }),
 }));

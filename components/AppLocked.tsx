@@ -1,7 +1,9 @@
 import { View, Text, Button, StyleSheet, SafeAreaView } from 'react-native';
 import React from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import useLocalAuth from '@/hooks/useLocalAuth';
+import { authenticateUser } from '@/utils/localAuth';
+import { StatusType } from '@/types/types';
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 
 /**
  * AppLocked component renders a screen indicating that the application is locked.
@@ -10,7 +12,15 @@ import useLocalAuth from '@/hooks/useLocalAuth';
  * @returns {JSX.Element} The rendered component.
  */
 const AppLocked = () => {
-  const { authenticateUser } = useLocalAuth();
+  const { setIsAuthenticated } = useAuthManagerStore();
+
+  const onPress = () => {
+    authenticateUser().then((res) => {
+      if (res.status == StatusType.SUCCESS) {
+        setIsAuthenticated(true);
+      }
+    });
+  };
   return (
     <SafeAreaView>
       <View
@@ -31,7 +41,7 @@ const AppLocked = () => {
             Open-O-Connect Locked
           </Text>
         </View>
-        <Button title="Unlock" onPress={authenticateUser} />
+        <Button title="Unlock" onPress={onPress} />
       </View>
     </SafeAreaView>
   );

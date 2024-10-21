@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import AppLocked from '@/components/AppLocked';
-import useLocalAuth from '@/hooks/useLocalAuth';
 import { useRouter } from 'expo-router';
+import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 
 /**
  * The main application component.
@@ -13,12 +13,13 @@ import { useRouter } from 'expo-router';
  * @returns {JSX.Element} The locked state of the application.
  */
 const App = () => {
-  const { isAuthenticated } = useLocalAuth();
+  const { isAuthenticated } = useAuthManagerStore();
   const router = useRouter();
 
+  //Redirect user to home screen if locally authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.replace('/(tabs)');
+      router.replace('/home');
     }
   }, [isAuthenticated, router]);
 

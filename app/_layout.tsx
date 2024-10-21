@@ -1,3 +1,4 @@
+import useLocalAuth from '@/hooks/useLocalAuth';
 import { Stack } from 'expo-router';
 
 /**
@@ -6,6 +7,9 @@ import { Stack } from 'expo-router';
  * @returns {JSX.Element} The stack navigator with defined screens.
  */
 export default function RootLayout() {
+  // Call useLocalAuth to init biometrics needed to unlock app at the start and when app state changes from background/inactive to foreground.
+  useLocalAuth();
+
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
