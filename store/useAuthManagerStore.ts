@@ -1,4 +1,5 @@
 import OAuthManager from '@/services/OAuthManager';
+import { Provider } from '@/types/types';
 import { AppState, AppStateStatus } from 'react-native';
 import { create } from 'zustand';
 
@@ -7,8 +8,8 @@ type AuthManagerStore = {
   setManager: (manager: OAuthManager) => void;
   hasAccessToken: boolean;
   setHasAccessToken: (hasAccessToken: boolean) => void;
-  provider: any;
-  setProvider: (provider: string) => void;
+  provider: Provider | null;
+  setProvider: (provider: Provider) => void;
   hasUserCredentials: boolean;
   setHasUserCredentials: (hasUserCredentials: boolean) => void;
   isAuthenticated: boolean;
@@ -28,8 +29,8 @@ type AuthManagerStore = {
  * @property {(manager: OAuthManager) => void} setManager - Sets the OAuth manager instance.
  * @property {boolean} hasAccessToken - Indicates if an access token is present.
  * @property {(hasAccessToken: boolean) => void} setHasAccessToken - Sets the access token presence state.
- * @property {any | null} provider - The authentication provider.
- * @property {(provider: any) => void} setProvider - Sets the authentication provider.
+ * @property {Provider | null} provider - The authentication provider.
+ * @property {(provider: Provider) => void} setProvider - Sets the authentication provider.
  * @property {boolean} hasUserCredentials - Indicates if user credentials are present.
  * @property {(hasUserCredentials: boolean) => void} setHasUserCredentials - Sets the user credentials state.
  * @property {boolean} isAuthenticated - Indicates if user has authenticated locally (biometrics).

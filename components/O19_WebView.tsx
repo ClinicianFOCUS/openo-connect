@@ -34,7 +34,8 @@ const O19WebView: React.FC<O19WebViewProps> = ({
   const [loginAttempt, setLoginAttempt] = useState<number>(0);
   const [webViewKey, setWebViewKey] = useState(0);
 
-  const { setManager, setHasUserCredentials } = useAuthManagerStore();
+  const { setManager, setHasUserCredentials, setProvider } =
+    useAuthManagerStore();
   const webViewRef = createRef<WebView>();
 
   const username = SecureKeyStore.getKey(CustomKeyType.USERNAME);
@@ -56,6 +57,7 @@ const O19WebView: React.FC<O19WebViewProps> = ({
           obj['soap:Envelope']['soap:Body']['ns2:login2Response'].return
             .provider;
         setProviderNo(providerNo);
+        setProvider({ id: providerNo });
         setEndpoint(constructUrl('/index.jsp'));
         setLoginAttempt(0);
         setWebViewKey((prevKey) => prevKey + 1);

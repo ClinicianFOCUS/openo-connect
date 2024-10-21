@@ -73,6 +73,10 @@ export type PatientDetail = {
   hin: string;
 };
 
+export type Provider = {
+  id: number;
+};
+
 /**
  * Column configuration type.
  * @interface {Object} ColumnConfig

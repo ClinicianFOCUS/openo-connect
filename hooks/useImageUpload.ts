@@ -41,7 +41,7 @@ export const useImageUpload = (demographicNo: number) => {
       description: new Date().toLocaleString(),
       contentType: 'image/jpeg',
       numberOfPages: 1,
-      providerNo: provider.id,
+      providerNo: provider?.id,
       demographicNo: demographicNo,
       fileContents: base64Image,
     };
