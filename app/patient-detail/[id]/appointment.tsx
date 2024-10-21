@@ -1,10 +1,16 @@
 /**
  * Component to display appointment details for a patient.
  */
+import AppointmentSection from '@/components/AppointmentSection';
 import AppointmentTable from '@/components/AppointmentTable';
 import { useAppointmentStatus } from '@/hooks/useAppointmentStatus';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
-import { Appointment, AppointmentStatus, StatusType } from '@/types/types';
+import {
+  Appointment,
+  AppointmentStatus,
+  ColumnConfig,
+  StatusType,
+} from '@/types/types';
 import { splitAppointments } from '@/utils/utils';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useLocalSearchParams } from 'expo-router';
@@ -22,9 +28,6 @@ import {
  * @returns {JSX.Element} The rendered component.
  */
 const PatientAppointment = () => {
-  const [appointmentStatuses, setAppointmentStatuses] = useState<
-    AppointmentStatus[]
-  >([]);
   const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState<
     Appointment[]
@@ -40,6 +43,22 @@ const PatientAppointment = () => {
     }
     fetchData();
   }, []);
+
+  const COLUMNS: ColumnConfig[] = [
+    {
+      header: 'Date',
+      accessor: 'appointmentDate',
+    },
+    {
+      header: 'Time',
+      accessor: 'startTime',
+    },
+    {
+      header: 'Status',
+      accessor: 'status',
+      render: (item: Appointment) => getStatusFromCode(item.status),
+    },
+  ];
 
   /**
    * Fetches appointment history and statuses.
@@ -89,61 +108,17 @@ const PatientAppointment = () => {
       ) : (
         <View style={styles.tableContainer}>
           {/* Render upcoming appointments section */}
-          <View style={styles.table}>
-            <Text style={styles.title}>Upcoming Appointment</Text>
-            {!upcomingAppointments || upcomingAppointments.length == 0 ? (
-              <Text style={{ fontSize: 16 }}>
-                No upcoming appointments found.
-              </Text>
-            ) : (
-              <AppointmentTable
-                columns={[
-                  {
-                    header: 'Date',
-                    accessor: 'appointmentDate',
-                  },
-                  {
-                    header: 'Time',
-                    accessor: 'startTime',
-                  },
-                  {
-                    header: 'Status',
-                    accessor: 'status',
-                    render: (item) => getStatusFromCode(item.status),
-                  },
-                ]}
-                appointments={upcomingAppointments}
-                keyExtractor={(item) => item.id.toString()}
-              />
-            )}
-          </View>
+          <AppointmentSection
+            title="Upcoming Appointment"
+            appointments={upcomingAppointments}
+            columns={COLUMNS}
+          />
           {/* Render past appointments section */}
-          <View style={styles.table}>
-            <Text style={styles.title}>Past Appointment</Text>
-            {!pastAppointments || pastAppointments.length == 0 ? (
-              <Text style={{ fontSize: 16 }}>No past appointments found.</Text>
-            ) : (
-              <AppointmentTable
-                columns={[
-                  {
-                    header: 'Date',
-                    accessor: 'appointmentDate',
-                  },
-                  {
-                    header: 'Time',
-                    accessor: 'startTime',
-                  },
-                  {
-                    header: 'Status',
-                    accessor: 'status',
-                    render: (item) => getStatusFromCode(item.status),
-                  },
-                ]}
-                appointments={pastAppointments}
-                keyExtractor={(item) => item.id.toString()}
-              />
-            )}
-          </View>
+          <AppointmentSection
+            title="Past Appointment"
+            appointments={pastAppointments}
+            columns={COLUMNS}
+          />
         </View>
       )}
     </View>
