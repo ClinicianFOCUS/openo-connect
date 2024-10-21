@@ -1,3 +1,4 @@
+import { useOAuth } from '@/hooks/useAuth';
 import useLocalAuth from '@/hooks/useLocalAuth';
 import { Stack } from 'expo-router';
 
@@ -9,6 +10,9 @@ import { Stack } from 'expo-router';
 export default function RootLayout() {
   // Call useLocalAuth to init biometrics needed to unlock app at the start and when app state changes from background/inactive to foreground.
   useLocalAuth();
+
+  // Call useOAuth to register callback listener and check if user is authenticated(o19 side) at first render
+  useOAuth();
 
   return (
     <Stack>

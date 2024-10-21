@@ -31,8 +31,8 @@ export const useOAuth = () => {
     setHasAccessToken,
     setProvider,
     setHasUserCredentials,
+    setLoading,
   } = useAuthManagerStore();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Add an event listener for OAuth callback URLs to get the access token
@@ -107,6 +107,7 @@ export const useOAuth = () => {
    * sets the access token state and shows a success alert or shows an error alert.
    */
   const handleUrl = async (event: { url: string }, manager: OAuthManager) => {
+    setLoading(true);
     const baseUrl = Constants.experienceUrl;
     const { url } = event;
     if (url.startsWith(baseUrl)) {
@@ -119,7 +120,7 @@ export const useOAuth = () => {
       if (res.status == StatusType.SUCCESS) {
         setHasAccessToken(true);
         setHasUserCredentials(true);
-        Alert.alert('Access Granted');
+        setLoading(false);
       } else {
         Alert.alert('Error', 'Failed to get access token');
       }
@@ -166,6 +167,4 @@ export const useOAuth = () => {
       setProvider(res.data);
     }
   };
-
-  return { loading };
 };

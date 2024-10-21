@@ -64,6 +64,7 @@ const O19WebView: React.FC<O19WebViewProps> = ({
         SecureKeyStore.deleteKey(CustomKeyType.USERNAME);
         SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
         SecureKeyStore.deleteKey(CustomKeyType.PIN);
+        setHasUserCredentials(false);
         setError('Failed to login. Please try again.');
         setButtonText(initialButtonText);
       });

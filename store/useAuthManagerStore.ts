@@ -15,6 +15,8 @@ type AuthManagerStore = {
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   appState: AppStateStatus;
   setAppState: (appState: AppStateStatus) => void;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
 };
 
 /**
@@ -34,6 +36,8 @@ type AuthManagerStore = {
  * @property {(isAuthenticated: boolean) => void} setIsAuthenticated - Sets the user has authenticated locally (biometrics) state.
  * @property {AppStateStatus} appState - Indicates the current state of app
  * @property {(appState: AppStateStatus) => void} setAppState - Sets the current state of app
+ * @property {boolean} loading - Indicates if the app is loading (checking for access token and user credentials)
+ * @property {(loading: boolean) => void} setLoading - Sets the loading state of app
  *
  * @returns {AuthManagerStore} The authentication manager store.
  */
@@ -51,4 +55,6 @@ export const useAuthManagerStore = create<AuthManagerStore>((set) => ({
   setIsAuthenticated: (isAuthenticated: boolean) => set({ isAuthenticated }),
   appState: AppState.currentState,
   setAppState: (appState: AppStateStatus) => set({ appState }),
+  loading: false,
+  setLoading: (loading: boolean) => set({ loading }),
 }));

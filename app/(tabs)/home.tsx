@@ -7,11 +7,8 @@ import FetchToken from '@/components/FetchToken';
 import Login from '@/components/LogIn';
 
 const App = () => {
-  // Get loading state from OAuth hook
-  const { loading } = useOAuth();
-
   // Get authentication state from AuthManager store
-  const { hasAccessToken, hasUserCredentials } = useAuthManagerStore();
+  const { hasAccessToken, hasUserCredentials, loading } = useAuthManagerStore();
 
   // Show loading indicator while checking authentication state and oauth manager has been initialized
   if (loading) {
@@ -24,19 +21,28 @@ const App = () => {
     );
   }
 
-  // Show if user credentials are provided
-  if (hasUserCredentials) {
+  // Show if user credentials are not provided
+  if (!hasUserCredentials) {
     return (
       <View style={styles.container}>
-        {hasAccessToken ? <AppointmentList /> : <FetchToken />}
+        <Login />
       </View>
     );
   }
 
-  // Show if user credentials are not provided
+  // Show if user credentials are provided but access token in not present
+  if (!hasAccessToken) {
+    return (
+      <View style={styles.container}>
+        <FetchToken />
+      </View>
+    );
+  }
+
+  // Show appointment list
   return (
     <View style={styles.container}>
-      <Login />
+      <AppointmentList />
     </View>
   );
 };

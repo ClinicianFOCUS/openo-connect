@@ -23,7 +23,9 @@ const App = () => {
     }
   }, [isAuthenticated, router]);
 
-  return <AppLocked />;
+  if (!isAuthenticated) return <AppLocked />;
+
+  return;
 };
 
 export default App;
