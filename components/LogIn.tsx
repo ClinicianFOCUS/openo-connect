@@ -102,10 +102,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     gap: 10,
   },
-  webview: {
-    position: 'absolute',
-    display: 'none',
-  },
   inputLabel: {
     fontSize: 16,
     fontWeight: 'bold',
