@@ -60,5 +60,15 @@ export const useAppointmentStatus = () => {
       : undefined;
   };
 
-  return { getColorFromStatus, getIconFromStatus };
+  /**
+   * Gets the status description from the status code.
+   * @param {string} status - The status code.
+   * @returns {string} The status description.
+   */
+  const getStatusFromCode = (status: string): string => {
+    const statusFound = getStatus(status);
+    return statusFound ? statusFound.description : status;
+  };
+
+  return { getColorFromStatus, getIconFromStatus, getStatusFromCode };
 };
