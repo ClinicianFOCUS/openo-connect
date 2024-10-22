@@ -7,7 +7,7 @@ export const authenticateUser = async (): Promise<CustomResponse> => {
   const hasHardware = await LocalAuthentication.hasHardwareAsync();
   if (!hasHardware)
     return {
-      status: StatusType.ERROR,
+      status: StatusType.SUCCESS,
       message: 'No hardware found',
     }; // Exit if no hardware is available
 
@@ -15,7 +15,7 @@ export const authenticateUser = async (): Promise<CustomResponse> => {
   const isEnrolled = await LocalAuthentication.isEnrolledAsync();
   if (!isEnrolled)
     return {
-      status: StatusType.ERROR,
+      status: StatusType.SUCCESS,
       message: 'User has not enrolled local authentication',
     }; // Exit if no enrollment is found
 
