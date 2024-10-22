@@ -186,9 +186,13 @@ const O19WebView: React.FC<O19WebViewProps> = ({
     // If the URL is not the login page (oscar/index.jsp) or login.do or oauth/authorize, inject query to get/set client key and secret
     if (url.includes('oscar/provider')) {
       console.log('INJECTING QUERY TO GET KEY');
+      const BASE_URL = SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL);
       setButtonText('Getting Key');
       providerNo &&
-        webViewRef.current.injectJavaScript(SEND_GET_REQUEST(providerNo));
+        BASE_URL &&
+        webViewRef.current.injectJavaScript(
+          SEND_GET_REQUEST(BASE_URL, providerNo)
+        );
     }
 
     if (url.includes('oauth/authorize')) {

@@ -1,9 +1,5 @@
-import { SecureKeyStore } from '@/services/SecureKeyStore';
-import { CustomKeyType, StatusType } from '@/types/types';
-import Constants from 'expo-constants';
-
-const BASE_URL = SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL);
-const CALLBACK_URL = Constants.experienceUrl;
+import { CALLBACK_URL } from '@/constants/constant';
+import { StatusType } from '@/types/types';
 
 /**
  * Injects jQuery into the current document by creating a script element
@@ -63,10 +59,13 @@ export const FILL_LOGIN_FORM_AND_SUBMIT = (
  * @returns {string} A string containing the script to be executed, which
  * when run, sends the GET request and handles the response.
  */
-export const SEND_GET_REQUEST = (providerNo: string): string => {
+export const SEND_GET_REQUEST = (
+  base_url: string,
+  providerNo: string
+): string => {
   return `
         function CREATE_CLIENT() {
-            fetch('${BASE_URL}/admin/api/clientManage.json?method=add&name=${providerNo}&uri=${CALLBACK_URL}&lifetime=86400')
+            fetch('${base_url}/admin/api/clientManage.json?method=add&name=${providerNo}&uri=${CALLBACK_URL}&lifetime=86400')
                 .then((response) => response.json())
                 .then((data) => {
                     window.ReactNativeWebView.postMessage(JSON.stringify({ status: "${StatusType.SUCCESS}", message: "Key created successfully" }));
@@ -78,7 +77,7 @@ export const SEND_GET_REQUEST = (providerNo: string): string => {
         }
         function GET_CLIENT() {
             let keyFound = null;
-            fetch('${BASE_URL}/admin/api/clientManage.json?method=list')
+            fetch('${base_url}/admin/api/clientManage.json?method=list')
                 .then((response) => response.json())
                 .then((data) => {
                     keyFound = data.find((item) => item.name === '${providerNo}');

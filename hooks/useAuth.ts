@@ -4,8 +4,8 @@ import OAuthManager from '@/services/OAuthManager';
 import { SecureKeyStore } from '@/services/SecureKeyStore';
 import { CustomKeyType, CustomResponse, StatusType } from '@/types/types';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
-import Constants from 'expo-constants';
 import { Method } from 'axios';
+import { CALLBACK_URL } from '@/constants/constant';
 
 /**
  * Custom hook to manage OAuth authentication.
@@ -108,9 +108,8 @@ export const useOAuth = () => {
    */
   const handleUrl = async (event: { url: string }, manager: OAuthManager) => {
     setLoading(true);
-    const baseUrl = Constants.experienceUrl;
     const { url } = event;
-    if (url.startsWith(baseUrl)) {
+    if (url.startsWith(CALLBACK_URL)) {
       const params = new URLSearchParams(url.split('?')[1]);
       const oauth_verifier = params.get('oauth_verifier') || '';
 

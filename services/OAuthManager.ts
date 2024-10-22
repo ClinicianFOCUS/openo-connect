@@ -6,7 +6,7 @@ import CryptoJS from 'crypto-js';
 import 'react-native-url-polyfill/auto'; // Polyfill for URLSearchParams in React Native
 import { SecureKeyStore } from './SecureKeyStore';
 import { CustomKeyType, CustomResponse, StatusType } from '@/types/types';
-import Constants from 'expo-constants';
+import { CALLBACK_URL } from '@/constants/constant';
 
 type Token = { oauth_token: string; oauth_token_secret: string };
 
@@ -29,13 +29,12 @@ export default class OAuthManager {
     let o19_api_base_url = `${SecureKeyStore.getKey(
       CustomKeyType.O19_BASE_URL
     )}/ws`;
-    let callback_url = Constants.experienceUrl;
 
     if (!client_key || !client_secret) {
       throw new Error('Client key or secret not found');
     }
 
-    if (!callback_url) {
+    if (!CALLBACK_URL) {
       throw new Error('Callback URL not found');
     }
 
@@ -52,7 +51,7 @@ export default class OAuthManager {
         );
       },
     });
-    this.callback_url = callback_url;
+    this.callback_url = CALLBACK_URL;
     this.o19_api_base_url = o19_api_base_url;
   }
 
