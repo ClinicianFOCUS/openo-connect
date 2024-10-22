@@ -1,6 +1,13 @@
 import { CustomKeyType } from '@/types/types';
 import React, { useState } from 'react';
-import { View, StyleSheet, Button, Text, TextInput } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Button,
+  Text,
+  TextInput,
+  Keyboard,
+} from 'react-native';
 import { SecureKeyStore } from '@/services/SecureKeyStore';
 import O19WebView from './O19_WebView';
 
@@ -28,6 +35,7 @@ const Login = () => {
     SecureKeyStore.saveKey(CustomKeyType.USERNAME, username);
     SecureKeyStore.saveKey(CustomKeyType.PASSWORD, password);
     SecureKeyStore.saveKey(CustomKeyType.PIN, pin);
+    Keyboard.dismiss();
     setLoginText('Logging in...');
     setLoginError('');
   };
@@ -101,10 +109,6 @@ const styles = StyleSheet.create({
     width: '85%',
     display: 'flex',
     gap: 10,
-  },
-  webview: {
-    position: 'absolute',
-    display: 'none',
   },
   inputLabel: {
     fontSize: 16,

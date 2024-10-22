@@ -14,41 +14,52 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
-
+2. Install EAS CLI
    ```bash
-    npx expo start
+   npm install -g eas-cli
    ```
+3. Create an Expo account and login
 
-In the output, you'll find options to open the app in a
+   - [Sign up](https://expo.dev/signup) for an Expo account.
+   - Run the following command in your terminal to log in to the EAS CLI:
+     ```bash
+     eas login
+     ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   ### For Android
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+   1. Build APK (For Development Only)
 
-## Get a fresh project
+      ```bash
+      eas build --profile development --platform android --local
+      ```
 
-When you're ready, run:
+      Here, `development` is the name of the profile in eas.json file. Adding `--local` flag will build apk locally.
+
+      Note: Will need to rebuild if any natvie code changes are made (Like new package installed).
+
+   2. Start Project
+      ```bash
+      npm run android
+      ```
+      This will start the application in emulator and connected android device.
+
+   ### For iOS (TODO)
+
+## Build APK (For Production Only)
+
+Install eas-cli package globally. This package will be used to build APK.
 
 ```bash
-npm run reset-project
+npm install -g eas-cli
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Build Apk Locally
 
-## Learn more
+```bash
+eas build -p android --profile preview --local
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Here, `preview` is the name of the profile in eas.json file. Adding `--local` flag will build apk locally.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+You'll need an expo account to build. So head over to https://expo.dev/ to sign up.

@@ -1,4 +1,3 @@
-import { useOAuth } from '@/hooks/useAuth';
 import { Appointment, StatusType } from '@/types/types';
 import { splitAppointments } from '@/utils/utils';
 import { useRouter } from 'expo-router';

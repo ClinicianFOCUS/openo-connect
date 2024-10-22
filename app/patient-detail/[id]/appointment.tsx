@@ -4,6 +4,7 @@
 import AppointmentSection from '@/components/AppointmentSection';
 import AppointmentTable from '@/components/AppointmentTable';
 import { useAppointmentStatus } from '@/hooks/useAppointmentStatus';
+import useCurrentRoute from '@/hooks/useCurrentRoute';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import {
   Appointment,
@@ -28,6 +29,9 @@ import {
  * @returns {JSX.Element} The rendered component.
  */
 const PatientAppointment = () => {
+  // this sets the current route so that the app can return to it after authentication(biometrics)
+  useCurrentRoute();
+
   const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState<
     Appointment[]

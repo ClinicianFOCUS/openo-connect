@@ -4,8 +4,8 @@ import OAuthManager from '@/services/OAuthManager';
 import { SecureKeyStore } from '@/services/SecureKeyStore';
 import { CustomKeyType, CustomResponse, StatusType } from '@/types/types';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
-import Constants from 'expo-constants';
 import { Method } from 'axios';
+import { CALLBACK_URL } from '@/constants/constant';
 
 /**
  * Custom hook to manage OAuth authentication.
@@ -31,8 +31,8 @@ export const useOAuth = () => {
     setHasAccessToken,
     setProvider,
     setHasUserCredentials,
+    setLoading,
   } = useAuthManagerStore();
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Add an event listener for OAuth callback URLs to get the access token
@@ -107,9 +107,9 @@ export const useOAuth = () => {
    * sets the access token state and shows a success alert or shows an error alert.
    */
   const handleUrl = async (event: { url: string }, manager: OAuthManager) => {
-    const baseUrl = Constants.experienceUrl;
+    setLoading(true);
     const { url } = event;
-    if (url.startsWith(baseUrl)) {
+    if (url.startsWith(CALLBACK_URL)) {
       const params = new URLSearchParams(url.split('?')[1]);
       const oauth_verifier = params.get('oauth_verifier') || '';
 
@@ -119,7 +119,7 @@ export const useOAuth = () => {
       if (res.status == StatusType.SUCCESS) {
         setHasAccessToken(true);
         setHasUserCredentials(true);
-        Alert.alert('Access Granted');
+        setLoading(false);
       } else {
         Alert.alert('Error', 'Failed to get access token');
       }
@@ -166,6 +166,4 @@ export const useOAuth = () => {
       setProvider(res.data);
     }
   };
-
-  return { loading };
 };

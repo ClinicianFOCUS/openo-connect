@@ -1,3 +1,4 @@
+import useCurrentRoute from '@/hooks/useCurrentRoute';
 import OAuthManager from '@/services/OAuthManager';
 import { SecureKeyStore } from '@/services/SecureKeyStore';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
@@ -18,6 +19,9 @@ const SettingPage = () => {
   const [o19BaseUrl, setO19BaseUrl] = useState(
     SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL) || ''
   );
+
+  // this sets the current route so that the app can return to it after authentication(biometrics)
+  useCurrentRoute();
 
   /**
    * Handles the save action for the settings.

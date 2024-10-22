@@ -2,6 +2,7 @@
  * Component to display the camera for a patient.
  */
 import CameraComponent from '@/components/CameraComponent';
+import useCurrentRoute from '@/hooks/useCurrentRoute';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import { useCameraPermissions } from 'expo-camera';
 import { useLocalSearchParams } from 'expo-router';
@@ -29,6 +30,9 @@ import { Button, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
  * ```
  */
 const Camera = () => {
+  // this sets the current route so that the app can return to it after authentication(biometrics)
+  useCurrentRoute();
+
   const { id } = useLocalSearchParams();
   const [permission, requestPermission] = useCameraPermissions();
   const { uploading, uploaded, uploadMessage, uploadImage, setUploaded } =

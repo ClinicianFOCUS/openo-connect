@@ -34,7 +34,8 @@ const O19WebView: React.FC<O19WebViewProps> = ({
   const [loginAttempt, setLoginAttempt] = useState<number>(0);
   const [webViewKey, setWebViewKey] = useState(0);
 
-  const { setManager, setHasUserCredentials } = useAuthManagerStore();
+  const { setManager, setHasUserCredentials, setProvider } =
+    useAuthManagerStore();
   const webViewRef = createRef<WebView>();
 
   const username = SecureKeyStore.getKey(CustomKeyType.USERNAME);
@@ -56,6 +57,7 @@ const O19WebView: React.FC<O19WebViewProps> = ({
           obj['soap:Envelope']['soap:Body']['ns2:login2Response'].return
             .provider;
         setProviderNo(providerNo);
+        setProvider({ id: providerNo });
         setEndpoint(constructUrl('/index.jsp'));
         setLoginAttempt(0);
         setWebViewKey((prevKey) => prevKey + 1);
@@ -64,6 +66,7 @@ const O19WebView: React.FC<O19WebViewProps> = ({
         SecureKeyStore.deleteKey(CustomKeyType.USERNAME);
         SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
         SecureKeyStore.deleteKey(CustomKeyType.PIN);
+        setHasUserCredentials(false);
         setError('Failed to login. Please try again.');
         setButtonText(initialButtonText);
       });
@@ -146,6 +149,7 @@ const O19WebView: React.FC<O19WebViewProps> = ({
     const { url } = navigationState;
 
     if (!username || !password || !pin) {
+      setError('Please enter your credentials.');
       return;
     }
 
@@ -164,7 +168,7 @@ const O19WebView: React.FC<O19WebViewProps> = ({
       SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
       SecureKeyStore.deleteKey(CustomKeyType.PIN);
       setHasUserCredentials(false);
-      setError('Failed to login. Please try again.');
+      setError('Incorrect Login. Please try again.');
       setButtonText(initialButtonText);
     }
 
@@ -183,9 +187,13 @@ const O19WebView: React.FC<O19WebViewProps> = ({
     // If the URL is not the login page (oscar/index.jsp) or login.do or oauth/authorize, inject query to get/set client key and secret
     if (url.includes('oscar/provider')) {
       console.log('INJECTING QUERY TO GET KEY');
+      const BASE_URL = SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL);
       setButtonText('Getting Key');
       providerNo &&
-        webViewRef.current.injectJavaScript(SEND_GET_REQUEST(providerNo));
+        BASE_URL &&
+        webViewRef.current.injectJavaScript(
+          SEND_GET_REQUEST(BASE_URL, providerNo)
+        );
     }
 
     if (url.includes('oauth/authorize')) {
@@ -224,6 +232,9 @@ const O19WebView: React.FC<O19WebViewProps> = ({
       initiateOAuthFlow().then((authUrl) => {
         if (authUrl) {
           setEndpoint(authUrl);
+        } else {
+          setButtonText(initialButtonText);
+          setError('Failed to get authorization URL. Try again');
         }
       });
     }
