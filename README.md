@@ -36,6 +36,8 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
       Here, `preview` is the name of the profile in eas.json file. Adding `--local` flag will build apk locally.
 
+      Note: Will need to rebuild if any natvie code changes are made (Like new package installed).
+
    2. Start Project
       ```bash
       npm run android
