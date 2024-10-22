@@ -22,6 +22,8 @@ export default function RootLayout() {
 
       {/* Patient detail screen with dynamic id */}
       <Stack.Screen name="patient-detail/[id]" />
+
+      <Stack.Screen name="callback" options={{ headerTitle: 'Callback' }} />
     </Stack>
   );
 }
