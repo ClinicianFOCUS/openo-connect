@@ -149,6 +149,7 @@ const O19WebView: React.FC<O19WebViewProps> = ({
     const { url } = navigationState;
 
     if (!username || !password || !pin) {
+      setError('Please enter your credentials.');
       return;
     }
 
@@ -167,7 +168,7 @@ const O19WebView: React.FC<O19WebViewProps> = ({
       SecureKeyStore.deleteKey(CustomKeyType.PASSWORD);
       SecureKeyStore.deleteKey(CustomKeyType.PIN);
       setHasUserCredentials(false);
-      setError('Failed to login. Please try again.');
+      setError('Incorrect Login. Please try again.');
       setButtonText(initialButtonText);
     }
 
@@ -231,6 +232,9 @@ const O19WebView: React.FC<O19WebViewProps> = ({
       initiateOAuthFlow().then((authUrl) => {
         if (authUrl) {
           setEndpoint(authUrl);
+        } else {
+          setButtonText(initialButtonText);
+          setError('Failed to get authorization URL. Try again');
         }
       });
     }
