@@ -13,13 +13,17 @@ import { useAuthManagerStore } from '@/store/useAuthManagerStore';
  * @returns {JSX.Element} The locked state of the application.
  */
 const App = () => {
-  const { isAuthenticated } = useAuthManagerStore();
+  const { isAuthenticated, routeToReturn } = useAuthManagerStore();
   const router = useRouter();
 
   //Redirect user to home screen if locally authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      router.replace('/home');
+      if (!routeToReturn) {
+        router.replace('/home');
+      } else {
+        router.replace(routeToReturn as any);
+      }
     }
   }, [isAuthenticated, router]);
 

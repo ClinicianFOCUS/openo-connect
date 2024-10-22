@@ -1,6 +1,7 @@
 /**
  * Component to display patient details.
  */
+import useCurrentRoute from '@/hooks/useCurrentRoute';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { PatientDetail, StatusType } from '@/types/types';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
@@ -12,6 +13,9 @@ import { Text, View, StyleSheet, ActivityIndicator, Alert } from 'react-native';
  * @returns {JSX.Element} The rendered component.
  */
 const AppointmentDetail = () => {
+  // this sets the current route so that the app can return to it after authentication(biometrics)
+  useCurrentRoute();
+
   const [patientDetail, setPatientDetail] = useState<PatientDetail>();
   const [loading, setLoading] = useState(true);
   const { manager, setHasAccessToken } = useAuthManagerStore();

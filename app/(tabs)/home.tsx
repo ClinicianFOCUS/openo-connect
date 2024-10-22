@@ -5,10 +5,14 @@ import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import AppointmentList from '@/components/AppointmentList';
 import FetchToken from '@/components/FetchToken';
 import Login from '@/components/LogIn';
+import useCurrentRoute from '@/hooks/useCurrentRoute';
 
 const App = () => {
   // Get authentication state from AuthManager store
   const { hasAccessToken, hasUserCredentials, loading } = useAuthManagerStore();
+
+  // this sets the current route so that the app can return to it after authentication(biometrics)
+  useCurrentRoute();
 
   // Show loading indicator while checking authentication state and oauth manager has been initialized
   if (loading) {

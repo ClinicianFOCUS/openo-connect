@@ -18,6 +18,8 @@ type AuthManagerStore = {
   setAppState: (appState: AppStateStatus) => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  routeToReturn: string;
+  setRouteToReturn: (currentRoute: string) => void;
 };
 
 /**
@@ -39,6 +41,8 @@ type AuthManagerStore = {
  * @property {(appState: AppStateStatus) => void} setAppState - Sets the current state of app
  * @property {boolean} loading - Indicates if the app is loading (checking for access token and user credentials)
  * @property {(loading: boolean) => void} setLoading - Sets the loading state of app
+ * @prpoerty {string} routeToReturn - The route to return to after authentication
+ * @property {(currentRoute: string) => void} setRouteToReturn - Sets the route to return to after authentication
  *
  * @returns {AuthManagerStore} The authentication manager store.
  */
@@ -58,4 +62,6 @@ export const useAuthManagerStore = create<AuthManagerStore>((set) => ({
   setAppState: (appState: AppStateStatus) => set({ appState }),
   loading: false,
   setLoading: (loading: boolean) => set({ loading }),
+  routeToReturn: '/home',
+  setRouteToReturn: (route: string) => set({ routeToReturn: route }),
 }));
