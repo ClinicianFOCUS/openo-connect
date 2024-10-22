@@ -25,7 +25,7 @@ const useLocalAuth = () => {
   useEffect(() => {
     // Listener for app state changes
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
-      //redirect user to app locked screen when nextAppState is inactive or background. setting this here to remove delay when showing locked screen
+      // redirect user to app locked screen when nextAppState is inactive or background. setting this here to remove delay when showing locked screen
       if (nextAppState.match(/inactive|background/)) {
         setIsAuthenticated(false);
         router.replace('/');
@@ -40,7 +40,7 @@ const useLocalAuth = () => {
       setAppState(nextAppState); // Update the appState
     };
 
-    // Subscribe to app state changes
+    // Subscribe to app state changes and watch for changes to app state
     const subscription = AppState.addEventListener(
       'change',
       handleAppStateChange

@@ -14,6 +14,7 @@ import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 const AppLocked = () => {
   const { setIsAuthenticated } = useAuthManagerStore();
 
+  // Function to authenticate user on button press
   const onPress = () => {
     authenticateUser().then((res) => {
       if (res.status == StatusType.SUCCESS) {
