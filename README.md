@@ -14,24 +14,37 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
-
+2. Install EAS CLI
    ```bash
-    npm run start
+   npm install -g eas-cli
    ```
+3. Create an Expo account and login
 
-Start Android
+   - [Sign up](https://expo.dev/signup) for an Expo account.
+   - Run the following command in your terminal to log in to the EAS CLI:
+     ```bash
+     eas login
+     ```
 
-In the output, you'll find options to open the app in a
+   ### For Android
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   1. Build APK (For Development Only)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+      ```bash
+      eas build --profile development --platform android --local
+      ```
 
-## Build APK
+      Here, `preview` is the name of the profile in eas.json file. Adding `--local` flag will build apk locally.
+
+   2. Start Project
+      ```bash
+      npm run android
+      ```
+      This will start the application in emulator and connected android device.
+
+   ### For iOS (TODO)
+
+## Build APK (For Production Only)
 
 Install eas-cli package globally. This package will be used to build APK.
 
