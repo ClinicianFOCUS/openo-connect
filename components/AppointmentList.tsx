@@ -10,9 +10,11 @@ import {
   Button,
   ActivityIndicator,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import AppointmentTable from './AppointmentTable';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 /**
  * AppointmentList component displays a list of today's appointments.
@@ -21,10 +23,7 @@ import { useAuthManagerStore } from '@/store/useAuthManagerStore';
  */
 const AppointmentList = () => {
   const { manager } = useAuthManagerStore();
-  const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
-  const [upcomingAppointments, setUpcomingAppointments] = useState<
-    Appointment[]
-  >([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
 
   const { setHasAccessToken } = useAuthManagerStore();
@@ -43,6 +42,7 @@ const AppointmentList = () => {
     if (!manager) {
       return;
     }
+
     setLoading(true);
     manager.makeAuthorizedRequest('GET', 'schedule/day/today').then((res) => {
       if (res.status === StatusType.SUCCESS) {
@@ -50,8 +50,7 @@ const AppointmentList = () => {
         const { pastAppointments, upcomingAppointments } = splitAppointments(
           res.data
         );
-        setPastAppointments(pastAppointments);
-        setUpcomingAppointments(upcomingAppointments);
+        setAppointments(upcomingAppointments.concat(pastAppointments));
         setLoading(false);
       } else {
         // Handle unauthorized access
@@ -70,7 +69,9 @@ const AppointmentList = () => {
           Today's Appointments
         </Text>
         <View>
-          <Button title="Refresh" onPress={fetchAppointments} />
+          <TouchableOpacity onPress={fetchAppointments}>
+            <Ionicons name="refresh" size={36} color="black" />
+          </TouchableOpacity>
         </View>
       </View>
       {/* Loading indicator or appointment table based on loading state */}
@@ -89,14 +90,9 @@ const AppointmentList = () => {
               header: 'Time',
               accessor: 'startTime',
             },
-            {
-              header: 'Duration',
-              accessor: 'duration',
-            },
           ]}
-          upcoming={upcomingAppointments}
-          past={pastAppointments}
-          keyExtractor={(item) => item.appointmentNo}
+          appointments={appointments}
+          keyExtractor={(item) => item.appointmentNo.toString()}
           onPress={(item) =>
             router.push(`/patient-detail/${item.demographicNo}`)
           }
@@ -109,8 +105,8 @@ const AppointmentList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    padding: 20,
+    padding: 10,
+    maxHeight: '93%',
   },
   loading: {
     position: 'absolute',

@@ -33,63 +33,70 @@ const Login = () => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Username input field */}
-      <Text style={styles.inputLabel}>Username:</Text>
-      <TextInput
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Enter Username"
-        style={styles.input}
-      />
-
-      {/* Password input field */}
-      <Text style={styles.inputLabel}>Password:</Text>
-      <TextInput
-        value={password}
-        textContentType="password"
-        onChangeText={setPassword}
-        placeholder="Enter Password"
-        style={styles.input}
-        secureTextEntry={true}
-      />
-
-      {/* PIN input field */}
-      <Text style={styles.inputLabel}>Pin:</Text>
-      <TextInput
-        value={pin}
-        textContentType="password"
-        onChangeText={setPin}
-        placeholder="Enter Pin"
-        style={styles.input}
-        secureTextEntry={true}
-      />
-
-      {/* Display login error message if any */}
-      {loginError.length > 0 && (
-        <Text style={styles.errorMessage}>{loginError}</Text>
-      )}
-
-      {/* Login button */}
-      <Button
-        title={loginText}
-        onPress={handleLogin}
-        disabled={loginText !== 'Login'}
-      />
-
-      {/* Render O19WebView component if login process has started */}
-      {loginText !== 'Login' && (
-        <O19WebView
-          initialButtonText="Login"
-          setError={setLoginError}
-          setButtonText={setLoginText}
+    <View style={styles.center}>
+      <View style={styles.container}>
+        {/* Username input field */}
+        <Text style={styles.inputLabel}>Username:</Text>
+        <TextInput
+          value={username}
+          onChangeText={setUsername}
+          placeholder="Enter Username"
+          style={styles.input}
         />
-      )}
+
+        {/* Password input field */}
+        <Text style={styles.inputLabel}>Password:</Text>
+        <TextInput
+          value={password}
+          textContentType="password"
+          onChangeText={setPassword}
+          placeholder="Enter Password"
+          style={styles.input}
+          secureTextEntry={true}
+        />
+
+        {/* PIN input field */}
+        <Text style={styles.inputLabel}>Pin:</Text>
+        <TextInput
+          value={pin}
+          textContentType="password"
+          onChangeText={setPin}
+          placeholder="Enter Pin"
+          style={styles.input}
+          secureTextEntry={true}
+        />
+
+        {/* Display login error message if any */}
+        {loginError.length > 0 && (
+          <Text style={styles.errorMessage}>{loginError}</Text>
+        )}
+
+        {/* Login button */}
+        <Button
+          title={loginText}
+          onPress={handleLogin}
+          disabled={loginText !== 'Login'}
+        />
+
+        {/* Render O19WebView component if login process has started */}
+        {loginText !== 'Login' && (
+          <O19WebView
+            initialButtonText="Login"
+            setError={setLoginError}
+            setButtonText={setLoginText}
+          />
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     width: '85%',
     display: 'flex',

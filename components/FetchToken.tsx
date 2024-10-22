@@ -16,35 +16,42 @@ const FetchToken = () => {
   const [error, setError] = useState<string>('');
 
   return (
-    <View style={styles.container}>
-      {/* Display a message prompting the user to refetch the token */}
-      <Text style={styles.message}>
-        Token expired or settings have been changed. Please refetch token.
-      </Text>
+    <View style={styles.center}>
+      <View style={styles.container}>
+        {/* Display a message prompting the user to refetch the token */}
+        <Text style={styles.message}>
+          Token expired or settings have been changed. Please refetch token.
+        </Text>
 
-      {/* Button to initiate the token fetching process */}
-      <Button
-        title={buttonText}
-        onPress={() => setButtonText('Fetching Token')}
-        disabled={buttonText != 'Fetch Access Token'}
-      />
-
-      {/* Display an error message if there is an error */}
-      {error.length > 0 && <Text style={styles.errorMessage}>{error}</Text>}
-
-      {/* Conditionally render the O19WebView component if the button text is not 'Fetch Access Token' */}
-      {buttonText != 'Fetch Access Token' && (
-        <O19WebView
-          initialButtonText="Fetch Access Token"
-          setError={setError}
-          setButtonText={setButtonText}
+        {/* Button to initiate the token fetching process */}
+        <Button
+          title={buttonText}
+          onPress={() => setButtonText('Fetching Token')}
+          disabled={buttonText != 'Fetch Access Token'}
         />
-      )}
+
+        {/* Display an error message if there is an error */}
+        {error.length > 0 && <Text style={styles.errorMessage}>{error}</Text>}
+
+        {/* Conditionally render the O19WebView component if the button text is not 'Fetch Access Token' */}
+        {buttonText != 'Fetch Access Token' && (
+          <O19WebView
+            initialButtonText="Fetch Access Token"
+            setError={setError}
+            setButtonText={setButtonText}
+          />
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     width: '60%',
     display: 'flex',

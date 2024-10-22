@@ -1,19 +1,26 @@
 /**
  * Component to display appointment details for a patient.
  */
+import AppointmentSection from '@/components/AppointmentSection';
 import AppointmentTable from '@/components/AppointmentTable';
+import { useAppointmentStatus } from '@/hooks/useAppointmentStatus';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
-import { Appointment, AppointmentStatus, StatusType } from '@/types/types';
+import {
+  Appointment,
+  AppointmentStatus,
+  ColumnConfig,
+  StatusType,
+} from '@/types/types';
 import { splitAppointments } from '@/utils/utils';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
   View,
-  FlatList,
   Text,
   StyleSheet,
   ActivityIndicator,
-  Button,
+  TouchableOpacity,
 } from 'react-native';
 
 /**
@@ -21,9 +28,6 @@ import {
  * @returns {JSX.Element} The rendered component.
  */
 const PatientAppointment = () => {
-  const [appointmentStatuses, setAppointmentStatuses] = useState<
-    AppointmentStatus[]
-  >([]);
   const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState<
     Appointment[]
@@ -31,6 +35,7 @@ const PatientAppointment = () => {
   const [loading, setLoading] = useState(true);
   const { manager } = useAuthManagerStore();
   const { id } = useLocalSearchParams();
+  const { getStatusFromCode } = useAppointmentStatus();
 
   useEffect(() => {
     if (!manager) {
@@ -39,21 +44,32 @@ const PatientAppointment = () => {
     fetchData();
   }, []);
 
+  const COLUMNS: ColumnConfig[] = [
+    {
+      header: 'Date',
+      accessor: 'appointmentDate',
+    },
+    {
+      header: 'Time',
+      accessor: 'startTime',
+    },
+    {
+      header: 'Status',
+      accessor: 'status',
+      render: (item: Appointment) => getStatusFromCode(item.status),
+    },
+  ];
+
   /**
    * Fetches appointment history and statuses.
    */
   const fetchData = async () => {
     try {
       setLoading(true);
-      //Fetch both history and statuses concurrently
-      const [appointmentHistoryRes, appointmentStatusesRes] = await Promise.all(
-        [
-          manager?.makeAuthorizedRequest(
-            'POST',
-            `schedule/${id}/appointmentHistory`
-          ),
-          manager?.makeAuthorizedRequest('GET', `schedule/statuses`),
-        ]
+      //Fetch appointment history
+      const appointmentHistoryRes = await manager?.makeAuthorizedRequest(
+        'POST',
+        `schedule/${id}/appointmentHistory`
       );
 
       if (
@@ -67,38 +83,22 @@ const PatientAppointment = () => {
         setUpcomingAppointments(upcomingAppointments);
       }
 
-      if (
-        appointmentStatusesRes &&
-        appointmentStatusesRes.status === StatusType.SUCCESS
-      ) {
-        setAppointmentStatuses(appointmentStatusesRes.data.content);
-      }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
-  /**
-   * Gets the status description from the status code.
-   * @param {string} status - The status code.
-   * @returns {string} The status description.
-   */
-  const getStatusFromCode = (status: string): string => {
-    const statusFound = appointmentStatuses.find(
-      (item) => item.status === status
-    );
-    return statusFound ? statusFound.description : status;
-  };
-
   return (
-    <View style={styles.detailContainer}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <Text style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 20 }}>
           Appointment History
         </Text>
         <View>
-          <Button title="Refresh" onPress={fetchData} />
+          <TouchableOpacity onPress={fetchData}>
+            <Ionicons name="refresh" size={36} color="black" />
+          </TouchableOpacity>
         </View>
       </View>
       {loading ? (
@@ -106,26 +106,20 @@ const PatientAppointment = () => {
           <ActivityIndicator size={70} color="#0000ff" />
         </View>
       ) : (
-        <AppointmentTable
-          columns={[
-            {
-              header: 'Date',
-              accessor: 'appointmentDate',
-            },
-            {
-              header: 'Time',
-              accessor: 'startTime',
-            },
-            {
-              header: 'Status',
-              accessor: 'status',
-              render: (item) => getStatusFromCode(item.status),
-            },
-          ]}
-          upcoming={upcomingAppointments}
-          past={pastAppointments}
-          keyExtractor={(item) => item.id}
-        />
+        <View style={styles.tableContainer}>
+          {/* Render upcoming appointments section */}
+          <AppointmentSection
+            title="Upcoming Appointment"
+            appointments={upcomingAppointments}
+            columns={COLUMNS}
+          />
+          {/* Render past appointments section */}
+          <AppointmentSection
+            title="Past Appointment"
+            appointments={pastAppointments}
+            columns={COLUMNS}
+          />
+        </View>
       )}
     </View>
   );
@@ -141,22 +135,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
   },
-  titleText: {
-    textAlign: 'center',
-    flex: 1,
-    fontSize: 16,
-    fontWeight: 'bold',
-    borderWidth: 1,
-  },
-  itemText: {
-    textAlign: 'center',
-    flex: 1,
-    fontSize: 16,
-    borderWidth: 1,
-  },
   detailContainer: {
+    padding: 16,
+    display: 'flex',
+  },
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+  appointmentSection: {
     flex: 1,
     padding: 16,
+  },
+  noAppointmentsText: {
+    fontSize: 16,
   },
   loading: {
     position: 'absolute',
@@ -164,6 +156,14 @@ const styles = StyleSheet.create({
     left: '50%',
     transform: [{ translateX: -25 }, { translateY: -25 }],
     zIndex: 1,
+  },
+  tableContainer: {
+    height: '92%',
+    display: 'flex',
+    gap: 60,
+  },
+  table: {
+    maxHeight: '42%',
   },
 });
 

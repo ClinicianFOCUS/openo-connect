@@ -27,7 +27,6 @@ import { Method } from 'axios';
 export const useOAuth = () => {
   const {
     manager,
-    hasUserCredentials,
     setManager,
     setHasAccessToken,
     setProvider,
@@ -54,11 +53,11 @@ export const useOAuth = () => {
     setLoading(true);
 
     // Check if user credentials are stored in SecureKeyStore
-    if (
+    const hasCreds =
       SecureKeyStore.getKey(CustomKeyType.USERNAME) &&
       SecureKeyStore.getKey(CustomKeyType.PASSWORD) &&
-      SecureKeyStore.getKey(CustomKeyType.PIN)
-    ) {
+      SecureKeyStore.getKey(CustomKeyType.PIN);
+    if (hasCreds) {
       setHasUserCredentials(true);
     }
 
@@ -72,7 +71,7 @@ export const useOAuth = () => {
     }
 
     // Initialize the OAuthManager if it is not already initialized and there are stored credentials
-    if (!manager && hasUserCredentials) {
+    if (!manager && hasCreds) {
       initManager();
     }
 
