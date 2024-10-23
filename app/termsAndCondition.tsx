@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { SecureKeyStore } from '@/services/SecureKeyStore';
 import { CustomKeyType } from '@/types/types';
+import { openBrowserAsync } from 'expo-web-browser';
 
 interface TermsAndConditionsProps {
   setHasAcceptedTerms: (value: boolean) => void;
@@ -30,13 +31,23 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
     setHasAcceptedTerms(true);
   };
 
+  const openLicenseLink = () => {
+    openBrowserAsync('https://www.gnu.org/licenses/agpl-3.0.html');
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Terms and Conditions</Text>
       <Text style={styles.content}>
-        {/* Your terms and conditions content here */}
+        This app is licensed under the AGPL 3.0 License. By using this app, you
+        agree to comply with the terms and conditions of the AGPL 3.0 License.
       </Text>
-      <Button title="Accept" onPress={acceptTerms} />
+      <TouchableOpacity onPress={openLicenseLink}>
+        <Text style={styles.link}>Read the AGPL 3.0 License</Text>
+      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <Button title="Accept" onPress={acceptTerms} />
+      </View>
     </View>
   );
 };
@@ -46,16 +57,30 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 30,
+    backgroundColor: '#f5f5f5',
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#333',
   },
   content: {
     fontSize: 16,
     marginBottom: 20,
+    color: '#666',
+    textAlign: 'center',
+  },
+  link: {
+    fontSize: 16,
+    color: '#1e90ff',
+    textDecorationLine: 'underline',
+    marginBottom: 30,
+  },
+  buttonContainer: {
+    width: '100%',
+    paddingHorizontal: 40,
   },
 });
 
