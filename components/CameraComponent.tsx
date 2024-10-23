@@ -71,13 +71,25 @@ export default function CameraComponent({ uploadImage }: CameraComponentProps) {
           {pausePreview ? (
             <View style={styles.buttonContainer2}>
               <View style={styles.previewPausedButton}>
-                <TouchableOpacity onPress={resumePreview}>
+                <TouchableOpacity
+                  style={styles.previewPausedButton2}
+                  onPress={resumePreview}
+                >
+                  <Text style={styles.text}>Again</Text>
                   <Ionicons name="reload" size={50} color="white" />
                 </TouchableOpacity>
               </View>
               <View style={styles.previewPausedButton}>
-                <TouchableOpacity onPress={onUpload}>
-                  <Ionicons name="cloud-upload" size={50} color="white" />
+                <TouchableOpacity
+                  style={styles.previewPausedButton2}
+                  onPress={onUpload}
+                >
+                  <Text style={styles.text}>EMR</Text>
+                  <Ionicons
+                    name="arrow-forward-outline"
+                    size={50}
+                    color="white"
+                  />
                 </TouchableOpacity>
               </View>
             </View>
@@ -146,5 +158,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     paddingBottom: 25,
+  },
+  previewPausedButton2: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
 });
