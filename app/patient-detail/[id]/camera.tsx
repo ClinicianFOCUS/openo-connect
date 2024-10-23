@@ -6,7 +6,7 @@ import useCurrentRoute from '@/hooks/useCurrentRoute';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import { useCameraPermissions } from 'expo-camera';
 import { useLocalSearchParams } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 /**
@@ -35,6 +35,7 @@ const Camera = () => {
 
   const { id } = useLocalSearchParams();
   const [permission, requestPermission] = useCameraPermissions();
+  const [askingPermission, setAskingPermission] = useState(false);
   const { uploading, uploaded, uploadMessage, uploadImage, setUploaded } =
     useImageUpload(parseInt(Array.isArray(id) ? id[0] : id));
 
@@ -43,16 +44,33 @@ const Camera = () => {
     return <View />;
   }
 
-  // If camera permission is not granted, show a message and a button to request permission
-  if (!permission.granted) {
+  if (permission.status === 'denied') {
     return (
-      <View style={styles.container}>
-        <Text style={{ textAlign: 'center' }}>
-          We need your permission to show the camera
+      <View style={[styles.container, styles.padding]}>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 10,
+          }}
+        >
+          Camera Access Denied
         </Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <Text style={{ textAlign: 'center' }}>
+          Please allow Open O Connect to access your camera from device
+          settings.
+        </Text>
       </View>
     );
+  }
+
+  // If camera permission is not granted, show a message and a button to request permission
+  if (!permission.granted) {
+    if (!askingPermission) {
+      setAskingPermission(true);
+      requestPermission();
+    }
   }
 
   // If permission is granted, display the camera component and handle upload status
@@ -121,6 +139,9 @@ const styles = StyleSheet.create({
   okButtonText: {
     color: 'white',
     fontSize: 18,
+  },
+  padding: {
+    padding: 20,
   },
 });
 
