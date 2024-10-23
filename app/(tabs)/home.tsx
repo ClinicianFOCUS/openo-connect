@@ -15,6 +15,7 @@ import { useNavigation } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import useModal from '@/hooks/useModal';
 import CustomModal from '@/components/CustomModal';
+import LoginInfo from '@/components/info/loginInfoModal';
 
 const App = () => {
   // Get authentication state from AuthManager store
@@ -62,19 +63,7 @@ const App = () => {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
         >
-          <Text style={styles.title}>
-            Important: Make sure to provide O19 base url in setting before
-            logging in.
-          </Text>
-          <Text style={styles.paragraph}>
-            Please enter your login credentials to access the application. If
-            you don't have an account, please contact support for assistance.
-          </Text>
-          <Text style={styles.paragraph}>
-            Your credentials are stored securely on your device and are not
-            shared with anyone. Stored credentials are used for authentication
-            purpose in the future.
-          </Text>
+          <LoginInfo />
         </CustomModal>
       </View>
     );
@@ -112,16 +101,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  title: {
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-  },
-  paragraph: {
-    marginBottom: 10,
-    color: '#666',
-    lineHeight: 22,
   },
 });
 
