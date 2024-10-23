@@ -20,8 +20,7 @@ import HomeInfo from '@/components/info/homeInfo';
 const App = () => {
   // Get authentication state from AuthManager store
   const { hasAccessToken, hasUserCredentials, loading } = useAuthManagerStore();
-  const { modalVisible, setModalVisible } = useModal();
-  const navigation = useNavigation();
+  const { modalVisible, setModalVisible, navigation } = useModal();
 
   // this sets the current route so that the app can return to it after authentication(biometrics)
   useCurrentRoute();

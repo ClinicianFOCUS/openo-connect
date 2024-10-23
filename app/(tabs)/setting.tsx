@@ -22,8 +22,7 @@ import {
 
 const SettingPage = () => {
   const { setManager, setHasAccessToken } = useAuthManagerStore();
-  const { modalVisible, setModalVisible } = useModal();
-  const navigation = useNavigation();
+  const { modalVisible, setModalVisible, navigation } = useModal();
 
   const [o19BaseUrl, setO19BaseUrl] = useState(
     SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL) || ''
