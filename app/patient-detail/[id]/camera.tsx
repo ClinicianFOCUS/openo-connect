@@ -44,6 +44,7 @@ const Camera = () => {
     return <View />;
   }
 
+  // If camera permission is denied, display a message
   if (permission.status === 'denied') {
     return (
       <View style={[styles.container, styles.padding]}>
@@ -65,7 +66,7 @@ const Camera = () => {
     );
   }
 
-  // If camera permission is not granted, show a message and a button to request permission
+  // If camera permission is not granted request permission
   if (!permission.granted) {
     if (!askingPermission) {
       setAskingPermission(true);
