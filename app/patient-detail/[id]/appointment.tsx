@@ -2,6 +2,8 @@
  * Component to display appointment details for a patient.
  */
 import AppointmentSection from '@/components/AppointmentSection';
+import CustomModal from '@/components/CustomModal';
+import PatientAppointmentHistoryInfo from '@/components/info/patientAppointmentHistoryInfo';
 import { useAppointmentStatus } from '@/hooks/useAppointmentStatus';
 import useCurrentRoute from '@/hooks/useCurrentRoute';
 import usePatientName from '@/hooks/usePatientName';
@@ -123,6 +125,9 @@ const PatientAppointment = () => {
           />
         </View>
       )}
+      <CustomModal title="Camera Information">
+        <PatientAppointmentHistoryInfo />
+      </CustomModal>
     </View>
   );
 };

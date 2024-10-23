@@ -1,13 +1,21 @@
 /**
  * Component to display patient details.
  */
+import CustomModal from '@/components/CustomModal';
+import PatientDetailInfo from '@/components/info/patientDetailInfo';
 import useCurrentRoute from '@/hooks/useCurrentRoute';
 import usePatientName from '@/hooks/usePatientName';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { PatientDetail, StatusType } from '@/types/types';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 
 /**
  * AppointmentDetail component.
@@ -100,6 +108,9 @@ const AppointmentDetail = () => {
           <Text style={styles.label}>Health Insurance:</Text>
           <Text style={styles.value}>{patientDetail.hin}</Text>
         </View>
+        <CustomModal title="Patient Detail">
+          <PatientDetailInfo />
+        </CustomModal>
       </View>
     );
   };

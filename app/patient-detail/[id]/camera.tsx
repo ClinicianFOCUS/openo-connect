@@ -2,6 +2,8 @@
  * Component to display the camera for a patient.
  */
 import CameraComponent from '@/components/CameraComponent';
+import CustomModal from '@/components/CustomModal';
+import CameraInfo from '@/components/info/cameraInfo';
 import useCurrentRoute from '@/hooks/useCurrentRoute';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import usePatientName from '@/hooks/usePatientName';
@@ -43,9 +45,17 @@ const Camera = () => {
   const { uploading, uploaded, uploadMessage, uploadImage, setUploaded } =
     useImageUpload(parseInt(Array.isArray(id) ? id[0] : id));
 
+  const ModelComponent = () => {
+    return (
+      <CustomModal title="Camera Information">
+        <CameraInfo />
+      </CustomModal>
+    );
+  };
+
   // If permission object is not available, return an empty view
   if (!permission) {
-    return <View />;
+    return <View>{ModelComponent()}</View>;
   }
 
   // If camera permission is denied, display a message
@@ -66,6 +76,7 @@ const Camera = () => {
           Please allow Open O Connect to access your camera from device
           settings.
         </Text>
+        {ModelComponent()}
       </View>
     );
   }
@@ -96,6 +107,7 @@ const Camera = () => {
           </TouchableOpacity>
         </View>
       )}
+      {ModelComponent()}
     </View>
   );
 };

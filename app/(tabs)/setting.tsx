@@ -1,14 +1,11 @@
 import CustomModal from '@/components/CustomModal';
 import SettingInfo from '@/components/info/settingInfo';
 import useCurrentRoute from '@/hooks/useCurrentRoute';
-import useModal from '@/hooks/useModal';
 import OAuthManager from '@/services/OAuthManager';
 import { SecureKeyStore } from '@/services/SecureKeyStore';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { CustomKeyType } from '@/types/types';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { useFocusEffect, useNavigation } from 'expo-router';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -17,12 +14,10 @@ import {
   StyleSheet,
   Alert,
   Keyboard,
-  TouchableOpacity,
 } from 'react-native';
 
 const SettingPage = () => {
   const { setManager, setHasAccessToken } = useAuthManagerStore();
-  const { modalVisible, setModalVisible, navigation } = useModal();
 
   const [o19BaseUrl, setO19BaseUrl] = useState(
     SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL) || ''
@@ -30,20 +25,6 @@ const SettingPage = () => {
 
   // this sets the current route so that the app can return to it after authentication(biometrics)
   useCurrentRoute();
-
-  useFocusEffect(
-    useCallback(() => {
-      navigation.getParent()?.setOptions({
-        headerRight: () => (
-          <View>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-              <Ionicons name="information-circle-outline" size={36} />
-            </TouchableOpacity>
-          </View>
-        ),
-      });
-    }, [])
-  );
 
   /**
    * Handles the save action for the settings.
@@ -86,11 +67,7 @@ const SettingPage = () => {
         style={styles.input}
       />
       <Button title="Save" onPress={handleSave} />
-      <CustomModal
-        title="Setting Information"
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-      >
+      <CustomModal title="Setting Information">
         <SettingInfo />
       </CustomModal>
     </View>

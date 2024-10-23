@@ -1,20 +1,31 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useFocusEffect } from 'expo-router';
+import useModal from '@/hooks/useModal';
 
 interface CustomModalProps {
-  modalVisible: boolean;
-  setModalVisible: (visible: boolean) => void;
   title: string;
   children: React.ReactNode;
 }
 
-const CustomModal: React.FC<CustomModalProps> = ({
-  modalVisible,
-  setModalVisible,
-  title,
-  children,
-}) => {
+const CustomModal: React.FC<CustomModalProps> = ({ title, children }) => {
+  const { modalVisible, setModalVisible, navigation } = useModal();
+
+  useFocusEffect(
+    useCallback(() => {
+      navigation.getParent()?.setOptions({
+        headerRight: () => (
+          <View>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Ionicons name="information-circle-outline" size={36} />
+            </TouchableOpacity>
+          </View>
+        ),
+      });
+    }, [])
+  );
+
   return (
     <Modal
       animationType="fade"
