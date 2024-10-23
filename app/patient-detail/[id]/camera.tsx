@@ -7,7 +7,7 @@ import { useImageUpload } from '@/hooks/useImageUpload';
 import { useCameraPermissions } from 'expo-camera';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
-import { Button, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 /**
  * Camera component that handles camera permissions and image uploading.
@@ -67,11 +67,9 @@ const Camera = () => {
   }
 
   // If camera permission is not granted request permission
-  if (!permission.granted) {
-    if (!askingPermission) {
-      setAskingPermission(true);
-      requestPermission();
-    }
+  if (!permission.granted && !askingPermission) {
+    setAskingPermission(true);
+    requestPermission();
   }
 
   // If permission is granted, display the camera component and handle upload status
