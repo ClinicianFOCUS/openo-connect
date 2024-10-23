@@ -9,9 +9,19 @@ interface CustomModalProps {
   children: React.ReactNode;
 }
 
+/**
+ * CustomModal component that displays a modal with a title and content.
+ * The modal can be opened and closed using the provided hooks and navigation options.
+ *
+ * @param {CustomModalProps} props - The props for the CustomModal component.
+ * @param {string} props.title - The title of the modal.
+ * @param {React.ReactNode} props.children - The content to be displayed inside the modal.
+ * @returns {JSX.Element} The rendered CustomModal component.
+ */
 const CustomModal: React.FC<CustomModalProps> = ({ title, children }) => {
   const { modalVisible, setModalVisible, navigation } = useModal();
 
+  // Set up the header right button to open the modal when pressed
   useFocusEffect(
     useCallback(() => {
       navigation.getParent()?.setOptions({
@@ -43,6 +53,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ title, children }) => {
               <Ionicons name="close-outline" size={28} />
             </TouchableOpacity>
           </View>
+          {/* Model content goes here */}
           <View style={styles.modalContentView}>{children}</View>
         </View>
       </View>
