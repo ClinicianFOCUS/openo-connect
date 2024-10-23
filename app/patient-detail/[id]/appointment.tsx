@@ -125,7 +125,7 @@ const PatientAppointment = () => {
           />
         </View>
       )}
-      <CustomModal title="Camera Information">
+      <CustomModal title="Patient History Information">
         <PatientAppointmentHistoryInfo />
       </CustomModal>
     </View>

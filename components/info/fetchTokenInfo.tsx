@@ -1,19 +1,22 @@
 import { Text } from 'react-native';
 import infoStyles from './info.styles';
 
-const fetchTokenInfo = () => {
+const LoginInfo = () => {
   return (
     <>
-      <Text style={infoStyles.paragraph}>
-        This screen displays the list of appointments scheduled today. You can
-        view the details of each patient by clicking on the appointment.
-      </Text>
       <Text style={infoStyles.title}>
-        Note: Upcoming appointments are displayed first in order of time. All
-        the completed appointments are displayed at the end of the list.
+        Important: Make sure to provide O19 base url in setting before fetching
+        token.
+      </Text>
+      <Text style={infoStyles.paragraph}>
+        Stored credentials are used to fetch token from O19 server.
+      </Text>
+      <Text style={infoStyles.paragraph}>
+        If you have recently changed your password, then you will be taken to
+        login screen after pressing fetch button.
       </Text>
     </>
   );
 };
 
-export default fetchTokenInfo;
+export default LoginInfo;

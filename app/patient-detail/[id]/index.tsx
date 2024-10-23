@@ -9,13 +9,7 @@ import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { PatientDetail, StatusType } from '@/types/types';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import { Text, View, StyleSheet, ActivityIndicator } from 'react-native';
 
 /**
  * AppointmentDetail component.

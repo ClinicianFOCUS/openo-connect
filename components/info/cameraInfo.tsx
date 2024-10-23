@@ -5,12 +5,11 @@ const CameraInfo = () => {
   return (
     <>
       <Text style={infoStyles.paragraph}>
-        This screen displays the list of appointments scheduled today. You can
-        view the details of each patient by clicking on the appointment.
+        Camera Screen to capture image and upload it to patient's demographics.
       </Text>
       <Text style={infoStyles.title}>
-        Note: Upcoming appointments are displayed first in order of time. All
-        the completed appointments are displayed at the end of the list.
+        Note: After taking picture, you need to upload it by clicking on the EMR
+        button.
       </Text>
     </>
   );

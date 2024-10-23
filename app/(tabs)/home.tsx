@@ -8,6 +8,7 @@ import useCurrentRoute from '@/hooks/useCurrentRoute';
 import CustomModal from '@/components/CustomModal';
 import LoginInfo from '@/components/info/loginInfo';
 import HomeInfo from '@/components/info/homeInfo';
+import FetchTokenInfo from '@/components/info/fetchTokenInfo';
 
 const App = () => {
   // Get authentication state from AuthManager store
@@ -44,8 +45,8 @@ const App = () => {
     return (
       <View style={styles.container}>
         <FetchToken />
-        <CustomModal title="Information">
-          <LoginInfo />
+        <CustomModal title="Fetch Token Information">
+          <FetchTokenInfo />
         </CustomModal>
       </View>
     );
