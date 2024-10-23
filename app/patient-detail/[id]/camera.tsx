@@ -76,7 +76,7 @@ const Camera = () => {
   // If permission is granted, display the camera component and handle upload status
   return (
     <View style={styles.container}>
-      <CameraComponent onCapture={uploadImage} />
+      <CameraComponent uploadImage={uploadImage} />
       {uploading && (
         <View style={styles.uploadingContainer}>
           <Text style={styles.uploadingText}>Uploading...</Text>
