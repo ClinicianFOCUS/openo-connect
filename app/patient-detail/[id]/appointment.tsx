@@ -2,16 +2,11 @@
  * Component to display appointment details for a patient.
  */
 import AppointmentSection from '@/components/AppointmentSection';
-import AppointmentTable from '@/components/AppointmentTable';
 import { useAppointmentStatus } from '@/hooks/useAppointmentStatus';
 import useCurrentRoute from '@/hooks/useCurrentRoute';
+import usePatientName from '@/hooks/usePatientName';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
-import {
-  Appointment,
-  AppointmentStatus,
-  ColumnConfig,
-  StatusType,
-} from '@/types/types';
+import { Appointment, ColumnConfig, StatusType } from '@/types/types';
 import { splitAppointments } from '@/utils/utils';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useLocalSearchParams } from 'expo-router';
@@ -31,6 +26,9 @@ import {
 const PatientAppointment = () => {
   // this sets the current route so that the app can return to it after authentication(biometrics)
   useCurrentRoute();
+
+  // Used to update the title of the screen to the patient's name
+  usePatientName();
 
   const [pastAppointments, setPastAppointments] = useState<Appointment[]>([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState<
