@@ -7,8 +7,8 @@ import { SecureKeyStore } from '@/services/SecureKeyStore';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { CustomKeyType } from '@/types/types';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation } from 'expo-router';
-import React, { useLayoutEffect, useState } from 'react';
+import { useFocusEffect, useNavigation } from 'expo-router';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -32,17 +32,19 @@ const SettingPage = () => {
   // this sets the current route so that the app can return to it after authentication(biometrics)
   useCurrentRoute();
 
-  useLayoutEffect(() => {
-    navigation.getParent()?.setOptions({
-      headerRight: () => (
-        <View>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Ionicons name="information-circle-outline" size={36} />
-          </TouchableOpacity>
-        </View>
-      ),
-    });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      navigation.getParent()?.setOptions({
+        headerRight: () => (
+          <View>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Ionicons name="information-circle-outline" size={36} />
+            </TouchableOpacity>
+          </View>
+        ),
+      });
+    }, [])
+  );
 
   /**
    * Handles the save action for the settings.

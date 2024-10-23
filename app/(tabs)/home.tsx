@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,11 +10,12 @@ import AppointmentList from '@/components/AppointmentList';
 import FetchToken from '@/components/FetchToken';
 import Login from '@/components/LogIn';
 import useCurrentRoute from '@/hooks/useCurrentRoute';
-import { useNavigation } from 'expo-router';
+import { useFocusEffect, useNavigation } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import useModal from '@/hooks/useModal';
 import CustomModal from '@/components/CustomModal';
 import LoginInfo from '@/components/info/loginInfo';
+import HomeInfo from '@/components/info/homeInfo';
 
 const App = () => {
   // Get authentication state from AuthManager store
@@ -25,17 +26,19 @@ const App = () => {
   // this sets the current route so that the app can return to it after authentication(biometrics)
   useCurrentRoute();
 
-  useLayoutEffect(() => {
-    navigation.getParent()?.setOptions({
-      headerRight: () => (
-        <View>
-          <TouchableOpacity onPress={() => setModalVisible(true)}>
-            <Ionicons name="information-circle-outline" size={36} />
-          </TouchableOpacity>
-        </View>
-      ),
-    });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      navigation.getParent()?.setOptions({
+        headerRight: () => (
+          <View>
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Ionicons name="information-circle-outline" size={36} />
+            </TouchableOpacity>
+          </View>
+        ),
+      });
+    }, [])
+  );
 
   // Show loading indicator while checking authentication state and oauth manager has been initialized
   if (loading) {
@@ -77,6 +80,13 @@ const App = () => {
   return (
     <View style={styles.container}>
       <AppointmentList />
+      <CustomModal
+        title="Information"
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      >
+        <HomeInfo />
+      </CustomModal>
     </View>
   );
 };

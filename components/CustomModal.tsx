@@ -17,7 +17,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 }) => {
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
