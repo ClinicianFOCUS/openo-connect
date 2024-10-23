@@ -31,6 +31,7 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
     setHasAcceptedTerms(true);
   };
 
+  // Opens the AGPL 3.0 License link in the browser
   const openLicenseLink = () => {
     openBrowserAsync('https://www.gnu.org/licenses/agpl-3.0.html');
   };
