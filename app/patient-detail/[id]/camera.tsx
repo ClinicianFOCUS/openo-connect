@@ -2,12 +2,15 @@
  * Component to display the camera for a patient.
  */
 import CameraComponent from '@/components/CameraComponent';
+import CustomModal from '@/components/CustomModal';
+import CameraInfo from '@/components/info/cameraInfo';
 import useCurrentRoute from '@/hooks/useCurrentRoute';
 import { useImageUpload } from '@/hooks/useImageUpload';
+import usePatientName from '@/hooks/usePatientName';
 import { useCameraPermissions } from 'expo-camera';
 import { useLocalSearchParams } from 'expo-router';
-import React from 'react';
-import { Button, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 /**
  * Camera component that handles camera permissions and image uploading.
@@ -33,32 +36,61 @@ const Camera = () => {
   // this sets the current route so that the app can return to it after authentication(biometrics)
   useCurrentRoute();
 
+  // Used to update the title of the screen to the patient's name
+  usePatientName();
+
   const { id } = useLocalSearchParams();
   const [permission, requestPermission] = useCameraPermissions();
+  const [askingPermission, setAskingPermission] = useState(false);
   const { uploading, uploaded, uploadMessage, uploadImage, setUploaded } =
     useImageUpload(parseInt(Array.isArray(id) ? id[0] : id));
 
+  const ModelComponent = () => {
+    return (
+      <CustomModal title="Camera Information">
+        <CameraInfo />
+      </CustomModal>
+    );
+  };
+
   // If permission object is not available, return an empty view
   if (!permission) {
-    return <View />;
+    return <View>{ModelComponent()}</View>;
   }
 
-  // If camera permission is not granted, show a message and a button to request permission
-  if (!permission.granted) {
+  // If camera permission is denied, display a message
+  if (permission.status === 'denied') {
     return (
-      <View style={styles.container}>
-        <Text style={{ textAlign: 'center' }}>
-          We need your permission to show the camera
+      <View style={[styles.container, styles.padding]}>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontSize: 20,
+            fontWeight: 'bold',
+            marginBottom: 10,
+          }}
+        >
+          Camera Access Denied
         </Text>
-        <Button onPress={requestPermission} title="grant permission" />
+        <Text style={{ textAlign: 'center' }}>
+          Please allow Open O Connect to access your camera from device
+          settings.
+        </Text>
+        {ModelComponent()}
       </View>
     );
+  }
+
+  // If camera permission is not granted request permission
+  if (!permission.granted && !askingPermission) {
+    setAskingPermission(true);
+    requestPermission();
   }
 
   // If permission is granted, display the camera component and handle upload status
   return (
     <View style={styles.container}>
-      <CameraComponent onCapture={uploadImage} />
+      <CameraComponent uploadImage={uploadImage} />
       {uploading && (
         <View style={styles.uploadingContainer}>
           <Text style={styles.uploadingText}>Uploading...</Text>
@@ -75,6 +107,7 @@ const Camera = () => {
           </TouchableOpacity>
         </View>
       )}
+      {ModelComponent()}
     </View>
   );
 };
@@ -121,6 +154,9 @@ const styles = StyleSheet.create({
   okButtonText: {
     color: 'white',
     fontSize: 18,
+  },
+  padding: {
+    padding: 20,
   },
 });
 

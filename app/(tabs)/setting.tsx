@@ -1,3 +1,5 @@
+import CustomModal from '@/components/CustomModal';
+import SettingInfo from '@/components/info/settingInfo';
 import useCurrentRoute from '@/hooks/useCurrentRoute';
 import OAuthManager from '@/services/OAuthManager';
 import { SecureKeyStore } from '@/services/SecureKeyStore';
@@ -16,6 +18,7 @@ import {
 
 const SettingPage = () => {
   const { setManager, setHasAccessToken } = useAuthManagerStore();
+
   const [o19BaseUrl, setO19BaseUrl] = useState(
     SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL) || ''
   );
@@ -64,6 +67,9 @@ const SettingPage = () => {
         style={styles.input}
       />
       <Button title="Save" onPress={handleSave} />
+      <CustomModal title="Setting Information">
+        <SettingInfo />
+      </CustomModal>
     </View>
   );
 };

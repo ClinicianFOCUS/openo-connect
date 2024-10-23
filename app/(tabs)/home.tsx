@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
-import { useOAuth } from '@/hooks/useAuth';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import AppointmentList from '@/components/AppointmentList';
 import FetchToken from '@/components/FetchToken';
 import Login from '@/components/LogIn';
 import useCurrentRoute from '@/hooks/useCurrentRoute';
+import CustomModal from '@/components/CustomModal';
+import LoginInfo from '@/components/info/loginInfo';
+import HomeInfo from '@/components/info/homeInfo';
+import FetchTokenInfo from '@/components/info/fetchTokenInfo';
 
 const App = () => {
   // Get authentication state from AuthManager store
@@ -30,6 +33,9 @@ const App = () => {
     return (
       <View style={styles.container}>
         <Login />
+        <CustomModal title="Login Information">
+          <LoginInfo />
+        </CustomModal>
       </View>
     );
   }
@@ -39,6 +45,9 @@ const App = () => {
     return (
       <View style={styles.container}>
         <FetchToken />
+        <CustomModal title="Fetch Token Information">
+          <FetchTokenInfo />
+        </CustomModal>
       </View>
     );
   }
@@ -47,6 +56,9 @@ const App = () => {
   return (
     <View style={styles.container}>
       <AppointmentList />
+      <CustomModal title="Information">
+        <HomeInfo />
+      </CustomModal>
     </View>
   );
 };
