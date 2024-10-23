@@ -4,7 +4,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
-  Text,
 } from 'react-native';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import AppointmentList from '@/components/AppointmentList';
@@ -15,7 +14,7 @@ import { useNavigation } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import useModal from '@/hooks/useModal';
 import CustomModal from '@/components/CustomModal';
-import LoginInfo from '@/components/info/loginInfoModal';
+import LoginInfo from '@/components/info/loginInfo';
 
 const App = () => {
   // Get authentication state from AuthManager store
@@ -30,17 +29,13 @@ const App = () => {
     navigation.getParent()?.setOptions({
       headerRight: () => (
         <View>
-          <TouchableOpacity onPress={showModal}>
+          <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Ionicons name="information-circle-outline" size={36} />
           </TouchableOpacity>
         </View>
       ),
     });
   }, []);
-
-  const showModal = () => {
-    setModalVisible(true);
-  };
 
   // Show loading indicator while checking authentication state and oauth manager has been initialized
   if (loading) {
