@@ -9,6 +9,9 @@ import CustomModal from '@/components/CustomModal';
 import LoginInfo from '@/components/info/loginInfo';
 import HomeInfo from '@/components/info/homeInfo';
 import FetchTokenInfo from '@/components/info/fetchTokenInfo';
+import { SecureKeyStore } from '@/services/SecureKeyStore';
+import { CustomKeyType } from '@/types/types';
+import { Redirect } from 'expo-router';
 
 const App = () => {
   // Get authentication state from AuthManager store
@@ -30,6 +33,9 @@ const App = () => {
 
   // Show if user credentials are not provided
   if (!hasUserCredentials) {
+    if (!SecureKeyStore.getKey(CustomKeyType.O19_BASE_URL)) {
+      return <Redirect href="/setting" />;
+    }
     return (
       <View style={styles.container}>
         <Login />

@@ -66,6 +66,13 @@ const SettingPage = () => {
         placeholder="Enter Base Url"
         style={styles.input}
       />
+      <View>
+        <Text style={styles.paragraph}>Valid URL: https://example.com</Text>
+        <Text style={styles.paragraph}>Invalid URL: https://example.com/</Text>
+        <Text style={styles.paragraph}>
+          Click on info button on top right corner to view more information.
+        </Text>
+      </View>
       <Button title="Save" onPress={handleSave} />
       <CustomModal title="Setting Information">
         <SettingInfo />
@@ -90,6 +97,11 @@ const styles = StyleSheet.create({
     padding: 20,
     display: 'flex',
     gap: 10,
+  },
+  paragraph: {
+    color: '#666',
+    lineHeight: 22,
+    fontSize: 12,
   },
 });
 
