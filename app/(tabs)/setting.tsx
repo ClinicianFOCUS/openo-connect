@@ -67,11 +67,11 @@ const SettingPage = () => {
         style={styles.input}
       />
       <View>
+        <Text style={styles.paragraph}>
+          Note: Base URL required before proceeding to Login
+        </Text>
         <Text style={styles.paragraph}>Valid URL: https://example.com</Text>
         <Text style={styles.paragraph}>Invalid URL: https://example.com/</Text>
-        <Text style={styles.paragraph}>
-          Click on info button on top right corner to view more information.
-        </Text>
       </View>
       <Button title="Save" onPress={handleSave} />
       <CustomModal title="Setting Information">
