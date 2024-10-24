@@ -3,23 +3,13 @@ import * as LocalAuthentication from 'expo-local-authentication';
 
 // Function to authenticate the user
 export const authenticateUser = async (): Promise<CustomResponse> => {
-  // Check if the device has the necessary hardware for local authentication
-  const hasHardware = await LocalAuthentication.hasHardwareAsync();
-  // Exit if no hardware is available
-  if (!hasHardware) {
-    return {
-      status: StatusType.SUCCESS,
-      message: 'No hardware found',
-    };
-  }
+  const securityLevel = await LocalAuthentication.getEnrolledLevelAsync();
 
-  // Check if the user has enrolled in local authentication (e.g., fingerprint, face recognition)
-  const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-  // Exit if no enrollment is found
-  if (!isEnrolled) {
+  // Check if the device has any kind of authentication enrolled
+  if (securityLevel === LocalAuthentication.SecurityLevel.NONE) {
     return {
       status: StatusType.SUCCESS,
-      message: 'User has not enrolled local authentication',
+      message: 'User has not enrolled any kind of authentication',
     };
   }
 
