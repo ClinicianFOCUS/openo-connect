@@ -100,8 +100,8 @@ const PatientAppointment = () => {
           Appointment History
         </Text>
         <View>
-          <TouchableOpacity onPress={fetchData}>
-            <Ionicons name="refresh" size={36} color="black" />
+          <TouchableOpacity style={styles.refreshButton} onPress={fetchData}>
+            <Ionicons name="refresh" size={24} color="white" />
           </TouchableOpacity>
         </View>
       </View>
@@ -171,6 +171,11 @@ const styles = StyleSheet.create({
   },
   table: {
     maxHeight: '42%',
+  },
+  refreshButton: {
+    backgroundColor: '#007bff',
+    padding: 8,
+    borderRadius: 8,
   },
 });
 
