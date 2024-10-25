@@ -6,14 +6,13 @@ import {
   Text,
   View,
   StyleSheet,
-  Button,
   ActivityIndicator,
-  Alert,
   TouchableOpacity,
 } from 'react-native';
 import AppointmentTable from './AppointmentTable';
 import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 /**
  * AppointmentList component displays a list of today's appointments.
@@ -24,6 +23,8 @@ const AppointmentList = () => {
   const { manager } = useAuthManagerStore();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [date, setDate] = useState(new Date());
+  const [selectDate, setSelectDate] = useState(false);
 
   const { setHasAccessToken } = useAuthManagerStore();
   const router = useRouter();
@@ -31,7 +32,7 @@ const AppointmentList = () => {
   // Fetch appointments when the component mounts
   useEffect(() => {
     fetchAppointments();
-  }, [manager]);
+  }, [manager, date]);
 
   /**
    * Fetches today's appointments from the API and updates the state.
@@ -43,40 +44,80 @@ const AppointmentList = () => {
     }
 
     setLoading(true);
-    manager.makeAuthorizedRequest('GET', 'schedule/day/today').then((res) => {
-      if (res.status === StatusType.SUCCESS) {
-        // Split appointments into past and upcoming
-        const { pastAppointments, upcomingAppointments } = splitAppointments(
-          res.data
-        );
-        setAppointments(upcomingAppointments.concat(pastAppointments));
-        setLoading(false);
-      } else {
-        // Handle unauthorized access
-        if (res?.code == 401) {
-          setHasAccessToken(false);
+    const formattedDate = date.toISOString().split('T')[0];
+    manager
+      .makeAuthorizedRequest('GET', `schedule/day/${formattedDate}`)
+      .then((res) => {
+        if (res.status === StatusType.SUCCESS) {
+          // Split appointments into past and upcoming
+          const { pastAppointments, upcomingAppointments } = splitAppointments(
+            res.data
+          );
+          setAppointments(upcomingAppointments.concat(pastAppointments));
+          setLoading(false);
+        } else {
+          // Handle unauthorized access
+          if (res?.code == 401) {
+            setHasAccessToken(false);
+          }
         }
-      }
+      });
+  };
+
+  /**
+   * Changes the current date by a specified number of days.
+   * @param days - The number of days to change the date by.
+   */
+  const changeDate = (days: number) => {
+    setDate((prevDate) => {
+      const newDate = new Date(prevDate);
+      newDate.setDate(prevDate.getDate() + days);
+      return newDate;
     });
   };
+
+  /**
+   * Advances the date by one day.
+   */
+  const onNextDate = () => changeDate(1);
+
+  /**
+   * Moves the date back by one day.
+   */
+  const onPrevDate = () => changeDate(-1);
 
   return (
     <View style={styles.container}>
       {/* Header section with title and refresh button */}
       <View style={styles.header}>
-        <Text style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 20 }}>
-          Today's Appointments
-        </Text>
-        <View>
-          <TouchableOpacity onPress={fetchAppointments}>
-            <Ionicons name="refresh" size={36} color="black" />
+        <Text style={styles.headerText}>Appointments</Text>
+        <TouchableOpacity
+          onPress={fetchAppointments}
+          style={styles.refreshButton}
+        >
+          <Ionicons name="refresh" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.dateSelectorContainer}>
+        <View style={styles.dateSelector}>
+          <TouchableOpacity onPress={onPrevDate}>
+            <Ionicons name="chevron-back-outline" size={20} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setSelectDate(true)}>
+            <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onNextDate}>
+            <Ionicons name="chevron-forward-outline" size={20} color="black" />
           </TouchableOpacity>
         </View>
+        <TouchableOpacity onPress={() => setDate(new Date())}>
+          <Text style={styles.todayText}>Today</Text>
+        </TouchableOpacity>
       </View>
       {/* Loading indicator or appointment table based on loading state */}
       {loading ? (
         <View style={styles.loading}>
-          <ActivityIndicator size={70} color="#0000ff" />
+          <ActivityIndicator size="large" color="#0000ff" />
         </View>
       ) : (
         <AppointmentTable
@@ -97,6 +138,17 @@ const AppointmentList = () => {
           }
         />
       )}
+      {selectDate && (
+        <RNDateTimePicker
+          value={date}
+          onChange={(event, selectedDate) => {
+            if (event.type == 'set' && selectedDate) {
+              setDate(selectedDate);
+            }
+            setSelectDate(false);
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -104,32 +156,49 @@ const AppointmentList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    maxHeight: '93%',
-  },
-  loading: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -25 }, { translateY: -25 }],
-    zIndex: 1,
+    padding: 16,
+    backgroundColor: '#f5f5f5',
+    maxHeight: '90%',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5,
   },
-  titleText: {
-    textAlign: 'center',
-    flex: 1,
-    fontSize: 16,
+  headerText: {
+    fontSize: 24,
     fontWeight: 'bold',
-    borderWidth: 1,
+    color: '#333',
   },
-  itemText: {
-    textAlign: 'center',
-    flex: 1,
+  refreshButton: {
+    backgroundColor: '#007bff',
+    padding: 8,
+    borderRadius: 8,
+  },
+  dateSelectorContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  dateSelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dateText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#007bff',
+  },
+  todayText: {
     fontSize: 16,
-    borderWidth: 1,
+    color: '#007bff',
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
