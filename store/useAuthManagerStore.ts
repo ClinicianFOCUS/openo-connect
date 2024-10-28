@@ -20,6 +20,8 @@ type AuthManagerStore = {
   setLoading: (loading: boolean) => void;
   routeToReturn: string;
   setRouteToReturn: (currentRoute: string) => void;
+  patientName: string;
+  setPatientName: (patientName: string) => void;
 };
 
 /**
@@ -43,6 +45,8 @@ type AuthManagerStore = {
  * @property {(loading: boolean) => void} setLoading - Sets the loading state of app
  * @prpoerty {string} routeToReturn - The route to return to after authentication
  * @property {(currentRoute: string) => void} setRouteToReturn - Sets the route to return to after authentication
+ * @property {string} patientName - The name of the patient
+ * @property {(patientName: string) => void} setPatientName - Sets the name of the patient
  *
  * @returns {AuthManagerStore} The authentication manager store.
  */
@@ -64,4 +68,6 @@ export const useAuthManagerStore = create<AuthManagerStore>((set) => ({
   setLoading: (loading: boolean) => set({ loading }),
   routeToReturn: '/home',
   setRouteToReturn: (route: string) => set({ routeToReturn: route }),
+  patientName: '',
+  setPatientName: (patientName: string) => set({ patientName }),
 }));

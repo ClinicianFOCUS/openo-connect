@@ -7,6 +7,7 @@ export enum CustomKeyType {
   USERNAME = 'username',
   PASSWORD = 'password',
   PIN = 'pin',
+  HAS_ACCEPTED_TERMS = 'has_accepted_terms',
 }
 
 export enum StatusType {
