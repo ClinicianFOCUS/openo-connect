@@ -26,7 +26,7 @@ export default function RootLayout() {
         options={{ headerTitle: 'Patient Detail' }}
       />
 
-      <Stack.Screen name="callback" options={{ headerTitle: 'Callback' }} />
+      <Stack.Screen name="callback" options={{ headerShown: false }} />
     </Stack>
   );
 }

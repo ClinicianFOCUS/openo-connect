@@ -28,21 +28,19 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
    ### For Android
 
-   1. Build APK (For Development Only)
+   1. Start Project
 
-      ```bash
-      eas build --profile development --platform android --local
-      ```
-
-      Here, `development` is the name of the profile in eas.json file. Adding `--local` flag will build apk locally.
-
-      Note: Will need to rebuild if any natvie code changes are made (Like new package installed).
-
-   2. Start Project
       ```bash
       npm run android
       ```
-      This will start the application in emulator and connected android device.
+
+      This will create a development build and start the application in emulator and connected android device.
+
+   2. If you made any changes to `app.json` that impacts the native project, modified native code or configuration or install a library from npm, you need to run prebuild command.
+      ```bash
+         npx expo prebuild --clean
+      ```
+      And create a new development build following step 1.
 
    ### For iOS (TODO)
 

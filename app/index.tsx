@@ -5,6 +5,7 @@ import { useAuthManagerStore } from '@/store/useAuthManagerStore';
 import { SecureKeyStore } from '@/services/SecureKeyStore';
 import { CustomKeyType } from '@/types/types';
 import TermsAndConditions from './termsAndCondition';
+import WelcomeScreen from './welcome';
 
 /**
  * The main application component.
@@ -21,6 +22,7 @@ const App = () => {
   const { isAuthenticated, routeToReturn } = useAuthManagerStore();
 
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState<boolean>(false);
+  const [showTerms, setShowTerms] = useState<boolean>(false);
 
   // Check if the user has accepted the terms and conditions
   useEffect(() => {
@@ -31,9 +33,13 @@ const App = () => {
   // If the user is not authenticated, show the AppLocked component
   if (!isAuthenticated) return <AppLocked />;
 
-  // If the user has not accepted the terms and conditions, show the TermsAndConditions component
-  if (!hasAcceptedTerms)
+  // Clicking on the "Next" button in the Welcome Screen will show the TermsAndConditions component
+  if (!hasAcceptedTerms && showTerms)
     return <TermsAndConditions setHasAcceptedTerms={setHasAcceptedTerms} />;
+
+  // If the user has not accepted the terms and conditions, show Welcome Screen followed by TermsAndConditions component
+  if (!hasAcceptedTerms)
+    return <WelcomeScreen onNext={() => setShowTerms(true)} />;
 
   return <Redirect href={routeToReturn ? (routeToReturn as any) : '/home'} />;
 };
