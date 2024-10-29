@@ -55,11 +55,9 @@ const AppointmentList = () => {
           );
           setAppointments(upcomingAppointments.concat(pastAppointments));
           setLoading(false);
-        } else {
+        } else if (res?.code == 401) {
           // Handle unauthorized access
-          if (res?.code == 401) {
-            setHasAccessToken(false);
-          }
+          setHasAccessToken(false);
         }
       });
   };
