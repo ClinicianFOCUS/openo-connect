@@ -63,28 +63,25 @@ const AppointmentList = () => {
         }
       });
   };
+  /**
+   * Enum for date navigation direction.
+   */
+  enum DateDirection {
+    PREV = -1,
+    NEXT = 1,
+  }
 
   /**
-   * Changes the current date by a specified number of days.
-   * @param days - The number of days to change the date by.
+   * Navigates the date by adding or subtracting days based on the direction.
+   * @param direction - The direction to navigate the date (previous or next).
    */
-  const changeDate = (days: number) => {
+  const navigateDate = (direction: DateDirection) => {
     setDate((prevDate) => {
       const newDate = new Date(prevDate);
-      newDate.setDate(prevDate.getDate() + days);
+      newDate.setDate(prevDate.getDate() + direction);
       return newDate;
     });
   };
-
-  /**
-   * Advances the date by one day.
-   */
-  const onNextDate = () => changeDate(1);
-
-  /**
-   * Moves the date back by one day.
-   */
-  const onPrevDate = () => changeDate(-1);
 
   return (
     <View style={styles.container}>
@@ -100,13 +97,13 @@ const AppointmentList = () => {
       </View>
       <View style={styles.dateSelectorContainer}>
         <View style={styles.dateSelector}>
-          <TouchableOpacity onPress={onPrevDate}>
+          <TouchableOpacity onPress={() => navigateDate(DateDirection.PREV)}>
             <Ionicons name="chevron-back-outline" size={20} color="black" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setSelectDate(true)}>
             <Text style={styles.dateText}>{date.toLocaleDateString()}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={onNextDate}>
+          <TouchableOpacity onPress={() => navigateDate(DateDirection.NEXT)}>
             <Ionicons name="chevron-forward-outline" size={20} color="black" />
           </TouchableOpacity>
         </View>
